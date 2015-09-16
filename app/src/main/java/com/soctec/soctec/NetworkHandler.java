@@ -2,6 +2,7 @@ package com.soctec.soctec;
 
 import android.util.Log;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -61,8 +62,8 @@ public class NetworkHandler
             try
             {
                 Socket socket = new Socket(serverAddress, portNr);
-                ObjectOutputStream outs = new ObjectOutputStream(socket.getOutputStream());
-                outs.writeObject(data);
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                dos.write(data.toString().getBytes());
             }
             catch(IOException e)
             {
