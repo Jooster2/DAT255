@@ -1,10 +1,14 @@
 package com.soctec.soctec;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -26,60 +30,75 @@ public class NetworkHandler
     /**
      *This method is used when the user has just scanned a QR-code
      *@param scannedCode The code from the scanned device
+     *@param cntxt Context of the calling class
      */
-    public static void sendScanInfo(String scannedCode)
+    public static void sendScanInfo(String scannedCode, Context cntxt)
     {
         //TODO: Get device's code (encrypted from phone number)
         String myCode = "XXXXXXXX";
 
-        NetworkThread<String> nt = new NetworkThread<>();
-        nt.sendMessage(SCAN_MSG, scannedCode + ", " + myCode);
+        NetworkThread nt = new NetworkThread();
+        nt.sendMessage(SCAN_MSG, scannedCode + ", " + myCode, cntxt);
     }
     
     /**
      * This method is used when data needs to be backed up.
+     *@param cntxt Context of the calling class
      */
-    public static void backupData()
+    public static void backupData(Context cntxt)
     {
         Object dataToSend = null; //TODO: Get data to send
 
-        NetworkThread<Object> nt = new NetworkThread<>();
-        nt.sendMessage(BACKUP_MSG, dataToSend);
+        NetworkThread nt = new NetworkThread();
+        nt.sendMessage(BACKUP_MSG, dataToSend.toString(), cntxt);
     }
 
     /**
      * This method is used when the profile needs to be downloaded to a new device
      * @return List of the user's profile info
+     *@param cntxt Context of the calling class
      */
-    public static Object downloadProfile()
+    public static Object downloadProfile(Context cntxt)
     {
         String myCode = null; //TODO: Get my code.
         Object profile = null;
 
-        NetworkThread<String> nt = new NetworkThread<>();
-        nt.sendMessage(DOWNLOAD_MSG, myCode);
+        NetworkThread nt = new NetworkThread();
+        nt.sendMessage(DOWNLOAD_MSG, myCode, cntxt);
 
         //TODO: Receive data to return from server.
         return profile;
     }
 
+
+    /********************************************************************************************
+                                    Inner class "NetworkThread"
+     ********************************************************************************************/
+
     /**
-     *Inner class "NetworkThread"
+     * A new thread instance is created every time the app needs to communicate with the sever
      */
-    static class NetworkThread<T> extends Thread
+    static class NetworkThread extends Thread
     {
-        //TODO: Do we need a generic type here? Or are we always sending the same type?
-        private T data;
+        private String dataToBeSent;
         private int msgType;
 
         /**
          * This method is called my NetworkHandler when it needs to communicate with the server
          * @param msgType Type of message to send to the server
          * @param data The data to send to the server
+         * @param myContext Context of the calling activity
          */
-        public synchronized void sendMessage(int msgType, T data)
+        public synchronized void sendMessage(int msgType, String data, Context myContext)
         {
-            this.data = data;
+            ConnectivityManager connMgr =
+                    (ConnectivityManager)myContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if(connMgr.getActiveNetworkInfo().getType() != ConnectivityManager.TYPE_WIFI)
+            {
+                Log.i("NetworkHandler", "Not connected to WIFI");
+                return;
+            }
+            dataToBeSent = data;
             this.msgType = msgType;
             start();
         }
@@ -92,10 +111,15 @@ public class NetworkHandler
         {
             try
             {
-                Socket socket = new Socket(serverAddress, portNr);
-                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                dos.write(msgType);
-                dos.write(data.toString().getBytes());
+                if(msgType == DOWNLOAD_MSG || msgType == SCAN_MSG)
+                {
+                    sendToServer();
+                    receiveFromServer();
+                }
+                else if(msgType == BACKUP_MSG)
+                {
+                    sendToServer();
+                }
             }
             catch(IOException e)
             {
@@ -103,6 +127,26 @@ public class NetworkHandler
                 e.printStackTrace();
                 //TODO: Should this class return error codes to caller?
             }
+        }
+
+        private void sendToServer() throws IOException
+        {
+            Socket socket = new Socket(serverAddress, portNr);
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            dos.write(msgType);
+            dos.write(dataToBeSent.getBytes());
+        }
+
+        private void receiveFromServer() throws IOException
+        {
+            byte[] inputData = new byte[1]; //TODO: How should we set the size here?
+
+            ServerSocket mySocket = new ServerSocket(portNr);
+            Socket serversSocket = mySocket.accept();
+            DataInputStream dis = new DataInputStream(serversSocket.getInputStream());
+            dis.readFully(inputData);
+
+            //TODO: Return inputData to caller somehow...
         }
     }
 }
