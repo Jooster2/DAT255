@@ -8,11 +8,17 @@ dbLock = threading.Lock()
 def socketInputThread(clientSocket, address):
     # Temporary protocol, needs MUCH work
     packet = clientSocket.recv(1024)
-    userCode, command, data = packet.decode().split(':')
-    userCode = userCode.strip()
-    command = command.strip()
-    # Makes a list of the data
-    data = data.strip().split(',')
+    # Data could be empty, so we do try and handle both cases
+    try:
+        userCode, command, data = packet.decode().split(':')
+        userCode = userCode.strip()
+        command = command.strip()
+        # Makes a list of the data
+        data = data.strip().split(',')
+    except ValueError as e:
+        userCode, command = packet.decode().split(':')
+        userCode = userCode.strip()
+        command = command.strip()
     if(command == '0'):
         dbWrite(userCode, data)
     elif(command == '1'):
@@ -29,11 +35,7 @@ def socketInputThread(clientSocket, address):
         answerPacket = []
         for x in fromDB[:4]:
             answerPacket.append(x)
-        del fromDB[:5]
-        for x in str(fromDB):
-            if x.isalpha():
-                answerPacket.append(x)
-        
+        answerPacket.extend(fromDB[5].split(','))
         
         # Convert the list to a string with a ',' between each letter
         answerPacket = ','.join(answerPacket)
@@ -42,6 +44,9 @@ def socketInputThread(clientSocket, address):
 
     else:
         clientSocket.send(('Error, bad command specified: ' + command).encode())
+    # Socket should be closed after use because there is really no reason
+    # to keep it open, right?
+    clientSocket.close()
 
 def dbWrite(userCode, data):
     # Thread lock is used to protect the database from multiple writes
@@ -54,8 +59,10 @@ def dbWrite(userCode, data):
     # Delete the already paired data
     del data[:4]
     # The rest is achievements. JSON is used to create a sqlite3-BLOB for writing
-    tupleList.append(('achievements', json.dumps(data)))
+    data = list(data)
+    tupleList.append(('achievements', ','.join(data)))
 
+    # We try to create, PRIMARY KEY prevents recreating if exists
     try:
         cursor.execute('''INSERT INTO users(userCode) VALUES(?)''', (userCode,))
     except:
@@ -107,7 +114,7 @@ if __name__ == '__main__':
     dbLock.release()
             
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    serverSocket.bind(('localhost', 49998))
+    serverSocket.bind(('localhost', 49999))
     serverSocket.listen(5)
 
     while True:
