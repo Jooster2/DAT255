@@ -1,7 +1,7 @@
+#!/usr/bin/python
 import threading
 import socket
 import sqlite3
-import json
 
 dbLock = threading.Lock()
 
@@ -31,15 +31,18 @@ def socketInputThread(clientSocket, address):
             by checking if each char in the BLOB is alphanumerical
         """
         fromDB = dbRead(userCode)
-        fromDB = list(fromDB)
-        answerPacket = []
-        for x in fromDB[:4]:
-            answerPacket.append(x)
-        answerPacket.extend(fromDB[5].split(','))
-        
-        # Convert the list to a string with a ',' between each letter
-        answerPacket = ','.join(answerPacket)
-        clientSocket.send(answerPacket.encode())
+	try:
+		fromDB = list(fromDB)
+		answerPacket = []
+		for x in fromDB[:5]:
+		    answerPacket.append(x)
+		answerPacket.extend(fromDB[5].split(','))
+		
+		# Convert the list to a string with a ',' between each letter
+		answerPacket = ','.join(answerPacket)
+		clientSocket.send(answerPacket.encode())
+	except:
+		clientSocket.send(('Some error occurred, data found was:', str(fromDB).encode())
 
 
     else:
@@ -74,6 +77,7 @@ def dbWrite(userCode, data):
                     (item[1], userCode))
     db.commit()
     db.close()
+    print('Data received')
     dbLock.release()
 
 
