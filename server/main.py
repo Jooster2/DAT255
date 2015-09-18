@@ -114,7 +114,7 @@ if __name__ == '__main__':
     dbLock.release()
             
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    serverSocket.bind(('localhost', 49999))
+    serverSocket.bind(('', 49999))
     serverSocket.listen(5)
 
     while True:
