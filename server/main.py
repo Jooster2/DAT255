@@ -31,8 +31,8 @@ def socketInputThread(clientSocket, address):
             by checking if each char in the BLOB is alphanumerical
         """
         fromDB = dbRead(userCode)
+        fromDB = list(fromDB)
         try:
-            fromDB = list(fromDB)
             answerPacket = []
             for x in fromDB[:5]:
                 answerPacket.append(x)
@@ -42,7 +42,7 @@ def socketInputThread(clientSocket, address):
             answerPacket = ','.join(answerPacket)
             clientSocket.send(answerPacket.encode())
         except:
-            clientSocket.send(('Some error occurred, data found was:', str(fromDB).encode()))
+            clientSocket.send(('Some error occurred, data found was:', ''.join(fromDB)).encode())
     else:
         clientSocket.send(('Error, bad command specified: ' + command).encode())
     # Socket should be closed after use because there is really no reason
