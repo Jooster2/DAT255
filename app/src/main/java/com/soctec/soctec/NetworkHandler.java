@@ -2,151 +2,176 @@ package com.soctec.soctec;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * This class takes care of all communication with the server. Sends and receives data.
+ *
+ * Don't create instances of this class. Simply call a method (e.g. backupData) and the class
+ * will take care of the rest.
  * @author David
  * @version Created on 2015-09-15
  */
-public class NetworkHandler
+
+public class NetworkHandler extends AsyncTask<Void, Void, Void>
 {
-    public static final int SCAN_MSG = 0;
-    public static final int BACKUP_MSG = 1;
-    public static final int DOWNLOAD_MSG = 2;
+    //static final variables
+    public static final String BACKUP_MSG = "0";
+    public static final String DOWNLOAD_MSG = "1";
+    private static final String SERVER_ADDRESS = "XXX.XXX.XXX.XXX";
+    private static final int PORT_NR = -1;
 
-    //TODO: Should these be hard-coded?
-    private static final String serverAddress = "XXX.XXX.XXX.XXX";
-    private static final int portNr = -1;
+    //Non-static variables
+    private String msgType;
+    //dataToSend contains user ID, message type and data, all in one string
+    private String dataToSend;
+    private byte[] dataFromServer;
 
     /**
-     *This method is used when the user has just scanned a QR-code
+     * Constructor
+     * @param msgType Type of message (download message, backup message...)
+     * @param stringToSend The data to send to server, if any.
+     */
+    private NetworkHandler(String msgType, String stringToSend)
+    {
+        this.msgType = msgType;
+        dataToSend = "<Insert my ID here>" + ":" + msgType + ":" + stringToSend;
+    }
+
+    /*******************PUBLIC STATIC METHODS*******************/
+
+    /**
+     * This method is used when data needs to be backed up. Creates a new instance of
+     * NetworkHandler, initializes the data to send, and contacts the server.
+     * @param context Context of the calling activity
+     */
+    public static void backupData(Context context)
+    {
+        if(!hasNetworkAccess(context))
+        {
+            Log.i("NetworkHandler", "No WIFI access, aborting network task");
+        }
+        else
+        {
+            new NetworkHandler(BACKUP_MSG, "<Insert data to backup here>").doInBackground();
+        }
+    }
+
+    /**
+     * This method is used when the profile needs to be downloaded to a new device.
+     * Creates a new instance of NetworkHandler, initializes the data to send,
+     * and contacts the server.
+     * @param context Context of the calling activity
+     */
+    public static void downloadData(Context context)
+    {
+        if(!hasNetworkAccess(context))
+        {
+            Log.i("NetworkHandler", "No WIFI access, aborting network task");
+        }
+        else
+        {
+            new NetworkHandler(DOWNLOAD_MSG, "").doInBackground();
+        }
+    }
+
+    /**
+     *This method is used when the user has just scanned a QR-code. Creates a new instance of
+     *NetworkHandler, initializes the data to send, and contacts the server.
      *@param scannedCode The code from the scanned device
-     *@param cntxt Context of the calling class
+     *@param context Context of the calling activity
      */
-    public static void sendScanInfo(String scannedCode, Context cntxt)
+    public static void sendScanInfo(String scannedCode, Context context)
     {
-        //TODO: Get device's code (encrypted from phone number)
-        String myCode = "XXXXXXXX";
+        if(!hasNetworkAccess(context))
+        {
+            Log.i("NetworkHandler", "No WIFI access, aborting network task");
+        }
 
-        NetworkThread nt = new NetworkThread();
-        nt.sendMessage(SCAN_MSG, scannedCode + ", " + myCode, cntxt);
-    }
-    
-    /**
-     * This method is used when data needs to be backed up.
-     *@param cntxt Context of the calling class
-     */
-    public static void backupData(Context cntxt)
-    {
-        Object dataToSend = null; //TODO: Get data to send
-
-        NetworkThread nt = new NetworkThread();
-        nt.sendMessage(BACKUP_MSG, dataToSend.toString(), cntxt);
+        //TODO: Do some magic WiFi P2P stuff here...
     }
 
+    /********************Methods inherited from AsyncTask**************************/
+
     /**
-     * This method is used when the profile needs to be downloaded to a new device
-     * @return List of the user's profile info
-     *@param cntxt Context of the calling class
+     * Called internally in NetworkHandler to perform network tasks on another thread.
+     * @param params Nothing, just void
+     * @return Nothing, just null
      */
-    public static Object downloadProfile(Context cntxt)
+    @Override
+    protected Void doInBackground(Void... params)
     {
-        String myCode = null; //TODO: Get my code.
-        Object profile = null;
-
-        NetworkThread nt = new NetworkThread();
-        nt.sendMessage(DOWNLOAD_MSG, myCode, cntxt);
-
-        //TODO: Receive data to return from server.
-        return profile;
+        try
+        {
+            sendToServer();
+            if(msgType.equals(DOWNLOAD_MSG))
+            {
+                receiveFromServer();
+            }
+        }
+        catch(IOException e)
+        {
+            Log.e("NetworkHandler", e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 
+    /**
+     * Called internally in NetworkHandler when server communication is done.
+     * @param v Nothing, just void
+     */
+    @Override
+    protected void onPostExecute(Void v)
+    {
+        //Only perform this is data was received from server
+        if(msgType.equals(DOWNLOAD_MSG))
+        {
+            //TODO: Send dataFromServer somewhere... (To an activity? To a file?)
+        }
+    }
 
-    /********************************************************************************************
-                                    Inner class "NetworkThread"
-     ********************************************************************************************/
+    /*******************Helper methods*********************/
 
     /**
-     * A new thread instance is created every time the app needs to communicate with the sever
+     * Sends data to server
+     * @throws IOException
      */
-    static class NetworkThread extends Thread
+    private void sendToServer() throws IOException
     {
-        private String dataToBeSent;
-        private int msgType;
+        Socket socket = new Socket(SERVER_ADDRESS, PORT_NR);
+        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+        dos.write(dataToSend.getBytes());
+    }
 
-        /**
-         * This method is called my NetworkHandler when it needs to communicate with the server
-         * @param msgType Type of message to send to the server
-         * @param data The data to send to the server
-         * @param myContext Context of the calling activity
-         */
-        public synchronized void sendMessage(int msgType, String data, Context myContext)
-        {
-            ConnectivityManager connMgr =
-                    (ConnectivityManager)myContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if(connMgr.getActiveNetworkInfo().getType() != ConnectivityManager.TYPE_WIFI)
-            {
-                Log.i("NetworkHandler", "Not connected to WIFI");
-                return;
-            }
-            dataToBeSent = data;
-            this.msgType = msgType;
-            start();
-        }
+    /**
+     * Receives data from server and stores it in dataFromServer
+     * @throws IOException
+     */
+    private void receiveFromServer() throws IOException
+    {
+        ServerSocket mySocket = new ServerSocket(PORT_NR);
+        Socket serversSocket = mySocket.accept();
+        DataInputStream dis = new DataInputStream(serversSocket.getInputStream());
+        dis.readFully(dataFromServer);
+    }
 
-        /**
-         * This method performs all communication with the server.
-         */
-        @Override
-        public void run()
-        {
-            try
-            {
-                if(msgType == DOWNLOAD_MSG || msgType == SCAN_MSG)
-                {
-                    sendToServer();
-                    receiveFromServer();
-                }
-                else if(msgType == BACKUP_MSG)
-                {
-                    sendToServer();
-                }
-            }
-            catch(IOException e)
-            {
-                Log.e("NetworkHandler", e.getMessage());
-                e.printStackTrace();
-                //TODO: Should this class return error codes to caller?
-            }
-        }
-
-        private void sendToServer() throws IOException
-        {
-            Socket socket = new Socket(serverAddress, portNr);
-            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-            dos.write(msgType);
-            dos.write(dataToBeSent.getBytes());
-        }
-
-        private void receiveFromServer() throws IOException
-        {
-            byte[] inputData = new byte[1]; //TODO: How should we set the size here?
-
-            ServerSocket mySocket = new ServerSocket(portNr);
-            Socket serversSocket = mySocket.accept();
-            DataInputStream dis = new DataInputStream(serversSocket.getInputStream());
-            dis.readFully(inputData);
-
-            //TODO: Return inputData to caller somehow...
-        }
+    /**
+     * Checks if user is connected to Electricity wifi
+     * @param myContext Context of calling activity
+     * @return True if connected to Electricity wifi, o/w false
+     */
+    public static boolean hasNetworkAccess(Context myContext)
+    {
+        ConnectivityManager connMgr =
+                (ConnectivityManager)myContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (connMgr.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI);
     }
 }
