@@ -1,7 +1,7 @@
 package com.soctec.soctec;
 
 /**
- * Created by Jeppe on 2015-09-21.
+ * Created by Jeppe on 2015-09-22.
  */
 
 import android.support.v4.app.Fragment;
@@ -11,13 +11,13 @@ import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-public class MainFragment extends Fragment
+public class LeftFragment extends Fragment
 {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_main, container, false );
+        View view = inflater.inflate(R.layout.fragment_left, container, false );
         return view;
     }
 }
