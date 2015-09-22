@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">SocTec</string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Huvudskärm</string>
+    <string name="title_section2">Achievements</string>
+    <string name="title_section3">Kamera</string>
 
     <string name="hello_world">Hello world!</string>
 
