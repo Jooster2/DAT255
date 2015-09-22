@@ -1,5 +1,6 @@
 package com.soctec.soctec;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -25,24 +26,37 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
     //static final variables
     public static final String BACKUP_MSG = "0";
     public static final String DOWNLOAD_MSG = "1";
+    public static final String SCAN_MSG = "2";
     private static final String SERVER_ADDRESS = "XXX.XXX.XXX.XXX";
-    private static final int PORT_NR = -1;
+    private static final int SERVER_PORT_NR = 49999;
+    private static final int PEER_PORT_NR = 49998;
 
     //Non-static variables
     private String msgType;
     //dataToSend contains user ID, message type and data, all in one string
     private String dataToSend;
-    private byte[] dataFromServer;
+    private byte[] dataReceived;
+    private MainActivity myActivity;
 
     /**
      * Constructor
      * @param msgType Type of message (download message, backup message...)
      * @param stringToSend The data to send to server, if any.
      */
-    private NetworkHandler(String msgType, String stringToSend)
+    private NetworkHandler(String msgType, String stringToSend, MainActivity activity)
     {
         this.msgType = msgType;
-        dataToSend = "<Insert my ID here>" + ":" + msgType + ":" + stringToSend;
+        this.myActivity = activity;
+        if(msgType.equals(SCAN_MSG))
+        {
+            //This string will be sent to peer
+            dataToSend = "<Insert my ID here>" + ":" + stringToSend;
+        }
+        else
+        {
+            //This string will be sent to server
+            dataToSend = "<Insert my ID here>" + ":" + msgType + ":" + stringToSend;
+        }
     }
 
     /*******************PUBLIC STATIC METHODS*******************/
@@ -50,17 +64,18 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
     /**
      * This method is used when data needs to be backed up. Creates a new instance of
      * NetworkHandler, initializes the data to send, and contacts the server.
-     * @param context Context of the calling activity
+     * @param activity The calling activity
      */
-    public static void backupData(Context context)
+    public static void backupData(MainActivity activity)
     {
-        if(!hasNetworkAccess(context))
+        if(!hasNetworkAccess(activity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
         else
         {
-            new NetworkHandler(BACKUP_MSG, "<Insert data to backup here>").doInBackground();
+            new NetworkHandler(BACKUP_MSG, "<Insert data to backup here>", activity)
+                    .doInBackground();
         }
     }
 
@@ -68,17 +83,17 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
      * This method is used when the profile needs to be downloaded to a new device.
      * Creates a new instance of NetworkHandler, initializes the data to send,
      * and contacts the server.
-     * @param context Context of the calling activity
+     * @param activity The calling activity
      */
-    public static void downloadData(Context context)
+    public static void downloadData(MainActivity activity)
     {
-        if(!hasNetworkAccess(context))
+        if(!hasNetworkAccess(activity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
         else
         {
-            new NetworkHandler(DOWNLOAD_MSG, "").doInBackground();
+            new NetworkHandler(DOWNLOAD_MSG, "", activity).doInBackground();
         }
     }
 
@@ -86,16 +101,18 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
      *This method is used when the user has just scanned a QR-code. Creates a new instance of
      *NetworkHandler, initializes the data to send, and contacts the server.
      *@param scannedCode The code from the scanned device
-     *@param context Context of the calling activity
+     *@param activity The calling activity
      */
-    public static void sendScanInfo(String scannedCode, Context context)
+    public static void sendScanInfo(String scannedCode, MainActivity activity)
     {
-        if(!hasNetworkAccess(context))
+        if(!hasNetworkAccess(activity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
-
-        //TODO: Do some magic WiFi P2P stuff here...
+        else
+        {
+            new NetworkHandler(SCAN_MSG, "<Insert profile data here>", activity).doInBackground();
+        }
     }
 
     /********************Methods inherited from AsyncTask**************************/
@@ -110,10 +127,20 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
     {
         try
         {
-            sendToServer();
-            if(msgType.equals(DOWNLOAD_MSG))
+            if(msgType.equals(SCAN_MSG))
             {
-                receiveFromServer();
+                doP2pStuff();
+            }
+            else
+            {
+                Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NR);
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                dos.writeBytes(dataToSend);
+
+                DataInputStream dis = new DataInputStream(socket.getInputStream());
+                dis.readFully(dataReceived);
+
+                socket.close();
             }
         }
         catch(IOException e)
@@ -131,36 +158,33 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
     @Override
     protected void onPostExecute(Void v)
     {
-        //Only perform this is data was received from server
-        if(msgType.equals(DOWNLOAD_MSG))
+        if(msgType.equals(SCAN_MSG))
         {
-            //TODO: Send dataFromServer somewhere... (To an activity? To a file?)
+            myActivity.receiveDataFromPeer(dataReceived);
+        }
+        else if(msgType.equals(DOWNLOAD_MSG))
+        {
+            myActivity.receiveDataFromServer(dataReceived);
         }
     }
 
     /*******************Helper methods*********************/
 
     /**
-     * Sends data to server
+     * This method does all the p2p stuff
      * @throws IOException
      */
-    private void sendToServer() throws IOException
+    private void doP2pStuff() throws IOException
     {
-        Socket socket = new Socket(SERVER_ADDRESS, PORT_NR);
-        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-        dos.write(dataToSend.getBytes());
-    }
+        ServerSocket serverSocket = new ServerSocket(PEER_PORT_NR);
+        Socket clientSocket = serverSocket.accept();
+        DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+        DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
 
-    /**
-     * Receives data from server and stores it in dataFromServer
-     * @throws IOException
-     */
-    private void receiveFromServer() throws IOException
-    {
-        ServerSocket mySocket = new ServerSocket(PORT_NR);
-        Socket serversSocket = mySocket.accept();
-        DataInputStream dis = new DataInputStream(serversSocket.getInputStream());
-        dis.readFully(dataFromServer);
+        dos.writeBytes(dataToSend);
+        dis.readFully(dataReceived);
+
+        serverSocket.close();
     }
 
     /**
