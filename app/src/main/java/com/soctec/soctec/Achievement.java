@@ -1,0 +1,37 @@
+package com.soctec.soctec;
+
+/**
+ * Created by MSI on 2015-09-22.
+ */
+public abstract class Achievement
+{
+    private String name;
+    private int points;
+    private String imageName;
+    private String id;
+
+    public Achievement (String name, int points,String imageName, String id)
+    {
+        this.name = name;
+        this.points = points;
+        this.imageName = imageName;
+        this.id = id;
+    }
+    public String getName()
+    {
+        return name;
+    }
+    public int getPoints()
+    {
+        return points;
+    }
+     public String getImageName()
+    {
+        return imageName;
+    }
+    public String getId()
+    {
+        return id;
+    }
+
+}
