@@ -17,21 +17,22 @@ public class AchievementCreator
 
     public CounterAchievement createCounterAchievement(String[] data)
     {
-        CounterAchievement achievement = new CounterAchievement(data[1], data[2], data[3], data[4]);
+        CounterAchievement achievement = new CounterAchievement(data[1], Integer.parseInt(data[2]), data[3], data[4]);
         if(data[5].equals("SIN"))
             for(int i=6; i<data.length; i++)
             {
                 String[] demand = data[i].split(":");
-                achivement.createDemand(demand[0], demand[1]);
+                achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
             }
         else if(data[5].equals("INF"))
+            return achievement;
         //TODO create demand of infinite type
         return achievement;
     }
 
     public CollectionAchievement createCollectionAchievement(String[] data)
     {
-        CollectionAchievement achievement = new CollectionAchievement(data[1], data[2], data[3],
+        CollectionAchievement achievement = new CollectionAchievement(data[1], Integer.parseInt(data[2]), data[3],
                 data[4]);
         //TODO everything...
         return achievement;
@@ -49,14 +50,14 @@ public class AchievementCreator
                 if(data[0].equals("CNT"))
                 {
                     CounterAchievement achievement = createCounterAchievement(data);
-
+                    unlocker.insertAchievement(achievement);
                 }
                 else if(data[0].equals("COL"))
                 {
                     CollectionAchievement achievement = createCollectionAchievement(data);
+                    unlocker.insertAchievement(achievement);
                 }
 
-                unlocker.insertAchievement(achievement);
                 line = buffer.readLine();
             }
             buffer.close();
