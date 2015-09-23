@@ -1,6 +1,5 @@
 package com.soctec.soctec;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -9,113 +8,166 @@ import android.util.Log;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * This class takes care of all communication with the server. Sends and receives data.
- *
- * Don't create instances of this class. Simply call a method (e.g. backupData) and the class
- * will take care of the rest.
+ * This class takes care of all communication with the server and peers. Sends and receives data.
  * @author David
  * @version Created on 2015-09-15
  */
 
-public class NetworkHandler extends AsyncTask<Void, Void, Void>
+public class NetworkHandler extends AsyncTask<String, Void, Void>
 {
-    //static final variables
-    public static final String BACKUP_MSG = "0";
-    public static final String DOWNLOAD_MSG = "1";
-    public static final String SCAN_MSG = "2";
-    private static final String SERVER_ADDRESS = "XXX.XXX.XXX.XXX";
+    private static final int BACKUP_MSG = 0;
+    private static final int DOWNLOAD_MSG = 1;
+    private static final int SCAN_MSG = 2;
     private static final int SERVER_PORT_NR = 49999;
     private static final int PEER_PORT_NR = 49998;
+    private static final String SERVER_ADDRESS = "XXX.XXX.XXX.XXX";
 
-    //Non-static variables
-    private String msgType;
-    //dataToSend contains user ID, message type and data, all in one string
+    private int msgType;
     private String dataToSend;
-    private byte[] dataReceived;
+    private String dataReceived;
     private MainActivity myActivity;
 
+    private static NetworkHandler instance = null;
+    private Thread connectionListenerThread;
+
     /**
-     * Constructor
-     * @param msgType Type of message (download message, backup message...)
-     * @param stringToSend The data to send to server, if any.
+     * Constructor. Initializes connection listener thread
+     * @param activity Main activity
      */
-    private NetworkHandler(String msgType, String stringToSend, MainActivity activity)
+    private NetworkHandler(MainActivity activity)
     {
-        this.msgType = msgType;
-        this.myActivity = activity;
-        if(msgType.equals(SCAN_MSG))
+        myActivity = activity;
+        connectionListenerThread =  new Thread()
         {
-            //This string will be sent to peer
-            dataToSend = "<Insert my ID here>" + ":" + stringToSend;
-        }
-        else
-        {
-            //This string will be sent to server
-            dataToSend = "<Insert my ID here>" + ":" + msgType + ":" + stringToSend;
-        }
+            @Override
+            public void run()
+            {
+                while(true)
+                {
+                    try
+                    {
+                        //Accept connection
+                        ServerSocket serverSocket = new ServerSocket(PEER_PORT_NR);
+                        Socket clientSocket = serverSocket.accept();
+
+                        //Read data
+                        ObjectInputStream dis = new ObjectInputStream(
+                                clientSocket.getInputStream());
+                        dataReceived = (String)dis.readObject();
+
+                        //Write data
+                        ObjectOutputStream dos = new ObjectOutputStream(
+                                clientSocket.getOutputStream());
+                        dataToSend = "<Insert my ID here>" + "<Insert my profile here>";
+                        dos.writeObject(dataToSend);
+
+                        //Send read data to MainActivity
+                        String id = dataReceived.split(",")[0];
+                        String profile = dataReceived.split(",")[1];
+                        myActivity.receiveDataFromPeer(id, profile); //TODO: User observer here?
+                    }
+                    catch(IOException | ClassNotFoundException e)
+                    {
+                        e.printStackTrace();
+                        Log.e("NetworkHandler", "ServerSocket exception", e);
+                    }
+                }
+            }
+        };
+        connectionListenerThread.start();
     }
 
-    /*******************PUBLIC STATIC METHODS*******************/
+    /**
+     * Singleton pattern
+     * @param activity The main activity.
+     * @return The one instance of NetworkHandler.
+     */
+    public static NetworkHandler getInstance(MainActivity activity)
+    {
+        if(instance == null)
+            return instance = new NetworkHandler(activity);
+        else
+            return instance;
+    }
 
     /**
-     * This method is used when data needs to be backed up. Creates a new instance of
-     * NetworkHandler, initializes the data to send, and contacts the server.
-     * @param activity The calling activity
+     * This method is used when data needs to be backed up.
      */
-    public static void backupData(MainActivity activity)
+    public void backupData()
     {
-        if(!hasNetworkAccess(activity.getApplicationContext()))
+        if(!hasNetworkAccess(myActivity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
         else
         {
-            new NetworkHandler(BACKUP_MSG, "<Insert data to backup here>", activity)
-                    .doInBackground();
+            msgType = BACKUP_MSG;
+            //Put together data to send to server: ID + TYPE + DATA
+            dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
+            doInBackground();
         }
     }
 
     /**
      * This method is used when the profile needs to be downloaded to a new device.
-     * Creates a new instance of NetworkHandler, initializes the data to send,
-     * and contacts the server.
-     * @param activity The calling activity
      */
-    public static void downloadData(MainActivity activity)
+    public void downloadData()
     {
-        if(!hasNetworkAccess(activity.getApplicationContext()))
+        if(!hasNetworkAccess(myActivity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
         else
         {
-            new NetworkHandler(DOWNLOAD_MSG, "", activity).doInBackground();
+            msgType = DOWNLOAD_MSG;
+            //Put together data to send to server: ID + TYPE
+            dataToSend = "<Insert my ID here>" + ":1";
+            doInBackground();
         }
     }
 
     /**
-     *This method is used when the user has just scanned a QR-code. Creates a new instance of
-     *NetworkHandler, initializes the data to send, and contacts the server.
-     *@param scannedCode The code from the scanned device
-     *@param activity The calling activity
+     * This method is called when a scan has taken place and we need to connect to a peer
+     * @param scannedAddress The peer's address, scanned from QR
      */
-    public static void sendScanInfo(String scannedCode, MainActivity activity)
+    public void sendScanInfo(String scannedAddress)
     {
-        if(!hasNetworkAccess(activity.getApplicationContext()))
+        if (!hasNetworkAccess(myActivity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
         else
         {
-            new NetworkHandler(SCAN_MSG, "<Insert profile data here>", activity).doInBackground();
+            msgType = SCAN_MSG;
+            //Put together data to send to server: ID + Profile data
+            dataToSend = "<Insert my ID here>" + "," + "<Insert profile data here>";
+            doInBackground(scannedAddress);
         }
     }
 
-    /********************Methods inherited from AsyncTask**************************/
+    /**
+     * Start the connectionListener Thread
+     */
+    public void startConnectionListener()
+    {
+        if(connectionListenerThread.isInterrupted())
+            connectionListenerThread.start();
+    }
+
+    /**
+     * Interrupt the connectionListener Thread
+     */
+    public void stopConnectionListener()
+    {
+        if(connectionListenerThread.isAlive())
+            connectionListenerThread.interrupt();
+    }
 
     /**
      * Called internally in NetworkHandler to perform network tasks on another thread.
@@ -123,27 +175,39 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
      * @return Nothing, just null
      */
     @Override
-    protected Void doInBackground(Void... params)
+    protected Void doInBackground(String... params)
     {
         try
         {
-            if(msgType.equals(SCAN_MSG))
+            Socket socket;
+            if(msgType == DOWNLOAD_MSG || msgType == BACKUP_MSG)
             {
-                doP2pStuff();
-            }
-            else
-            {
-                Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NR);
+                //Send data to server
+                socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NR);
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                 dos.writeBytes(dataToSend);
 
+                //Receive data from server
                 DataInputStream dis = new DataInputStream(socket.getInputStream());
-                dis.readFully(dataReceived);
+                byte[] tmpArray = new byte[1024];
+                dis.readFully(tmpArray);
+                dataReceived = new String(tmpArray);
 
                 socket.close();
             }
+            else if(msgType == SCAN_MSG)
+            {
+                //Send data to peer
+                socket = new Socket(params[0], PEER_PORT_NR);
+                ObjectOutputStream dos = new ObjectOutputStream(socket.getOutputStream());
+                dos.writeObject(dataToSend);
+
+                //Receive data from peer
+                ObjectInputStream dis = new ObjectInputStream(socket.getInputStream());
+                dataReceived = (String)dis.readObject();
+            }
         }
-        catch(IOException e)
+        catch(IOException | ClassNotFoundException e)
         {
             Log.e("NetworkHandler", e.getMessage());
             e.printStackTrace();
@@ -152,39 +216,22 @@ public class NetworkHandler extends AsyncTask<Void, Void, Void>
     }
 
     /**
-     * Called internally in NetworkHandler when server communication is done.
+     * Called internally in NetworkHandler when server or peer communication is done.
      * @param v Nothing, just void
      */
     @Override
     protected void onPostExecute(Void v)
     {
-        if(msgType.equals(SCAN_MSG))
+        if (msgType == SCAN_MSG)
         {
-            myActivity.receiveDataFromPeer(dataReceived);
+            String id = dataReceived.split(",")[0];
+            String profile = dataReceived.split(",")[1];
+            myActivity.receiveDataFromPeer(id, profile);  //TODO: User observer here?
         }
-        else if(msgType.equals(DOWNLOAD_MSG))
+        else if(msgType == DOWNLOAD_MSG)
         {
-            myActivity.receiveDataFromServer(dataReceived);
+            myActivity.receiveDataFromServer(dataReceived);  //TODO: User observer here?
         }
-    }
-
-    /*******************Helper methods*********************/
-
-    /**
-     * This method does all the p2p stuff
-     * @throws IOException
-     */
-    private void doP2pStuff() throws IOException
-    {
-        ServerSocket serverSocket = new ServerSocket(PEER_PORT_NR);
-        Socket clientSocket = serverSocket.accept();
-        DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
-        DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
-
-        dos.writeBytes(dataToSend);
-        dis.readFully(dataReceived);
-
-        serverSocket.close();
     }
 
     /**

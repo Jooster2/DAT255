@@ -2,10 +2,6 @@ package com.soctec.soctec;
 
 import java.util.Locale;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -14,15 +10,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
@@ -41,12 +33,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-
-    WifiP2pManager p2pManager;
-    WifiP2pManager.Channel p2pChannel;
-    BroadcastReceiver broadcastReceiver;
-    IntentFilter intentFilter;
-    boolean wifiP2pEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -91,96 +77,16 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                             .setTabListener(this));
 
         }
-
-        /***Initialize WiFi p2p stuff***/
-
-        p2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        p2pChannel = p2pManager.initialize(this, getMainLooper(), null);
-        broadcastReceiver = new P2PBroadcastReceiver(p2pManager, p2pChannel, this);
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        /* register the broadcast receiver with the intent values to be matched */
-        broadcastReceiver = new P2PBroadcastReceiver(p2pManager, p2pChannel, this);
-        registerReceiver(broadcastReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        /* unregister the broadcast receiver */
-        unregisterReceiver(broadcastReceiver);
-    }
-
-    /**
-     * Call this whenever we need to discover a peer device to exchange information with
-     */
-    public void attemptPeerConnect()
+    public void receiveDataFromServer(String dataFromServer)
     {
-        p2pManager.discoverPeers(p2pChannel, new WifiP2pManager.ActionListener()
-        {
-            @Override
-            public void onSuccess()
-            {
-                // Code for when the discovery initiation is successful.
-                // No services have actually been discovered yet, so this method
-                // can often be left blank.  Code for peer discovery goes in the
-                // onReceive method.
-                Log.i("discoverPeers", "Success!");
-            }
-
-            @Override
-            public void onFailure(int reasonCode)
-            {
-                // Code for when the discovery initiation fails.
-                // Alert the user that something went wrong.
-                switch (reasonCode)
-                {
-                    case WifiP2pManager.BUSY:
-                        Toast.makeText(getApplicationContext(),
-                                       "Error: WifiP2PManager, busy", Toast.LENGTH_LONG).show();
-                        Log.i("WiFiP2PManager", "Busy");
-                        break;
-                    case WifiP2pManager.ERROR:
-                        Toast.makeText(getApplicationContext(),
-                                       "Error: WifiP2PManager, error", Toast.LENGTH_LONG).show();
-                        Log.i("WiFiP2PManager", "Error");
-                        break;
-                    case WifiP2pManager.P2P_UNSUPPORTED:
-                        Toast.makeText(getApplicationContext(),
-                                       "Error: Wifi P2P unsupported", Toast.LENGTH_LONG).show();
-                        Log.i("WiFiP2PManager", "WiFi P2P unsupported");
-                        break;
-                    case WifiP2pManager.NO_SERVICE_REQUESTS:
-                        Toast.makeText(getApplicationContext(),
-                                       "Error: WifiP2PManager, No service requests", Toast.LENGTH_LONG).show();
-                        Log.i("WiFiP2PManager", "No service requests");
-                        break;
-                }
-            }
-        });
+        //dataFromServer contains user profile data
     }
 
-    public void receiveDataFromServer(byte[] dataFromServer)
+    public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
     {
 
-    }
-
-    public void receiveDataFromPeer(byte[] dataFromPeer)
-    {
-
-    }
-
-    public void setIsWifiP2pEnabled(boolean bool)
-    {
-        wifiP2pEnabled = bool;
     }
 
     @Override
