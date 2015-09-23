@@ -1,18 +1,26 @@
 package com.soctec.soctec;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Observable;
+import java.util.Observer;
 /**
  * Created by jooster on 9/22/15.
  */
 public class AchievementCreator
 {
     private AchievementUnlocker unlocker;
-    public AchievementCreator(AchievementUnlocker unlocker)
+    private Context context;
+    public AchievementCreator(AchievementUnlocker unlocker, Context context)
     {
         this.unlocker = unlocker;
-        createFromFile("filename");
+        this.context = context;
+        createFromFile();
     }
 
     public CounterAchievement createCounterAchievement(String[] data)
@@ -39,14 +47,18 @@ public class AchievementCreator
         return achievement;
     }
 
-    private void createFromFile(String filename)
+    private void createFromFile()
     {
         try
         {
-            BufferedReader buffer = new BufferedReader(new FileReader(filename));
+            InputStream is = context.getResources().openRawResource(R.raw.AchievementDefinitions);
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
             String line = buffer.readLine();
             while(line != null)
             {
+                if(line.charAt(0) == '#')
+                    continue;
+
                 String[] data = line.split(", ");
                 if(data[0].equals("CNT"))
                 {
