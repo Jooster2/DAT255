@@ -12,13 +12,12 @@ import java.util.Observer;
 /**
  * Created by jooster on 9/22/15.
  */
-public class AchievementCreator
+public class AchievementCreator extends Observable
 {
-    private AchievementUnlocker unlocker;
     private Context context;
-    public AchievementCreator(AchievementUnlocker unlocker, Context context)
+    public AchievementCreator(Context context)
     {
-        this.unlocker = unlocker;
+
         this.context = context;
         createFromFile();
     }
@@ -63,12 +62,15 @@ public class AchievementCreator
                 if(data[0].equals("CNT"))
                 {
                     CounterAchievement achievement = createCounterAchievement(data);
-                    unlocker.insertAchievement(achievement);
+
+                    setChanged();
+                    notifyObservers(achievement);
                 }
                 else if(data[0].equals("COL"))
                 {
                     CollectionAchievement achievement = createCollectionAchievement(data);
-                    unlocker.insertAchievement(achievement);
+                    setChanged();
+                    notifyObservers(achievement);
                 }
 
                 line = buffer.readLine();
@@ -79,6 +81,10 @@ public class AchievementCreator
         {
             e.printStackTrace();
         }
+
+    }
+    public void createAchievement (Achievement achievement)
+    {
 
     }
 }
