@@ -18,12 +18,12 @@ public class AchievementUnlocker extends Observable
     public static final int SCAN_PERSON = 1;
 
     ArrayList<Achievement> unlockableAchievements;
-    //Stats currentStats;
+    Stats currentStats;
 
     public AchievementUnlocker()
     {
         unlockableAchievements = new ArrayList<Achievement>();
-
+        currentStats = new Stats ();
     }
     public void insertAchievement(Achievement achievement)
     {
@@ -33,8 +33,8 @@ public class AchievementUnlocker extends Observable
     {
         if (type == SCAN_PERSON)
         {
-            Stats.setLastScanned (content);
-            Stats.incScanCount();
+            currentStats.setLastScanned (content);
+            currentStats.incScanCount();
 
             for (Achievement achievement : unlockableAchievements)
             {
@@ -44,7 +44,7 @@ public class AchievementUnlocker extends Observable
                 {
                     if(demand.type.equals("SCAN"))
                     {
-                        if(demand.amount > Stats.getScanCount())
+                        if(demand.amount > currentStats.getScanCount())
                         {
                             achievementUnlocked = false;
                             break;
@@ -52,7 +52,7 @@ public class AchievementUnlocker extends Observable
                     }
                 }
                 if (achievementUnlocked == true)
-                    Stats.addUnlockedAchievement (cAchievement);
+                    currentStats.addUnlockedAchievement (cAchievement);
             }
         }
     }
