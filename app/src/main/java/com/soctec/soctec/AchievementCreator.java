@@ -17,6 +17,7 @@ public class AchievementCreator
 
     public CounterAchievement createCounterAchievement(String[] data)
     {
+        //Arguments are (String Name, int points, String img, String id)
         CounterAchievement achievement = new CounterAchievement(data[1], Integer.parseInt(data[2]), data[3], data[4]);
         if(data[5].equals("SIN"))
             for(int i=6; i<data.length; i++)
