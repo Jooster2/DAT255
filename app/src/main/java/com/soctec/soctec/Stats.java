@@ -7,6 +7,7 @@ import java.util.LinkedList;
 public class Stats
 {
     private int points;
+    private int scanCount;
     private int ratingPos;
     private int ratingNeg;
     private int timeTalked;
@@ -19,6 +20,7 @@ public class Stats
     {
         lastScanned = "";
         unlockedAchievements = new LinkedList<Achievement>();
+        //TODO read db
     }
 
     public int getPoints()
@@ -41,7 +43,15 @@ public class Stats
     {
         return unlockedAchievements;
     }
+    public int getScanCount()
+    {
+        return scanCount;
+    }
 
+    public void incScanCount()
+    {
+        scanCount++;
+    }
     public void setLastScanned(String newScan)
     {
         if(lastScanned.equals(newScan) && talkDone == false)
