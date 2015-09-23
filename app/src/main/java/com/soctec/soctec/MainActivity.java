@@ -79,6 +79,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         }
     }
 
+    public void receiveDataFromServer(String dataFromServer)
+    {
+        //dataFromServer contains user profile data
+    }
+
+    public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
+    {
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
