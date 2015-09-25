@@ -1,5 +1,6 @@
 package com.soctec.soctec;
 
+import java.util.ArrayList;
 import java.util.List;
 /**
  * Created by Carl-Henrik Hult on 2015-09-22.
@@ -7,7 +8,7 @@ import java.util.List;
  */
 public class CounterAchievement extends Achievement
 {
-    private List<CounterDemand> demands;
+    private ArrayList<CounterDemand> demands;
 
     /**
      * Directs the parameters to the superclass.
@@ -28,7 +29,10 @@ public class CounterAchievement extends Achievement
      */
     public void createDemand (String type, int amount)
     {
-        demands.add(new CounterDemand (type, amount));
+        demands.add(new CounterDemand(type, amount));
     }
-
+    public ArrayList<CounterDemand> getDemands ()
+    {
+        return demands;
+    }
 }
