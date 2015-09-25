@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -48,6 +49,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             @Override
             public void run()
             {
+                Log.i("connectionThread", "thread started!");
                 while(true)
                 {
                     try
@@ -55,6 +57,8 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                         //Accept connection
                         ServerSocket serverSocket = new ServerSocket(PEER_PORT_NR);
                         Socket clientSocket = serverSocket.accept();
+
+                        Log.i("Server thread", "Connection established!");
 
                         //Read data
                         ObjectInputStream dis = new ObjectInputStream(
@@ -64,13 +68,15 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                         //Write data
                         ObjectOutputStream dos = new ObjectOutputStream(
                                 clientSocket.getOutputStream());
-                        dataToSend = "<Insert my ID here>" + "<Insert my profile here>";
+                        dataToSend = "<Insert my ID here>" + "<Insert data here>";
                         dos.writeObject(dataToSend);
 
                         //Send read data to MainActivity
                         String id = dataReceived.split(",")[0];
                         String profile = dataReceived.split(",")[1];
-                        myActivity.receiveDataFromPeer(id, profile); //TODO: User observer here?
+                        //myActivity.receiveDataFromPeer(id, profile); //TODO: User observer here?
+
+                        serverSocket.close();
                     }
                     catch(IOException | ClassNotFoundException e)
                     {
@@ -81,10 +87,12 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             }
         };
         connectionListenerThread.start();
+        Log.i("NetworkHandler", "Tried to start connectionListenerTread");
     }
 
     /**
      * Singleton pattern
+     * First time called, connectoin listener thread will start automatically.
      * @param activity The main activity.
      * @return The one instance of NetworkHandler.
      */
@@ -110,7 +118,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             msgType = BACKUP_MSG;
             //Put together data to send to server: ID + TYPE + DATA
             dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
-            doInBackground();
+            execute();
         }
     }
 
@@ -128,7 +136,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             msgType = DOWNLOAD_MSG;
             //Put together data to send to server: ID + TYPE
             dataToSend = "<Insert my ID here>" + ":1";
-            doInBackground();
+            execute();
         }
     }
 
@@ -136,7 +144,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
      * This method is called when a scan has taken place and we need to connect to a peer
      * @param scannedAddress The peer's address, scanned from QR
      */
-    public void sendScanInfo(String scannedAddress)
+    public void sendScanInfoToPeer(String scannedAddress)
     {
         if (!hasNetworkAccess(myActivity.getApplicationContext()))
         {
@@ -146,17 +154,19 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
         {
             msgType = SCAN_MSG;
             //Put together data to send to server: ID + Profile data
-            dataToSend = "<Insert my ID here>" + "," + "<Insert profile data here>";
-            doInBackground(scannedAddress);
+            dataToSend = "<Insert my ID here>" + "," + "<Insert data here>";
+            execute(scannedAddress);
         }
     }
 
     /**
      * Start the connectionListener Thread
+     * This is done automatically in the constructor. No need to call this function
+     * after class in initialized.
      */
     public void startConnectionListener()
     {
-        if(connectionListenerThread.isInterrupted())
+        if(!connectionListenerThread.isAlive())
             connectionListenerThread.start();
     }
 
@@ -177,6 +187,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     @Override
     protected Void doInBackground(String... params)
     {
+        Log.i("doInBackground", "Got this far!");
         try
         {
             Socket socket;
@@ -199,6 +210,9 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             {
                 //Send data to peer
                 socket = new Socket(params[0], PEER_PORT_NR);
+
+                Log.i("Client socket", "Socket created!");
+
                 ObjectOutputStream dos = new ObjectOutputStream(socket.getOutputStream());
                 dos.writeObject(dataToSend);
 
@@ -211,6 +225,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
         {
             Log.e("NetworkHandler", e.getMessage());
             e.printStackTrace();
+            dataReceived = null;
         }
         return null;
     }
@@ -224,13 +239,21 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     {
         if (msgType == SCAN_MSG)
         {
-            String id = dataReceived.split(",")[0];
-            String profile = dataReceived.split(",")[1];
-            myActivity.receiveDataFromPeer(id, profile);  //TODO: User observer here?
+            if(dataReceived != null)
+            {
+                Log.i("PostExecute", "Received: " + dataReceived);
+
+                String id = dataReceived.split(",")[0];
+                String profile = dataReceived.split(",")[1];
+                myActivity.receiveDataFromPeer(id, profile);  //TODO: User observer here?
+            }
         }
         else if(msgType == DOWNLOAD_MSG)
         {
-            myActivity.receiveDataFromServer(dataReceived);  //TODO: User observer here?
+            if(dataReceived != null)
+            {
+                myActivity.receiveDataFromServer(dataReceived);  //TODO: User observer here?
+            }
         }
     }
 

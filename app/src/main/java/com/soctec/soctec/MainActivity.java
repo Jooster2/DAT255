@@ -2,6 +2,7 @@ package com.soctec.soctec;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
@@ -33,6 +35,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+
+    NetworkHandler networkHandler;
+
+    private static int REQUESTCODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -77,6 +83,38 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                             .setTabListener(this));
 
         }
+
+        networkHandler = NetworkHandler.getInstance(this);
+    }
+
+    public void scanNow(View v)
+    {
+        startActivityForResult(
+                new Intent(getApplicationContext(), ScanActivity.class), REQUESTCODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(resultCode == RESULT_OK && requestCode == REQUESTCODE)
+        {
+            String scannedCode = data.getExtras().getString("result");
+            networkHandler.sendScanInfoToPeer(scannedCode);
+        }
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        networkHandler.stopConnectionListener();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        networkHandler.startConnectionListener();
     }
 
     public void receiveDataFromServer(String dataFromServer)
@@ -86,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
     {
-
+        Toast.makeText(getApplicationContext(), idFromPeer, Toast.LENGTH_LONG).show();
     }
 
     @Override
