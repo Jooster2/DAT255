@@ -50,7 +50,7 @@ public class AchievementCreator extends Observable
     {
         try
         {
-            InputStream is = context.getResources().openRawResource(R.raw.AchievementDefinitions);
+            InputStream is = context.getResources().openRawResource(R.raw.achievement_definitions);
             BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
             String line = buffer.readLine();
             while(line != null)
