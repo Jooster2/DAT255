@@ -23,9 +23,10 @@ public class MainFragment extends Fragment
         return view;
     }
 
-    public void scanNow(View v)
+    public void scanNow(View view)
     {
-        startActivity(new Intent(MainFragment.class, CameraActivity.class));
+       Intent intent = new Intent(getActivity(), ScanActivity.class);
+       startActivity(intent);
     }
 
 }
