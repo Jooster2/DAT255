@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
@@ -108,7 +107,7 @@ public class ProfileMatchWindowActivity extends Activity
             }
             showList.add (temp.toString());
         }
-        MatchWindowAdapter matchAdapter = new MatchWindowAdapter(this, showList);
+        ProfileAdapter matchAdapter = new ProfileAdapter(this, showList);
         myListView.setAdapter(matchAdapter);
 
     }
