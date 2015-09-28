@@ -91,7 +91,7 @@ public class ProfileActivity extends Activity
         try
         {
             //TODO for each element in listview write to file, seperate with "music", "movie" etc
-            OutputStreamWriter output = context.getResources().openRawResource(R.raw.Profile);
+            OutputStreamWriter output = context.getResources().openRawResource(R.raw.profile);
             output.write();
             output.close();
         }
