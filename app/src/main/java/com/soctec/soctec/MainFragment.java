@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.content.Intent;
-import android.view.View.OnClickListener;;
+import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 public class MainFragment extends Fragment implements OnClickListener
@@ -36,11 +36,4 @@ public class MainFragment extends Fragment implements OnClickListener
         Intent intent = new Intent(getActivity(), ScanActivity.class);
         startActivity(intent);
     }
-
-    /*/public void scanNow(View view)
-    {
-       Intent intent = new Intent(getActivity(), ScanActivity.class);
-       startActivity(intent);
-    }/*/
-
 }
