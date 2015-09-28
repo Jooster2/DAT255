@@ -2,25 +2,21 @@ package com.soctec.soctec;
 
 import com.soctec.soctec.util.SystemUiHider;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+import android.widget.Button;
+import android.widget.ListView;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -32,13 +28,19 @@ import java.util.ArrayList;
 public class ProfileActivity extends Activity
 {
     private Context context;
-    private ArrayList<ArrayList<String>> profile;
+    private ArrayList<ArrayList<String>> profileItems;
+    private ListView listView;
+    private Button addButton;
+    private ProfileAdapter profileAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        profile = new ArrayList<>(2);
+        setContentView(R.layout.activity_profile);
+        listView = (ListView)findViewById(R.id.listView);
+        addButton = (Button)findViewById(R.id.addButton);
+        profileItems = new ArrayList<>(2);
         createFromFile();
     }
 
@@ -61,8 +63,7 @@ public class ProfileActivity extends Activity
     {
         try
         {
-            InputStream is = context.getResources().openRawResource(R.raw.Profile);
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
+            BufferedReader buffer = new BufferedReader(new FileReader("profile"));
             String line = buffer.readLine();
             ArrayList<String> currentList = null;
             while(line != null)
@@ -70,8 +71,8 @@ public class ProfileActivity extends Activity
                 //Easy solution, may exist nicer ones
                 switch(line)
                 {
-                    case "music": currentList = profile.get(0); break;
-                    case "movie": currentList = profile.get(1); break;
+                    case "music": currentList = profileItems.get(0); break;
+                    case "movie": currentList = profileItems.get(1); break;
                     //TODO more cases here
                     default: currentList.add(line); break;
                 }
@@ -90,9 +91,21 @@ public class ProfileActivity extends Activity
     {
         try
         {
-            //TODO for each element in listview write to file, seperate with "music", "movie" etc
-            OutputStreamWriter output = context.getResources().openRawResource(R.raw.profile);
-            output.write();
+            FileOutputStream output = openFileOutput("profile", Context.MODE_PRIVATE);
+            int i=0;
+            for(ArrayList<String> item : profileItems)
+            {
+                switch(i)
+                {
+                    case 0: output.write("music\n".getBytes()); break;
+                    case 1: output.write("movie\n".getBytes()); break;
+                }
+                for(String str : item)
+                {
+                    output.write((str + '\n').getBytes());
+                }
+                i++;
+            }
             output.close();
         }
         catch(IOException e)
@@ -103,12 +116,29 @@ public class ProfileActivity extends Activity
 
     private void populateListView()
     {
-        //TODO this is called onStart and should put the info from the profile list into the
-        //TODO listview
+        int i=0;
+        ArrayList<String> showList = new ArrayList<>();
+        for(ArrayList<String> item : profileItems)
+        {
+            StringBuilder sb = new StringBuilder();
+            switch(i)
+            {
+                case 0: sb.append("Musik: ,"); break;
+                case 1: sb.append("Film: ,"); break;
+            }
+            for(String str : item)
+            {
+                sb.append(str);
+            }
+            showList.add(sb.toString());
+            i++;
+        }
+        profileAdapter = new ProfileAdapter(this, showList);
+        listView.setAdapter(profileAdapter);
     }
 
     public ArrayList<ArrayList<String>> getProfile()
     {
-        return profile;
+        return profileItems;
     }
 }

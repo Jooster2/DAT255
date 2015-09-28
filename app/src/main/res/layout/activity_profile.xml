@@ -36,13 +36,13 @@
             android:layout_below="@+id/titleText"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_above="@+id/button"/>
+            android:layout_above="@+id/addButton"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button"
+            android:text="temptest"
+            android:id="@+id/addButton"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
 
