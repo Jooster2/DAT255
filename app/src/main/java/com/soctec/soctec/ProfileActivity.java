@@ -5,13 +5,17 @@ import com.soctec.soctec.util.SystemUiHider;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,7 +34,6 @@ public class ProfileActivity extends Activity
     private Context context;
     private ArrayList<ArrayList<String>> profileItems;
     private ListView listView;
-    private Button addButton;
     private ProfileAdapter profileAdapter;
 
     @Override
@@ -39,7 +42,6 @@ public class ProfileActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         listView = (ListView)findViewById(R.id.listView);
-        addButton = (Button)findViewById(R.id.addButton);
         profileItems = new ArrayList<>(2);
         createFromFile();
     }
@@ -63,8 +65,8 @@ public class ProfileActivity extends Activity
     {
         try
         {
-            BufferedReader buffer = new BufferedReader(new FileReader("profile"));
-            String line = buffer.readLine();
+            BufferedReader readBuffer = new BufferedReader(new FileReader("profile"));
+            String line = readBuffer.readLine();
             ArrayList<String> currentList = null;
             while(line != null)
             {
@@ -76,10 +78,10 @@ public class ProfileActivity extends Activity
                     //TODO more cases here
                     default: currentList.add(line); break;
                 }
-                line = buffer.readLine();
+                line = readBuffer.readLine();
 
             }
-            buffer.close();
+            readBuffer.close();
         }
         catch(IOException e)
         {
@@ -91,22 +93,23 @@ public class ProfileActivity extends Activity
     {
         try
         {
-            FileOutputStream output = openFileOutput("profile", Context.MODE_PRIVATE);
+            BufferedWriter writeBuffer = new BufferedWriter(new FileWriter("profile"));
+            //FileOutputStream output = openFileOutput("profile", Context.MODE_PRIVATE);
             int i=0;
             for(ArrayList<String> item : profileItems)
             {
                 switch(i)
                 {
-                    case 0: output.write("music\n".getBytes()); break;
-                    case 1: output.write("movie\n".getBytes()); break;
+                    case 0: writeBuffer.write("music\n"); break;
+                    case 1: writeBuffer.write("movie\n"); break;
                 }
                 for(String str : item)
                 {
-                    output.write((str + '\n').getBytes());
+                    writeBuffer.write(str + '\n');
                 }
                 i++;
             }
-            output.close();
+            writeBuffer.close();
         }
         catch(IOException e)
         {
@@ -123,18 +126,31 @@ public class ProfileActivity extends Activity
             StringBuilder sb = new StringBuilder();
             switch(i)
             {
-                case 0: sb.append("Musik: ,"); break;
-                case 1: sb.append("Film: ,"); break;
+                case 0: sb.append("Musik:"); break;
+                case 1: sb.append("Film:"); break;
             }
             for(String str : item)
             {
                 sb.append(str);
+                sb.append(", ");
             }
             showList.add(sb.toString());
             i++;
         }
         profileAdapter = new ProfileAdapter(this, showList);
         listView.setAdapter(profileAdapter);
+    }
+
+    public void editList(View currentView)
+    {
+        TextView titleText = (TextView)currentView.findViewById(R.id.titleText);
+        String title = (String)titleText.getText();
+        TextView contentText = (TextView)currentView.findViewById(R.id.contentText);
+        String content = (String)contentText.getText();
+        Bundle fragmentBundle = new Bundle();
+        fragmentBundle.putString("title", title);
+        fragmentBundle.putString("content", content);
+
     }
 
     public ArrayList<ArrayList<String>> getProfile()
