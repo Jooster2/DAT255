@@ -107,7 +107,7 @@ public class ProfileMatchWindowActivity extends Activity
             }
             showList.add (temp.toString());
         }
-        ProfileAdapter matchAdapter = new ProfileAdapter(this, showList);
+        ProfileMatchAdapter matchAdapter = new ProfileMatchAdapter(this, showList);
         myListView.setAdapter(matchAdapter);
 
     }
