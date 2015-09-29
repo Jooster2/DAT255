@@ -2,6 +2,7 @@ package com.soctec.soctec;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+
+    private static int REQUESTCODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -77,6 +81,38 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                             .setTabListener(this));
 
         }
+
+        NetworkHandler.getInstance(this); //Start server thread
+    }
+
+    public void scanNow(View v)
+    {
+        startActivityForResult(
+                new Intent(getApplicationContext(), ScanActivity.class), REQUESTCODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(resultCode == RESULT_OK && requestCode == REQUESTCODE)
+        {
+            String scannedCode = data.getExtras().getString("result");
+            NetworkHandler.getInstance(this).sendScanInfoToPeer(scannedCode);
+        }
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        NetworkHandler.getInstance(this).startConnectionListener();
     }
 
     public void receiveDataFromServer(String dataFromServer)
@@ -86,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
     {
-
+        Toast.makeText(getApplicationContext(), idFromPeer, Toast.LENGTH_LONG).show();
     }
 
     @Override

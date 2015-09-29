@@ -54,13 +54,14 @@
     <ImageButton
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:id="@+id/imageButton"
+        android:id="@+id/scanButton"
         android:layout_alignBottom="@+id/imageView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="39dp"
         android:adjustViewBounds="true"
         android:background="@mipmap/kameraknapp"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:onClick="scanNow"/>
 
 </RelativeLayout>
