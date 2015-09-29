@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     ViewPager mViewPager;
 
-    NetworkHandler networkHandler;
-
     private static int REQUESTCODE = 0;
 
     @Override
@@ -84,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         }
 
-        networkHandler = NetworkHandler.getInstance(this);
+        NetworkHandler.getInstance(this); //Start server thread
     }
 
     public void scanNow(View v)
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         if(resultCode == RESULT_OK && requestCode == REQUESTCODE)
         {
             String scannedCode = data.getExtras().getString("result");
-            networkHandler.sendScanInfoToPeer(scannedCode);
+            NetworkHandler.getInstance(this).sendScanInfoToPeer(scannedCode);
         }
     }
 
@@ -107,14 +105,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onPause()
     {
         super.onPause();
-        networkHandler.stopConnectionListener();
+        NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        networkHandler.startConnectionListener();
+        NetworkHandler.getInstance(this).startConnectionListener();
     }
 
     public void receiveDataFromServer(String dataFromServer)

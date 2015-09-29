@@ -4,13 +4,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -50,40 +50,45 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             public void run()
             {
                 Log.i("connectionThread", "thread started!");
-                while(true)
+                try
                 {
-                    try
+                    //Accept connection
+                    ServerSocket serverSocket = new ServerSocket(PEER_PORT_NR);
+                    Socket clientSocket = serverSocket.accept();
+
+                    Log.i("Server thread", "Connection established!");
+
+                    //Read data
+                    ObjectInputStream dis = new ObjectInputStream(
+                            clientSocket.getInputStream());
+                    dataReceived = (String)dis.readObject();
+
+                    //Write data
+                    ObjectOutputStream dos = new ObjectOutputStream(
+                            clientSocket.getOutputStream());
+                    dataToSend = "<Insert my ID here>" + "<Insert data here>";
+                    dos.writeObject(dataToSend);
+
+                    //Send read data to MainActivity
+                    final String id = dataReceived;//.split(",")[0];
+                    final String profile = dataReceived;//.split(",")[1];
+                    myActivity.runOnUiThread(new Runnable()
                     {
-                        //Accept connection
-                        ServerSocket serverSocket = new ServerSocket(PEER_PORT_NR);
-                        Socket clientSocket = serverSocket.accept();
+                        @Override
+                        public void run()
+                        {
+                            myActivity.receiveDataFromPeer(id, profile); //TODO: User observer here?
+                        }
+                    });
 
-                        Log.i("Server thread", "Connection established!");
-
-                        //Read data
-                        ObjectInputStream dis = new ObjectInputStream(
-                                clientSocket.getInputStream());
-                        dataReceived = (String)dis.readObject();
-
-                        //Write data
-                        ObjectOutputStream dos = new ObjectOutputStream(
-                                clientSocket.getOutputStream());
-                        dataToSend = "<Insert my ID here>" + "<Insert data here>";
-                        dos.writeObject(dataToSend);
-
-                        //Send read data to MainActivity
-                        String id = dataReceived.split(",")[0];
-                        String profile = dataReceived.split(",")[1];
-                        //myActivity.receiveDataFromPeer(id, profile); //TODO: User observer here?
-
-                        serverSocket.close();
-                    }
-                    catch(IOException | ClassNotFoundException e)
-                    {
-                        e.printStackTrace();
-                        Log.e("NetworkHandler", "ServerSocket exception", e);
-                    }
+                    serverSocket.close();
                 }
+                catch(IOException | ClassNotFoundException e)
+                {
+                    e.printStackTrace();
+                    Log.e("NetworkHandler", "ServerSocket exception", e);
+                }
+                instance = new NetworkHandler(myActivity);
             }
         };
         connectionListenerThread.start();
@@ -154,7 +159,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
         {
             msgType = SCAN_MSG;
             //Put together data to send to server: ID + Profile data
-            dataToSend = "<Insert my ID here>" + "," + "<Insert data here>";
+            dataToSend = "<Insert my ID here>" + "<Insert data here>";
             execute(scannedAddress);
         }
     }
@@ -208,8 +213,10 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             }
             else if(msgType == SCAN_MSG)
             {
+                Log.i("", params[0]);
                 //Send data to peer
-                socket = new Socket(params[0], PEER_PORT_NR);
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(params[0], PEER_PORT_NR), 1000);
 
                 Log.i("Client socket", "Socket created!");
 
@@ -219,6 +226,8 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                 //Receive data from peer
                 ObjectInputStream dis = new ObjectInputStream(socket.getInputStream());
                 dataReceived = (String)dis.readObject();
+
+                socket.close();
             }
         }
         catch(IOException | ClassNotFoundException e)
@@ -239,22 +248,38 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     {
         if (msgType == SCAN_MSG)
         {
-            if(dataReceived != null)
+            if (dataReceived != null)
             {
                 Log.i("PostExecute", "Received: " + dataReceived);
 
-                String id = dataReceived.split(",")[0];
-                String profile = dataReceived.split(",")[1];
-                myActivity.receiveDataFromPeer(id, profile);  //TODO: User observer here?
+                final String id = dataReceived;//.split(",")[0];
+                final String profile = dataReceived;//.split(",")[1];
+
+                myActivity.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        myActivity.receiveDataFromPeer(id, profile);  //TODO: User observer here?
+                    }
+                });
             }
-        }
-        else if(msgType == DOWNLOAD_MSG)
+        } else if (msgType == DOWNLOAD_MSG)
         {
-            if(dataReceived != null)
+            if (dataReceived != null)
             {
-                myActivity.receiveDataFromServer(dataReceived);  //TODO: User observer here?
+                myActivity.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        myActivity.receiveDataFromServer(dataReceived);  //TODO: User observer here?
+                    }
+                });
             }
         }
+
+        instance = new NetworkHandler(myActivity);
     }
 
     /**
@@ -264,6 +289,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
      */
     public static boolean hasNetworkAccess(Context myContext)
     {
+        //TODO null if not on wifi??
         ConnectivityManager connMgr =
                 (ConnectivityManager)myContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         return (connMgr.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI);
