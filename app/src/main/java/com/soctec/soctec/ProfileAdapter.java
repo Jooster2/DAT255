@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -26,8 +27,7 @@ public class ProfileAdapter extends ArrayAdapter
         View customView = inflater.inflate(R.layout.row_profile, parent, false);
         String item = (String)getItem(position);
         TextView title = (TextView)customView.findViewById(R.id.titleText);
-        TextView content = (TextView)customView.findViewById(R.id.contentText);
-        ImageButton editButton = (ImageButton)customView.findViewById(R.id.editButton);
+        EditText content = (EditText)customView.findViewById(R.id.contentText);
         String[] strings = item.split(":");
 
         title.setText(strings[0]);

@@ -4,6 +4,7 @@ import com.soctec.soctec.util.SystemUiHider;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -32,9 +36,9 @@ import java.util.ArrayList;
 public class ProfileActivity extends Activity
 {
     private Context context;
-    private ArrayList<ArrayList<String>> profileItems;
     private ListView listView;
     private ProfileAdapter profileAdapter;
+    private ArrayList<ArrayList<String>> profileItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,14 +48,15 @@ public class ProfileActivity extends Activity
         listView = (ListView)findViewById(R.id.listView);
         profileItems = new ArrayList<>(2);
         createFromFile();
+        populateListView();
     }
 
     @Override
-    protected void onStart()
+    protected void onPause()
     {
-        super.onStart();
-        populateListView();
-
+        super.onPause();
+        updateProfileItems();
+        Profile.setProfile(profileItems);
     }
 
     @Override
@@ -59,6 +64,20 @@ public class ProfileActivity extends Activity
     {
         super.onStop();
         writeToFile();
+    }
+
+    private void updateProfileItems()
+    {
+        profileItems = new ArrayList<>();
+        for(int i=0; i<profileAdapter.getCount(); i++)
+        {
+            profileItems.add(new ArrayList<String>());
+            String item = (String)profileAdapter.getItem(i);
+            String[] subItem = item.split(":");
+            profileItems.get(i).add(subItem[0]);
+            String[] contents = subItem[1].split(", ");
+            Collections.addAll(profileItems.get(i), contents);
+        }
     }
 
     private void createFromFile()
@@ -117,7 +136,7 @@ public class ProfileActivity extends Activity
         }
     }
 
-    private void populateListView()
+    public void populateListView()
     {
         int i=0;
         ArrayList<String> showList = new ArrayList<>();
@@ -141,7 +160,7 @@ public class ProfileActivity extends Activity
         listView.setAdapter(profileAdapter);
     }
 
-    public void editList(View currentView)
+    /*public void editList(View currentView)
     {
         TextView titleText = (TextView)currentView.findViewById(R.id.titleText);
         String title = (String)titleText.getText();
@@ -151,10 +170,9 @@ public class ProfileActivity extends Activity
         fragmentBundle.putString("title", title);
         fragmentBundle.putString("content", content);
 
-    }
 
-    public ArrayList<ArrayList<String>> getProfile()
-    {
-        return profileItems;
-    }
+
+    }*/
+
+
 }
