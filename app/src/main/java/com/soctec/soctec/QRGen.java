@@ -3,7 +3,6 @@ package com.soctec.soctec;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -11,7 +10,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 public class QRGen
 {
-    private String data = "Data till QR";
+    private String startInfo = "Inget IP hämtat";
     private BitMatrix startMatrix;
     private int qrSize = 150;
     private QRCodeWriter writer;
@@ -22,12 +21,10 @@ public class QRGen
         writer = new QRCodeWriter();
         try
         {
-            startMatrix = writer.encode(
-                    data, BarcodeFormat.QR_CODE, qrSize, qrSize);
-        } catch (WriterException e)
-        {
-            e.printStackTrace();
-        }
+            startMatrix = writer.encode(    //TODO Behövs någon startmatris?
+                    startInfo, BarcodeFormat.QR_CODE, qrSize, qrSize);
+
+        } catch (WriterException e) {e.printStackTrace();}
     }
 
 
