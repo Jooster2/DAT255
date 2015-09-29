@@ -2,7 +2,12 @@ package com.soctec.soctec;
 
 import java.util.Locale;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -35,8 +40,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    ConnectionReceiver connectionReceiver;
 
-    private static int REQUESTCODE = 0;
+    private static int REQUEST_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -82,19 +88,34 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         }
 
-        NetworkHandler.getInstance(this); //Start server thread
+        //Initialize networkHandler. Start server thread
+        NetworkHandler.getInstance(this);
+
+        //Initialize broadcastReceiver
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(connectionReceiver = new ConnectionReceiver(), intentFilter);
     }
 
+    /**
+     * Tells ScanActivity to start scanning
+     * @param v
+     */
     public void scanNow(View v)
     {
         startActivityForResult(
-                new Intent(getApplicationContext(), ScanActivity.class), REQUESTCODE);
+                new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
     }
 
+    /**
+     * Called when an activity started with "startActivityForResult()" has finished.
+     * @param requestCode Indicates which request this method call is a response to
+     * @param resultCode The result of the request
+     * @param data The data from the finished activity.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(resultCode == RESULT_OK && requestCode == REQUESTCODE)
+        if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
         {
             String scannedCode = data.getExtras().getString("result");
             NetworkHandler.getInstance(this).sendScanInfoToPeer(scannedCode);
@@ -106,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         super.onPause();
         NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
+        unregisterReceiver(connectionReceiver);
     }
 
     @Override
@@ -113,15 +135,28 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         super.onResume();
         NetworkHandler.getInstance(this).startConnectionListener();
+
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(connectionReceiver, intentFilter);
     }
 
+    /**
+     * Called by NetworkHandler when data has been received from the server.
+     * @param dataFromServer Contains user profile data
+     */
     public void receiveDataFromServer(String dataFromServer)
     {
-        //dataFromServer contains user profile data
     }
 
+    /**
+     * Called by NetworkHandler when data has been received from a peer.
+     * @param idFromPeer The unique ID of the peer
+     * @param profileFromPeer The peer's profile data
+     */
     public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
     {
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(500);
         Toast.makeText(getApplicationContext(), idFromPeer, Toast.LENGTH_LONG).show();
     }
 
