@@ -47,6 +47,7 @@ public class Stats
     {
         return scanCount;
     }
+    public String getlastScanned (){return lastScanned;}
 
     public void incScanCount()
     {

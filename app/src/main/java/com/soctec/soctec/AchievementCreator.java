@@ -19,7 +19,7 @@ public class AchievementCreator extends Observable
     {
 
         this.context = context;
-        createFromFile();
+
     }
 
     public CounterAchievement createCounterAchievement(String[] data)
@@ -46,10 +46,11 @@ public class AchievementCreator extends Observable
         return achievement;
     }
 
-    private void createFromFile()
+    public void createFromFile()
     {
         try
         {
+            //TODO Input stream gives nullpointerexception (can't read file)
             InputStream is = context.getResources().openRawResource(R.raw.achievement_definitions);
             BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
             String line = buffer.readLine();
@@ -82,6 +83,25 @@ public class AchievementCreator extends Observable
             e.printStackTrace();
         }
 
+    }
+    public void createTestAch()
+    {
+        String line = "CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1";
+
+        String[] data = line.split(", ");
+        if(data[0].equals("CNT"))
+        {
+                CounterAchievement achievement = createCounterAchievement(data);
+
+                setChanged();
+                notifyObservers(achievement);
+        }
+        else if(data[0].equals("COL"))
+        {
+                CollectionAchievement achievement = createCollectionAchievement(data);
+                setChanged();
+                notifyObservers(achievement);
+        }
     }
     public void createAchievement (Achievement achievement)
     {

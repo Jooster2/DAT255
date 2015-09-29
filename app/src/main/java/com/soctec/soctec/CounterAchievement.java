@@ -20,6 +20,7 @@ public class CounterAchievement extends Achievement
     public CounterAchievement(String name, int points, String imageName, String id)
     {
         super (name, points,imageName, id);
+        demands = new ArrayList<CounterDemand>();
     }
 
     /**

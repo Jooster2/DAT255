@@ -26,11 +26,12 @@ public class AchievementUnlocker implements Observer
     {
         unlockableAchievements = new ArrayList<Achievement>();
         currentStats = newStats;
+        this.creator = creator;
 
     }
-    public void insertAchievement(Achievement achievement)
+    public void invokeTestAchievement()
     {
-
+        creator.createTestAch();
     }
 
     /**
@@ -74,6 +75,10 @@ public class AchievementUnlocker implements Observer
                 }
             }
         }
+    }
+    public ArrayList<Achievement> getUnlockableAchievements()
+    {
+        return unlockableAchievements;
     }
 
     @Override
