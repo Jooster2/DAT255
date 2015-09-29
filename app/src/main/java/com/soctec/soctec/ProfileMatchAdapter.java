@@ -11,17 +11,17 @@ import java.util.ArrayList;
 /**
  * Created by Carl-Henrik Hult on 2015-09-25.
  */
-public class ProfileAdapter extends ArrayAdapter
+public class ProfileMatchAdapter extends ArrayAdapter
 {
-    public ProfileAdapter(Context context, ArrayList<String> matchResult)
+    public ProfileMatchAdapter(Context context, ArrayList<String> matchResult)
     {
-        super(context, R.layout.row_profile);
+        super(context, R.layout.row_profilematch);
 
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater myInflater = LayoutInflater.from(getContext());
-        View customView = myInflater.inflate(R.layout.row_profile, parent, false);
+        View customView = myInflater.inflate(R.layout.row_profilematch, parent, false);
         String singleStringItem = (String) getItem (position);
         TextView title = (TextView)customView.findViewById(R.id.matchWindowTitle);
         TextView content = (TextView)customView.findViewById(R.id.matchWindowContent);
