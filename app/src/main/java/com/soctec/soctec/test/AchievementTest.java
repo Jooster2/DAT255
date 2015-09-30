@@ -1,6 +1,8 @@
 package com.soctec.soctec.test;
 
+import android.test.AndroidTestCase;
 import android.test.InstrumentationTestCase;
+import android.util.Log;
 
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
@@ -9,7 +11,7 @@ import com.soctec.soctec.achievements.Stats;
 /**
  * Created by Carl-Henrik Hult on 2015-09-29.
  */
-public class AchievementTest extends InstrumentationTestCase
+public class AchievementTest extends AndroidTestCase
 {
     MainActivity main = new MainActivity();
     Stats stats = new Stats();
@@ -63,7 +65,15 @@ public class AchievementTest extends InstrumentationTestCase
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
-
+    public void testCreate4Achievements () throws Exception
+    {
+        creator.addObserver(unlocker);
+        unlocker.invokeTestAchievement();
+        unlocker.invokeTestAchievement();
+        unlocker.invokeTestAchievement();
+        unlocker.invokeTestAchievement();
+        assertEquals( 4, unlocker.getUnlockableAchievements().size());
+    }
     //TODO : Write more tests, what kind of tests?
 
 }
