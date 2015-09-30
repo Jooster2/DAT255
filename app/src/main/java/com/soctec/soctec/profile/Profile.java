@@ -12,12 +12,24 @@ import java.util.ArrayList;
 public class Profile
 {
 
-    private static ArrayList<ArrayList<String>> profileItems;
+    private static ArrayList<ArrayList<String>> profileItems = new ArrayList<>(2);
+    private static String userCode = "";
 
-    public Profile()
+    /*public Profile(String code)
     {
         profileItems = new ArrayList<>(2);
+        userCode = code;
 
+    }*/
+
+    public static void setUserCode(String code)
+    {
+        userCode = code;
+    }
+
+    public static String getUserCode()
+    {
+        return userCode;
     }
 
     public static void setProfile(ArrayList<ArrayList<String>> profile)
