@@ -1,11 +1,9 @@
-package com.soctec.soctec;
+package com.soctec.soctec.core;
 
 import java.util.Locale;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.soctec.soctec.R;
+import com.soctec.soctec.network.ConnectionReceiver;
+import com.soctec.soctec.network.NetworkHandler;
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {

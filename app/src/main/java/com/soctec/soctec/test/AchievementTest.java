@@ -2,10 +2,10 @@ package com.soctec.soctec.test;
 
 import android.test.InstrumentationTestCase;
 
-import com.soctec.soctec.AchievementCreator;
-import com.soctec.soctec.AchievementUnlocker;
-import com.soctec.soctec.MainActivity;
-import com.soctec.soctec.Stats;
+import com.soctec.soctec.achievements.AchievementCreator;
+import com.soctec.soctec.achievements.AchievementUnlocker;
+import com.soctec.soctec.core.MainActivity;
+import com.soctec.soctec.achievements.Stats;
 /**
  * Created by Carl-Henrik Hult on 2015-09-29.
  */

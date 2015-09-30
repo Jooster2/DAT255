@@ -1,4 +1,4 @@
-package com.soctec.soctec;
+package com.soctec.soctec.achievements;
 
 /**
  * Created by Carl-Henrik Hult on 2015-09-22.

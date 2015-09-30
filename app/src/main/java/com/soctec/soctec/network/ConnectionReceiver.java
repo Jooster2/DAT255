@@ -1,4 +1,4 @@
-package com.soctec.soctec;
+package com.soctec.soctec.network;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

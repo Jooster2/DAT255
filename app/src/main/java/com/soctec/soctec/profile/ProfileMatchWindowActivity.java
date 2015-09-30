@@ -1,4 +1,4 @@
-package com.soctec.soctec;
+package com.soctec.soctec.profile;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import java.util.ArrayList;
 
 import android.widget.ListView;
+
+import com.soctec.soctec.R;
 
 /**
  * Created by Carl-Henrik Hult on 2015-09-25.

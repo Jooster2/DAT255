@@ -1,4 +1,4 @@
-package com.soctec.soctec;
+package com.soctec.soctec.profile;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

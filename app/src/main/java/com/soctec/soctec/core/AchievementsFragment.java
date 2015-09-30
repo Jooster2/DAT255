@@ -1,7 +1,7 @@
-package com.soctec.soctec;
+package com.soctec.soctec.core;
 
 /**
- * Created by Jeppe on 2015-09-21.
+ * Created by Jeppe on 2015-09-22.
  */
 
 import android.support.v4.app.Fragment;
@@ -10,19 +10,16 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
-public class MainFragment extends Fragment
+import com.soctec.soctec.R;
+
+public class AchievementsFragment extends Fragment
 {
-    ImageButton btn;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_main, container, false );
-
+        View view = inflater.inflate(R.layout.fragment_achievements, container, false );
         return view;
     }
-
 }

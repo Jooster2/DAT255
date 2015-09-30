@@ -1,12 +1,7 @@
-package com.soctec.soctec;
-
-import android.support.annotation.NonNull;
+package com.soctec.soctec.achievements;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 /**

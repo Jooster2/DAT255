@@ -1,7 +1,6 @@
-package com.soctec.soctec;
+package com.soctec.soctec.achievements;
 
 import java.util.ArrayList;
-import java.util.List;
 /**
  * Created by Carl-Henrik Hult on 2015-09-22.
  * A subclass to Achievement that contains information of the achievements of the counter type.

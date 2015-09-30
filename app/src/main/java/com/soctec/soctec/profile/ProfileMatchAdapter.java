@@ -1,4 +1,4 @@
-package com.soctec.soctec;
+package com.soctec.soctec.profile;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.soctec.soctec.R;
 
 import java.util.ArrayList;
 /**

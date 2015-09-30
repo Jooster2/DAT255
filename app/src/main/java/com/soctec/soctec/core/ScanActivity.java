@@ -1,4 +1,4 @@
-package com.soctec.soctec;
+package com.soctec.soctec.core;
 
 import android.app.Activity;
 import android.content.Intent;

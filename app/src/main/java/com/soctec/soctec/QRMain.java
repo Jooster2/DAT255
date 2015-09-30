@@ -7,6 +7,9 @@ import android.graphics.Bitmap;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import com.soctec.soctec.core.Encryptor;
+import com.soctec.soctec.network.QRGen;
+
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;

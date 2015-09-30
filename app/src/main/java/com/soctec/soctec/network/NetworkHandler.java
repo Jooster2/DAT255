@@ -1,9 +1,11 @@
-package com.soctec.soctec;
+package com.soctec.soctec.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.soctec.soctec.core.MainActivity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

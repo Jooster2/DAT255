@@ -1,14 +1,14 @@
-package com.soctec.soctec;
+package com.soctec.soctec.achievements;
 
 import android.content.Context;
 
+import com.soctec.soctec.R;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Observable;
-import java.util.Observer;
 /**
  * Created by jooster on 9/22/15.
  */

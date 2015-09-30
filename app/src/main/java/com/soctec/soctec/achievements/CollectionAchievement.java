@@ -1,4 +1,4 @@
-package com.soctec.soctec;
+package com.soctec.soctec.achievements;
 
 import java.util.List;
 /**
