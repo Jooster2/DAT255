@@ -22,6 +22,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.achievements.AchievementCreator;
+import com.soctec.soctec.achievements.AchievementUnlocker;
+import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.network.ConnectionReceiver;
 import com.soctec.soctec.network.NetworkHandler;
 
@@ -44,11 +47,22 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     ViewPager mViewPager;
     ConnectionReceiver connectionReceiver;
 
+    AchievementCreator creator;
+    AchievementUnlocker unlocker;
+    Stats stats;
+
     private static int REQUEST_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        stats = new Stats();
+        creator = new AchievementCreator(this);
+        unlocker = new AchievementUnlocker(stats, creator);
+        creator.addObserver(unlocker);
+        creator.createFromFile();
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

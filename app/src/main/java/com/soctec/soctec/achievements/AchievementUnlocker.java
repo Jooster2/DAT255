@@ -23,6 +23,7 @@ public class AchievementUnlocker implements Observer
         currentStats = newStats;
         this.creator = creator;
 
+
     }
     public void invokeTestAchievement()
     {
