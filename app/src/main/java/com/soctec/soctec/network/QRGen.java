@@ -33,7 +33,7 @@ public class QRGen
      * @param matrix the matrix to write.
      * @return the new {@link Bitmap}-object.
      */
-    public static Bitmap toBitmap(BitMatrix matrix)
+    private static Bitmap toBitmap(BitMatrix matrix)
     {
         int height = matrix.getHeight();
         int width = matrix.getWidth();
@@ -48,6 +48,11 @@ public class QRGen
         return bmp;
     }
 
+    /**
+     * Generates a qr-code from a ip address
+     * @param ip The ip-address to encode
+     * @return A QR image
+     */
     public Bitmap getQR(String ip)
     {
         BitMatrix matrix = new BitMatrix(qrSize,qrSize);
