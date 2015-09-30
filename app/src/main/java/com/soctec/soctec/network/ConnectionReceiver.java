@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -25,7 +26,7 @@ import java.nio.ByteOrder;
 public class ConnectionReceiver extends BroadcastReceiver
 {
     //Got BSSIDs from https://gist.github.com/hjorthjort/fb2fcf80c773ea90c6fa
-    String[] bssids = {
+    static final String[] BSSIDs = {
             "04:f0:21:10:09:df",
             "04:f0:21:10:09:b9",
             "04:f0:21:10:09:e8",
@@ -37,58 +38,73 @@ public class ConnectionReceiver extends BroadcastReceiver
     };
     String prevBSSID = "";
 
+    /**
+     * This method is called by the Android operating system whenever a change in
+     * the network connection has occurred. Checks if connected to electricity wifi and updates the
+     * QR image accordingly.
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent)
+    {
+        if(WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction()))
+        {
+            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wi = wm.getConnectionInfo();
+
+            boolean connectedToElectricity = isConnected(context);
+            if (!connectedToElectricity)
+            {
+                //TODO: Tell MainFragment to NOT show QR-code
+                prevBSSID = "";
+            }
+            else if (!prevBSSID.equals(wi.getBSSID())) //Check if connected to new wifi or same one
+            {
+                showNewQR(context);
+                //TODO: Tell MainFragment to show QR-code.
+                prevBSSID = wi.getBSSID();
+            }
+        }
+    }
+
+    /**
+     * Check if device is connected to one of Electricity's routers.
+     * @param context The context of the calling activity
+     * @return False if not connected to wifi or if connected to any wifi other than electricity,
+     * o/w true
+     */
+    public static boolean isConnected(Context context)
     {
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         WifiManager wm = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         WifiInfo wi = wm.getConnectionInfo();
-        boolean connectionToElectricity = false;
+        boolean connectedToElectricity = false;
 
-        if(ni.isConnected())
+        String myBSSID = wi.getBSSID();
+        if(ni.isConnected() && myBSSID != null) //TODO: Beware of bugs!
         {
-            String myBssid = wi.getBSSID();
-            /*TODO: Check for redundant broadcast, i.e. when a broadcast is received when
-                     the app is resumed but still connected to same wifi.
-                     An idea: save previous BSSID and check if equal */
+            Log.i("ConnectionReceiver", "Connected to: " + wi.getSSID());
+            Toast.makeText(context, "Connected to: " + wi.getSSID(), Toast.LENGTH_SHORT).show();
 
-            if(myBssid != null && ! myBssid.equals(prevBSSID))
+            //Compare with list of accepted BSSIDs
+            for (String id : BSSIDs)
             {
-                Toast.makeText(context, "Connected to: " + wi.getSSID(), Toast.LENGTH_SHORT).show();
-                for (String id : bssids)
+                if (id.equals(myBSSID))
                 {
-                    if (id.equals(myBssid))
-                    {
-                        Log.i("ConnectionReceiver", "Connected to electricity wifi");
-                        Toast.makeText(context, "Connected to electricity wifi",
-                                       Toast.LENGTH_SHORT).show();
-                        connectionToElectricity = true;
-                        break;
-                    }
+                    connectedToElectricity = true;
+                    break;
                 }
-                prevBSSID = myBssid;
             }
         }
-        else //If disconnected
-        {
-            Log.i("", "Disconnected");
-            prevBSSID = "";
-        }
-
-        if(connectionToElectricity)
-        {
-            makeQR(context);
-            //TODO: Tell MainActivity to show QR-code.
-        }
-        else
-        {
-            //TODO: Tell MainActivity to NOt show QR-code
-        }
+        Log.i("ConnectionReceiver",
+                (connectedToElectricity ? "C" : "Not c") + "onnected to E-city");
+        return connectedToElectricity;
     }
 
-    private void makeQR(Context context)
+    private void showNewQR(Context context)
     {
         String ip = getUserIP(context);
         Bitmap qr = (new QRGen()).getQR(ip);
@@ -96,7 +112,7 @@ public class ConnectionReceiver extends BroadcastReceiver
         //write qr to file
         try
         {
-            FileOutputStream fos = new FileOutputStream(context.getFilesDir());
+            FileOutputStream fos = new FileOutputStream(new File(context.getFilesDir(), "qr-code"));
             qr.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
             fos.close();
@@ -106,9 +122,10 @@ public class ConnectionReceiver extends BroadcastReceiver
             Log.e("QR file", e.getMessage());
             e.printStackTrace();
         }
+        //TODO: Notify GUI of the updated QR image
     }
 
-    public String getUserIP(Context context)
+    private String getUserIP(Context context)
     {
         WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int ipAddress = manager.getConnectionInfo().getIpAddress();
