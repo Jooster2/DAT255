@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/titleText"
+        android:id="@+id/TitleText"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -18,10 +18,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/contentText"
-        android:layout_below="@+id/titleText"
+        android:layout_below="@+id/TitleText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/titleText"
-        android:layout_alignEnd="@+id/titleText"/>
+        android:layout_alignRight="@+id/TitleText"
+        android:layout_alignEnd="@+id/TitleText"/>
 
 </RelativeLayout>

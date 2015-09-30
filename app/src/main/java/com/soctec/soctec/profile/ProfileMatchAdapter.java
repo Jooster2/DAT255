@@ -27,8 +27,8 @@ public class ProfileMatchAdapter extends ArrayAdapter
         LayoutInflater myInflater = LayoutInflater.from(getContext());
         View customView = myInflater.inflate(R.layout.row_profilematch, parent, false);
         String singleStringItem = (String) getItem (position);
-        TextView title = (TextView)customView.findViewById(R.id.matchWindowTitle);
-        TextView content = (TextView)customView.findViewById(R.id.matchWindowContent);
+        TextView title = (TextView)customView.findViewById(R.id.matchTitle);
+        TextView content = (TextView)customView.findViewById(R.id.matchContent);
         String [] strings = singleStringItem.split(",");
 
         title.setText(strings[0]);
