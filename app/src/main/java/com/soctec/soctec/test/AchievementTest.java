@@ -64,4 +64,5 @@ public class AchievementTest extends InstrumentationTestCase
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
+
 }
