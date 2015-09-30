@@ -3,12 +3,20 @@ package com.soctec.soctec.network;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteOrder;
 
 /**
  * @author David
@@ -23,7 +31,11 @@ public class ConnectionReceiver extends BroadcastReceiver
             "04:f0:21:10:09:e8",
             "04:f0:21:10:09:b7",
             "04:f0:21:10:09:53",
+            "06:f0:21:10:0c:87",
+            "06:f0:21:10:0c:ab",
+            "06:f0:21:11:5c:3d"
     };
+    String prevBSSID = "";
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -37,26 +49,37 @@ public class ConnectionReceiver extends BroadcastReceiver
 
         if(ni.isConnected())
         {
-            Toast.makeText(context, "Connected to: " + wi.getSSID(), Toast.LENGTH_SHORT).show();
             String myBssid = wi.getBSSID();
             /*TODO: Check for redundant broadcast, i.e. when a broadcast is received when
                      the app is resumed but still connected to same wifi.
                      An idea: save previous BSSID and check if equal */
 
-            for(String id : bssids)
+            if(myBssid != null && ! myBssid.equals(prevBSSID))
             {
-                if(id.equals(myBssid))
+                Toast.makeText(context, "Connected to: " + wi.getSSID(), Toast.LENGTH_SHORT).show();
+                for (String id : bssids)
                 {
-                    Log.i("ConnectionReceiver", "Connected to electricity wifi");
-                    makeQR();
-                    connectionToElectricity = true;
-                    break;
+                    if (id.equals(myBssid))
+                    {
+                        Log.i("ConnectionReceiver", "Connected to electricity wifi");
+                        Toast.makeText(context, "Connected to electricity wifi",
+                                       Toast.LENGTH_SHORT).show();
+                        connectionToElectricity = true;
+                        break;
+                    }
                 }
+                prevBSSID = myBssid;
             }
+        }
+        else //If disconnected
+        {
+            Log.i("", "Disconnected");
+            prevBSSID = "";
         }
 
         if(connectionToElectricity)
         {
+            makeQR(context);
             //TODO: Tell MainActivity to show QR-code.
         }
         else
@@ -65,8 +88,49 @@ public class ConnectionReceiver extends BroadcastReceiver
         }
     }
 
-    private void makeQR()
+    private void makeQR(Context context)
     {
+        String ip = getUserIP(context);
+        Bitmap qr = (new QRGen()).getQR(ip);
 
+        //write qr to file
+        try
+        {
+            FileOutputStream fos = new FileOutputStream(context.getFilesDir());
+            qr.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        }
+        catch(IOException e)
+        {
+            Log.e("QR file", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public String getUserIP(Context context)
+    {
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        int ipAddress = manager.getConnectionInfo().getIpAddress();
+
+        // Convert little-endian to big-endianif needed
+        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN))
+        {
+            ipAddress = Integer.reverseBytes(ipAddress);
+        }
+
+        byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
+
+        String ipAddressString;
+        try
+        {
+            ipAddressString = InetAddress.getByAddress(ipByteArray).getHostAddress();
+        } catch (UnknownHostException e)
+        {
+            Log.e("WIFIIP", "Unable to get host address.");
+            ipAddressString = null;
+        }
+
+        return ipAddressString;
     }
 }
