@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
-import com.soctec.soctec.network.ConnectionReceiver;
+import com.soctec.soctec.network.ConnectionChecker;
 import com.soctec.soctec.network.NetworkHandler;
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    ConnectionReceiver connectionReceiver;
+    ConnectionChecker connectionChecker;
 
     private static int REQUEST_CODE = 0;
 
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //Initialize broadcastReceiver
         IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(connectionReceiver = new ConnectionReceiver(), intentFilter);
+        registerReceiver(connectionChecker = new ConnectionChecker(), intentFilter);
     }
 
     /**
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         super.onPause();
         NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
-        unregisterReceiver(connectionReceiver);
+        unregisterReceiver(connectionChecker);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         NetworkHandler.getInstance(this).startConnectionListener();
 
         IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(connectionReceiver, intentFilter);
+        registerReceiver(connectionChecker, intentFilter);
     }
 
     /**
