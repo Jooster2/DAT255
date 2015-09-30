@@ -1,7 +1,6 @@
 package com.soctec.soctec.profile;
 
 import com.soctec.soctec.R;
-import com.soctec.soctec.util.SystemUiHider;
 
 import android.app.Activity;
 import android.content.Context;
