@@ -1,7 +1,5 @@
 package com.soctec.soctec.network;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -117,7 +115,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
      */
     public void backupData()
     {
-        if(!ConnectionReceiver.isConnected(myActivity.getApplicationContext()))
+        if(!ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
@@ -135,7 +133,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
      */
     public void downloadData()
     {
-        if(!ConnectionReceiver.isConnected(myActivity.getApplicationContext()))
+        if(!ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
@@ -156,7 +154,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
      */
     public void sendScanInfoToPeer(String scannedAddress)
     {
-        if (!ConnectionReceiver.isConnected(myActivity.getApplicationContext()))
+        if (!ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
