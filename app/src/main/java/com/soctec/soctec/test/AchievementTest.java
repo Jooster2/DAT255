@@ -29,7 +29,7 @@ public class AchievementTest extends InstrumentationTestCase
     }
 
     /**
-     * Checks if the scancount gets increased when a scan har occured (A fake scan)
+     * Checks if the scancount gets increased when a scan has occured (A fake scan)
      * @throws Exception
      */
     public void testScanCountInc () throws Exception
@@ -52,7 +52,6 @@ public class AchievementTest extends InstrumentationTestCase
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals("JOCKE", stats.getlastScanned());
     }
-
     /**
      * Checks if a list containing one achievement gets emptied when that achievement gets unlocked.
      * @throws Exception
@@ -64,5 +63,7 @@ public class AchievementTest extends InstrumentationTestCase
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
+
+    //TODO : Write more tests, what kind of tests?
 
 }
