@@ -103,8 +103,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public void startReceiver()
     {
-        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
+        IntentFilter intentFilter =
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(
+                connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
+
+        Log.i("Main", "Receiver started!");
     }
 
     /**
@@ -147,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         super.onResume();
         NetworkHandler.getInstance(this).startConnectionListener();
 
-        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        IntentFilter intentFilter =
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(connectionChecker, intentFilter);
     }
 

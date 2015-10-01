@@ -23,8 +23,6 @@ import com.soctec.soctec.network.ConnectionChecker;
 public class MainFragment extends Fragment
 {
 
-    ImageView QRImage;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -39,9 +37,6 @@ public class MainFragment extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        super.onViewCreated(view, savedInstanceState);
-        QRImage = (ImageView) view.findViewById(R.id.qr_image);
-
         ((MainActivity)getActivity()).startReceiver();
     }
 }

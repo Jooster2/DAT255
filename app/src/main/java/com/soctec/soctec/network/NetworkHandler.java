@@ -115,17 +115,10 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
      */
     public void backupData()
     {
-        if(!ConnectionChecker.isConnected(myActivity.getApplicationContext()))
-        {
-            Log.i("NetworkHandler", "No WIFI access, aborting network task");
-        }
-        else
-        {
-            msgType = BACKUP_MSG;
-            //Put together data to send to server: ID + TYPE + DATA
-            dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
-            execute();
-        }
+        msgType = BACKUP_MSG;
+        //Put together data to send to server: ID + TYPE + DATA
+        dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
+        execute();
     }
 
     /**
@@ -133,17 +126,10 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
      */
     public void downloadData()
     {
-        if(!ConnectionChecker.isConnected(myActivity.getApplicationContext()))
-        {
-            Log.i("NetworkHandler", "No WIFI access, aborting network task");
-        }
-        else
-        {
-            msgType = DOWNLOAD_MSG;
-            //Put together data to send to server: ID + TYPE
-            dataToSend = "<Insert my ID here>" + ":1";
-            execute();
-        }
+        msgType = DOWNLOAD_MSG;
+        //Put together data to send to server: ID + TYPE
+        dataToSend = "<Insert my ID here>" + ":1";
+        execute();
     }
 
     /**

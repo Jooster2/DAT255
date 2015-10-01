@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.soctec.soctec.core.MainActivity;
 
@@ -29,6 +28,10 @@ import java.nio.ByteOrder;
  */
 public class ConnectionChecker extends BroadcastReceiver
 {
+    //Set to false when testing on any network, set to true if testing on Electricity specifically
+    private static final boolean TEST_FOR_ELECTRICITY = false;
+    private MainActivity myActivity;
+
     //Got BSSIDs from https://gist.github.com/hjorthjort/fb2fcf80c773ea90c6fa
     static final String[] BSSIDs = {
             "04:f0:21:10:09:df",
@@ -40,8 +43,6 @@ public class ConnectionChecker extends BroadcastReceiver
             "06:f0:21:10:0c:ab",
             "06:f0:21:11:5c:3d"
     };
-    String prevBSSID = "";
-    private MainActivity myActivity;
 
     public ConnectionChecker(MainActivity activity)
     {
@@ -58,22 +59,21 @@ public class ConnectionChecker extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        if(WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction()))
-        {
-            WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            WifiInfo wi = wm.getConnectionInfo();
+        Log.i("Receiver", "Received broadcast: " + intent.getAction());
 
+        final String action = intent.getAction();
+        if(action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION))
+        {
             boolean connectedToElectricity = isConnected(context);
-            if (!connectedToElectricity)
+            NetworkInfo ni = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+
+            if (ni.getState().equals(NetworkInfo.State.CONNECTED) && connectedToElectricity)
+            {
+                myActivity.updateQR(getNewQR(context));
+            }
+            else
             {
                 myActivity.updateQR(null);
-                prevBSSID = "";
-            } else if (!prevBSSID.equals(wi.getBSSID())) //Check if connected to new wifi or same one
-
-            {
-                Bitmap QR = showNewQR(context);
-                myActivity.updateQR(QR);
-                prevBSSID = wi.getBSSID();
             }
         }
     }
@@ -81,8 +81,7 @@ public class ConnectionChecker extends BroadcastReceiver
     /**
      * Check if device is connected to one of Electricity's routers.
      * @param context The context of the calling activity
-     * @return False if not connected to wifi or if connected to any wifi other than electricity,
-     * o/w true
+     * @return True if device is connected, o/w false
      */
     public static boolean isConnected(Context context)
     {
@@ -93,49 +92,47 @@ public class ConnectionChecker extends BroadcastReceiver
         WifiInfo wi = wm.getConnectionInfo();
         boolean connectedToElectricity = false;
 
-        String myBSSID = wi.getBSSID();
-        if(ni.isConnected() && myBSSID != null) //TODO: myBSSID is null when wifi is reactivated
+        if(ni.isConnected())
         {
             Log.i("ConnectionChecker", "Connected to: " + wi.getSSID());
 
-            //Compare with list of accepted BSSIDs
-            /*for (String id : BSSIDs)
+            //This if-statement is only used for testing.
+            if(TEST_FOR_ELECTRICITY)
             {
-                if (id.equals(myBSSID))
+                String myBSSID = wi.getBSSID();
+                //Compare with list of accepted BSSIDs
+                for (String id : BSSIDs)
                 {
-                    connectedToElectricity = true;
-                    break;
+                    if (id.equals(myBSSID))
+                    {
+                        connectedToElectricity = true;
+                        break;
+                    }
                 }
-            }*/
-            connectedToElectricity = true; //Remove!
+            }
+            else
+                connectedToElectricity = true;
         }
         Log.i("ConnectionChecker",
                 (connectedToElectricity ? "C" : "Not c") + "onnected to E-city");
         return connectedToElectricity;
     }
 
-    private Bitmap showNewQR(Context context)
+    /**
+     * Uses the QRGen class to get a new QR image based on the device's IP.
+     * @param context  Context of the calling activity
+     * @return The bitmap of the QR
+     */
+    private Bitmap getNewQR(Context context)
     {
-        String ip = getUserIP(context);
-        Bitmap qr = (new QRGen()).getQR(ip);
-
-        //write qr to file
-        try
-        {
-            FileOutputStream fos = new FileOutputStream(new File(context.getFilesDir(), "qr-code"));
-            qr.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.flush();
-            fos.close();
-        }
-        catch(IOException e)
-        {
-            Log.e("QR file", e.getMessage());
-            e.printStackTrace();
-        }
-
-        return qr;
+        return (new QRGen()).getQR(getUserIP(context));
     }
 
+    /**
+     * Gets the device's IP.
+     * @param context Context of the calling activity
+     * @return The device's IP
+     */
     private String getUserIP(Context context)
     {
         WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -158,7 +155,6 @@ public class ConnectionChecker extends BroadcastReceiver
             Log.e("WIFIIP", "Unable to get host address.");
             ipAddressString = null;
         }
-
         return ipAddressString;
     }
 }
