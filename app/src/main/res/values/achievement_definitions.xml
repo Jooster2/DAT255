@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="counterAchievements">
+        <item>First Scan!, 50, someimg, S1, SIN, P_SCAN:1</item>
+        <item>Second Scan!, 50, someimg2, S2, SIN, P_SCAN:2</item>
+    </string-array>
+</resources>
