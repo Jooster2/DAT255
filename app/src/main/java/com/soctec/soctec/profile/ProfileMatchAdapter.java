@@ -17,6 +17,11 @@ import java.util.ArrayList;
  */
 public class ProfileMatchAdapter extends ArrayAdapter
 {
+    /**
+     * Constructor that sets the context and what every list item in the list view should contain.
+     * @param context
+     * @param matchResult   A list of all the matches that should be put in the list.
+     */
     public ProfileMatchAdapter(Context context, ArrayList<String> matchResult)
     {
         super(context, R.layout.row_profilematch, matchResult);

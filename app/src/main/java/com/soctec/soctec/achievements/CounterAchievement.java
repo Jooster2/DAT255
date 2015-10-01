@@ -23,7 +23,8 @@ public class CounterAchievement extends Achievement
     }
 
     /**
-     * Method used by @AchievementCreator to create a demand for an achievement.
+     * Method used by {@link AchievementCreator createCounterAchievement(String[] data)} to create
+     * a demand for an achievement.
      * @param type the type of the demand
      * @param amount    the amount of counts before unlocked.
      */
