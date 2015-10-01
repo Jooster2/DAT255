@@ -11,6 +11,8 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.soctec.soctec.core.MainActivity;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,6 +41,12 @@ public class ConnectionChecker extends BroadcastReceiver
             "06:f0:21:11:5c:3d"
     };
     String prevBSSID = "";
+    private MainActivity myActivity;
+
+    public ConnectionChecker(MainActivity activity)
+    {
+        myActivity = activity;
+    }
 
     /**
      * This method is called by the Android operating system whenever a change in
@@ -58,13 +66,13 @@ public class ConnectionChecker extends BroadcastReceiver
             boolean connectedToElectricity = isConnected(context);
             if (!connectedToElectricity)
             {
-                //TODO: Tell MainFragment to NOT show QR-code
+                myActivity.updateQR(null);
                 prevBSSID = "";
-            }
-            else if (!prevBSSID.equals(wi.getBSSID())) //Check if connected to new wifi or same one
+            } else if (!prevBSSID.equals(wi.getBSSID())) //Check if connected to new wifi or same one
+
             {
-                showNewQR(context);
-                //TODO: Tell MainFragment to show QR-code.
+                Bitmap QR = showNewQR(context);
+                myActivity.updateQR(QR);
                 prevBSSID = wi.getBSSID();
             }
         }
@@ -86,27 +94,27 @@ public class ConnectionChecker extends BroadcastReceiver
         boolean connectedToElectricity = false;
 
         String myBSSID = wi.getBSSID();
-        if(ni.isConnected() && myBSSID != null) //TODO: Beware of bugs!
+        if(ni.isConnected() && myBSSID != null) //TODO: myBSSID is null when wifi is reactivated
         {
             Log.i("ConnectionChecker", "Connected to: " + wi.getSSID());
-            Toast.makeText(context, "Connected to: " + wi.getSSID(), Toast.LENGTH_SHORT).show();
 
             //Compare with list of accepted BSSIDs
-            for (String id : BSSIDs)
+            /*for (String id : BSSIDs)
             {
                 if (id.equals(myBSSID))
                 {
                     connectedToElectricity = true;
                     break;
                 }
-            }
+            }*/
+            connectedToElectricity = true; //Remove!
         }
         Log.i("ConnectionChecker",
                 (connectedToElectricity ? "C" : "Not c") + "onnected to E-city");
         return connectedToElectricity;
     }
 
-    private void showNewQR(Context context)
+    private Bitmap showNewQR(Context context)
     {
         String ip = getUserIP(context);
         Bitmap qr = (new QRGen()).getQR(ip);
@@ -124,7 +132,8 @@ public class ConnectionChecker extends BroadcastReceiver
             Log.e("QR file", e.getMessage());
             e.printStackTrace();
         }
-        //TODO: Notify GUI of the updated QR image
+
+        return qr;
     }
 
     private String getUserIP(Context context)

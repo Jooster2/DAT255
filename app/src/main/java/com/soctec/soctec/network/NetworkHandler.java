@@ -263,7 +263,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                     @Override
                     public void run()
                     {
-                        myActivity.receiveDataFromPeer(id, profile);  //TODO: User observer here?
+                        myActivity.receiveDataFromPeer(id, profile);
                     }
                 });
             }
@@ -276,7 +276,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                     @Override
                     public void run()
                     {
-                        myActivity.receiveDataFromServer(dataReceived);  //TODO: User observer here?
+                        myActivity.receiveDataFromServer(dataReceived);
                     }
                 });
             }

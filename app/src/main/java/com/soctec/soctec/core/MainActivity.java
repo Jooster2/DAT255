@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.net.wifi.WifiManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -14,11 +15,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
@@ -42,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    ConnectionChecker connectionChecker;
+    ConnectionChecker connectionChecker = null;
 
     private static int REQUEST_CODE = 0;
 
@@ -92,10 +96,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this);
+    }
 
-        //Initialize broadcastReceiver
+    /**
+     * Initiate the BroadcastReceiver and register it.
+     */
+    public void startReceiver()
+    {
         IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(connectionChecker = new ConnectionChecker(), intentFilter);
+        registerReceiver(connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
     }
 
     /**
@@ -158,8 +167,20 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
     {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        vibrator.vibrate(500);
+        vibrator.vibrate(100);
         Toast.makeText(getApplicationContext(), idFromPeer, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Update the QR image
+     * @param QR
+     */
+    public void updateQR(Bitmap QR)
+    {
+        Log.i("MainFrag", "Update qr");
+
+        ImageView im = (ImageView) findViewById(R.id.qr_image);
+        im.setImageBitmap(QR);
     }
 
     @Override
