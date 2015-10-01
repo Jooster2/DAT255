@@ -2,13 +2,8 @@ package com.soctec.soctec.achievements;
 
 import android.content.Context;
 
-import com.soctec.soctec.R;
 import com.soctec.soctec.core.FileHandler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Observable;
 /**
@@ -26,9 +21,7 @@ public class AchievementCreator extends Observable
      */
     public AchievementCreator(Context context)
     {
-
         this.context = context;
-
     }
 
     /**
@@ -39,7 +32,7 @@ public class AchievementCreator extends Observable
     public CounterAchievement createCounterAchievement(String[] data)
     {
         //Arguments are (String Name, int points, String img, String id)
-        CounterAchievement achievement = new CounterAchievement(data[0], Integer.parseInt(data[1]), data[2], data[3]);
+        CounterAchievement achievement = new CounterAchievement(data[0], Integer.parseInt(data[1]), data[2], data[3], data[4]);
         if(data[4].equals("SIN"))
             for(int i=5; i<data.length; i++)
             {
@@ -47,10 +40,16 @@ public class AchievementCreator extends Observable
                 achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
             }
         else if(data[4].equals("INF"))
-            return achievement;
-        //TODO create demand of infinite type
+        {
+            for(int i = 5; i < data.length; i++)
+            {
+                String[] demand = data[i].split(":");
+                achievement.createDemand(demand[0], Integer.parseInt(demand[1]), demand[2]);
+            }
+        }
         return achievement;
     }
+
 
     /**
      * Creates an Achievement object of type CollectionAchievement
@@ -153,11 +152,16 @@ public class AchievementCreator extends Observable
     }
 
     /**
-     * Used to create a new Achievement based on argument
+     * Used to create a new Achievement based on an old Achievement
      * @param achievement an old Achievement
      */
     public void createAchievement (Achievement achievement)
     {
+        String[] data = achievement.getAllData();
+        if(achievement instanceof CounterAchievement)
+            createCounterAchievement(data);
+        else if(achievement instanceof CollectionAchievement)
+            createCollectionAchievement(data);
 
     }
 }

@@ -3,5 +3,9 @@
     <string-array name="counterAchievements">
         <item>First Scan!, 50, someimg, S1, SIN, P_SCAN:1</item>
         <item>Second Scan!, 50, someimg2, S2, SIN, P_SCAN:2</item>
+        <item>GOGO! Towards Infinity!, 25, someimg3, S3, INF, P_SCAN:1:+ce2</item>
+    </string-array>
+    <string-array name="collectionAchievements">
+
     </string-array>
 </resources>

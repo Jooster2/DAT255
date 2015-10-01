@@ -61,14 +61,13 @@ public class FileHandler
             String line = readBuffer.readLine();
             while(line != null)
             {
+                //For commenting in the file
                 if(line.charAt(0) == '#')
                     continue;
                 fromFile.add(line);
-
                 line = readBuffer.readLine();
             }
             readBuffer.close();
-
         }
         catch(IOException e)
         {
