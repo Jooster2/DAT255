@@ -9,15 +9,29 @@
                 tools:context="com.soctec.soctec.core.AchievementShowerActivity"
                 android:background="#dbdbe4b7">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/shower_head_text"
-        android:id="@+id/showerHeadTextView1"
+        android:id="@+id/showerHeadView"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/showerAchViewBack"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:textColor="#58a449"/>
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/showerAchViewFront"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+
+        />
 
     <Button
         android:layout_width="wrap_content"
@@ -26,14 +40,6 @@
         android:id="@+id/showerQuitButton"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/showerAchView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="113dp"/>
 
 
 </RelativeLayout>
