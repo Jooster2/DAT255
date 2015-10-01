@@ -3,11 +3,13 @@ package com.soctec.soctec.achievements;
 import android.content.Context;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.core.FileHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Observable;
 /**
  * An AchievementCreator creates Achievement objects on request.
@@ -37,14 +39,14 @@ public class AchievementCreator extends Observable
     public CounterAchievement createCounterAchievement(String[] data)
     {
         //Arguments are (String Name, int points, String img, String id)
-        CounterAchievement achievement = new CounterAchievement(data[1], Integer.parseInt(data[2]), data[3], data[4]);
-        if(data[5].equals("SIN"))
-            for(int i=6; i<data.length; i++)
+        CounterAchievement achievement = new CounterAchievement(data[0], Integer.parseInt(data[1]), data[2], data[3]);
+        if(data[4].equals("SIN"))
+            for(int i=5; i<data.length; i++)
             {
                 String[] demand = data[i].split(":");
                 achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
             }
-        else if(data[5].equals("INF"))
+        else if(data[4].equals("INF"))
             return achievement;
         //TODO create demand of infinite type
         return achievement;
@@ -57,8 +59,8 @@ public class AchievementCreator extends Observable
      */
     public CollectionAchievement createCollectionAchievement(String[] data)
     {
-        CollectionAchievement achievement = new CollectionAchievement(data[1], Integer.parseInt(data[2]), data[3],
-                data[4]);
+        CollectionAchievement achievement = new CollectionAchievement(data[0], Integer.parseInt(data[1]), data[2],
+                data[3]);
         //TODO everything...
         return achievement;
     }
@@ -70,7 +72,27 @@ public class AchievementCreator extends Observable
      */
     public void createFromFile()
     {
-        try
+        int resID = FileHandler.getInstance().getResourceID("counterAchievements", "values");
+        ArrayList<String> fromFile = FileHandler.getInstance().readFile(resID);
+        for(String item : fromFile)
+        {
+            String[] data = item.split(", ");
+            CounterAchievement achievement = createCounterAchievement(data);
+            setChanged();
+            notifyObservers(achievement);
+        }
+
+        resID = FileHandler.getInstance().getResourceID("collectionAchievements", "values");
+        fromFile = FileHandler.getInstance().readFile(resID);
+        for(String item : fromFile)
+        {
+            String[] data = item.split(", ");
+            CollectionAchievement achievement = createCollectionAchievement(data);
+            setChanged();
+            notifyObservers(achievement);
+        }
+
+        /*try
         {
             //TODO Input stream gives nullpointerexception (can't read file)
             InputStream is = context.getResources().openRawResource(R.raw.achievement_definitions);
@@ -103,7 +125,7 @@ public class AchievementCreator extends Observable
         catch(IOException e)
         {
             e.printStackTrace();
-        }
+        }*/
 
     }
 

@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         String userCode = new Encryptor().encrypt(account);
         Profile.setUserCode(userCode);
 
+        //Initialize the FileHandler
+        FileHandler.getInstance().setContext(this);
+
         //Initialize the Achievement engine
         stats = new Stats();
         creator = new AchievementCreator(this);
