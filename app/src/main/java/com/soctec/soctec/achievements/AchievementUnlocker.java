@@ -7,8 +7,6 @@ import java.util.Observer;
 /**
  * Created by Carl-Henrik Hult on 2015-09-22.
  */
-
-
 public class AchievementUnlocker implements Observer
 {
     public static final int SCAN_PERSON = 1;
@@ -17,6 +15,12 @@ public class AchievementUnlocker implements Observer
     Stats currentStats;
     AchievementCreator creator;
 
+    /**
+     * Constructor that initiates the unlockableAchievements list, saves a reference to Stats and
+     * AchievementCreator.
+     * @param newStats
+     * @param creator
+     */
     public AchievementUnlocker(Stats newStats, AchievementCreator creator)
     {
         unlockableAchievements = new ArrayList<Achievement>();
@@ -24,10 +28,6 @@ public class AchievementUnlocker implements Observer
         this.creator = creator;
 
 
-    }
-    public void invokeTestAchievement()
-    {
-        creator.createTestAch();
     }
 
     /**
@@ -72,11 +72,22 @@ public class AchievementUnlocker implements Observer
             }
         }
     }
+
+    /**
+     *  Returns the unlockableAcievments list.
+     * @return  unlockableAchievements
+     */
     public ArrayList<Achievement> getUnlockableAchievements()
     {
         return unlockableAchievements;
     }
 
+    /**
+     * Receives data from classes that it observes, and if  that data is class {@link Achievement}
+     * the method adds data to {@link AchievementUnlocker unlockableAchievements} -list.
+     * @param observable    Is in this case AchievementCreator.
+     * @param data  Is data received from classes that {@link AchievementUnlocker} observes.
+     */
     @Override
     public void update(Observable observable, Object data)
     {

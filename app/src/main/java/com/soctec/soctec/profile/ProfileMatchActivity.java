@@ -12,9 +12,14 @@ import com.soctec.soctec.R;
 /**
  * Created by Carl-Henrik Hult on 2015-09-25.
  */
-public class ProfileMatchWindowActivity extends Activity
+public class ProfileMatchActivity extends Activity
 {
     ListView myListView;
+
+    /**
+     * Sets the layout for the profile match.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -33,13 +38,25 @@ public class ProfileMatchWindowActivity extends Activity
         super.onPause();
     }
 
+    /**
+     * Matches two profiles, and shows the things those profiles have in common.
+     * The two different profiles is the two lists that is included as parameters.
+
+     * @param thisDevice    the profile of the own device.
+     * @param otherDevice   the profile of the scanned device.
+     */
     public void match (ArrayList <ArrayList <String>> thisDevice, ArrayList <ArrayList<String>> otherDevice)
     {
         ArrayList <String> musicResult = new ArrayList<String>();
         ArrayList <String> movieResult = new ArrayList<String>();
         ArrayList <String> litteratureResult = new ArrayList<String>();
         ArrayList <String> sportsResult = new ArrayList<String>();
-
+        /*
+         * One list contains all results, where the different lists in the beginning is added.
+         * Then we iterate through both thisDevice list and the otherDevice list and compares
+         * every list in their lists with each other. Things that matches gets added to the fitting place
+         * in the allresults list.(matched music results gets added to the music list in the list etc etc.)
+         */
         ArrayList <ArrayList <String>> allResults = new ArrayList <ArrayList <String>> ();
         allResults.add(musicResult);
         allResults.add(movieResult);

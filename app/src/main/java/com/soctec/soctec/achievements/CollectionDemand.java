@@ -6,6 +6,11 @@ package com.soctec.soctec.achievements;
 public class CollectionDemand
 {
     String item;
+
+    /**
+     * Constructor that sets parameter to item.
+     * @param item
+     */
     public CollectionDemand (String item)
     {
         this.item=item;

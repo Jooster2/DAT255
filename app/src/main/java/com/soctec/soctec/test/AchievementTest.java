@@ -26,7 +26,7 @@ public class AchievementTest extends AndroidTestCase
     public void testCreateAchievement () throws Exception
     {
         creator.addObserver(unlocker);
-        unlocker.invokeTestAchievement();
+        creator.createTestAch();
         assertEquals( 1, unlocker.getUnlockableAchievements().size());
     }
 
@@ -37,7 +37,7 @@ public class AchievementTest extends AndroidTestCase
     public void testScanCountInc () throws Exception
     {
         creator.addObserver(unlocker);
-        unlocker.invokeTestAchievement();
+        creator.createTestAch();
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(stats.getScanCount(), 1);
 
@@ -50,7 +50,7 @@ public class AchievementTest extends AndroidTestCase
     public void testLastScanned () throws Exception
     {
         creator.addObserver(unlocker);
-        unlocker.invokeTestAchievement();
+        creator.createTestAch();
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals("JOCKE", stats.getlastScanned());
     }
@@ -61,18 +61,23 @@ public class AchievementTest extends AndroidTestCase
     public void testUnlockAchievement () throws Exception
     {
         creator.addObserver(unlocker);
-        unlocker.invokeTestAchievement();
+        creator.createTestAch();
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
+
+    /**
+     * Creates four fake achievements and checks if they end up in the unlockedAchievements-list.
+     * @throws Exception
+     */
     public void testCreate4Achievements () throws Exception
     {
         creator.addObserver(unlocker);
-        unlocker.invokeTestAchievement();
-        unlocker.invokeTestAchievement();
-        unlocker.invokeTestAchievement();
-        unlocker.invokeTestAchievement();
-        assertEquals( 4, unlocker.getUnlockableAchievements().size());
+        creator.createTestAch();
+        creator.createTestAch();
+        creator.createTestAch();
+        creator.createTestAch();
+        assertEquals(4, unlocker.getUnlockableAchievements().size());
     }
     //TODO : Write more tests, what kind of tests?
 

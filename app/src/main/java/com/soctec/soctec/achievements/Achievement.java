@@ -25,18 +25,38 @@ public abstract class Achievement
         this.imageName = imageName;
         this.id = id;
     }
+
+    /**
+     * Returns the name of the achievement.
+     * @return  name of the achievement.
+     */
     public String getName()
     {
         return name;
     }
+
+    /**
+     * Returns the points that the achievement is worth.
+     * @return  points that the achievement is worth.
+     */
     public int getPoints()
     {
         return points;
     }
+
+    /**
+     * Returns the filename/name of the image that goes with the achievement.
+     * @return filename/name of the image that goes with the achievement.
+     */
      public String getImageName()
     {
         return imageName;
     }
+
+    /**
+     * Returns the internal ID for the achievement.
+     * @return  internal ID for the achievement.
+     */
     public String getId()
     {
         return id;
