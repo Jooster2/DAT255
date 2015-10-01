@@ -66,6 +66,7 @@ public class AchievementTest extends AndroidTestCase
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
 
+
     /**
      * Creates four fake achievements and checks if they end up in the unlockedAchievements-list.
      * @throws Exception
@@ -78,7 +79,7 @@ public class AchievementTest extends AndroidTestCase
         creator.createTestAch();
         creator.createTestAch();
         assertEquals(4, unlocker.getUnlockableAchievements().size());
-    }
-    //TODO : Write more tests, what kind of tests?
 
+        //TODO : Write more tests, what kind of tests?
+    }
 }
