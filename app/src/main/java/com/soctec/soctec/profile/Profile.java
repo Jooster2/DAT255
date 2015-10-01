@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 /**
  * Created by jooster on 9/29/15.
+ * Static class for all profile-related data
  */
 public class Profile
 {
@@ -22,16 +23,27 @@ public class Profile
 
     }*/
 
+    /**
+     * Sets the User Code to parameter
+     * @param code the new User Code
+     */
     public static void setUserCode(String code)
     {
         userCode = code;
     }
 
+    /**
+     * @return the current User Code
+     */
     public static String getUserCode()
     {
         return userCode;
     }
 
+    /**
+     * Sets
+     * @param profile
+     */
     public static void setProfile(ArrayList<ArrayList<String>> profile)
     {
         profileItems = profile;
