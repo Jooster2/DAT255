@@ -24,7 +24,7 @@ public class Profile
     }*/
 
     /**
-     * Sets the User Code to parameter
+     * Sets the User Code to argument
      * @param code the new User Code
      */
     public static void setUserCode(String code)
@@ -33,6 +33,7 @@ public class Profile
     }
 
     /**
+     * Returns the current User Code
      * @return the current User Code
      */
     public static String getUserCode()
@@ -41,19 +42,27 @@ public class Profile
     }
 
     /**
-     * Sets
-     * @param profile
+     * Sets the profile data to argument
+     * @param profile the new profile data
      */
     public static void setProfile(ArrayList<ArrayList<String>> profile)
     {
         profileItems = profile;
     }
 
+    /**
+     * Returns the current profile as an ArrayList
+     * @return the current profile ArrayList
+     */
     public static ArrayList<ArrayList<String>> getProfile()
     {
         return profileItems;
     }
 
+    /**
+     * Returns the current profile as a String
+     * @return the current profile as a String
+     */
     public static String getProfileString()
     {
         return profileItems.toString();

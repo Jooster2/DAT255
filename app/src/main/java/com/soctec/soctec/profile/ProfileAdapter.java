@@ -12,7 +12,10 @@ import com.soctec.soctec.R;
 
 import java.util.ArrayList;
 /**
- * Created by Jooster on 2015-09-29.
+ * A ProfileAdapter is an object for displaying a TextView and an EditText in a ListView
+ * @author Joakim Schmidt
+ * @version 1.0
+ * @see ArrayAdapter TextView EditText
  */
 public class ProfileAdapter extends ArrayAdapter
 {

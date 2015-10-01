@@ -10,11 +10,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Observable;
 /**
- * Created by jooster on 9/22/15.
+ * An AchievementCreator creates Achievement objects on request.
+ * @author Joakim Schmidt
+ * @version 1.1
  */
 public class AchievementCreator extends Observable
 {
     private Context context;
+
+    /**
+     * Constructs an AchievementCreator
+     * @param context the app's Context object
+     */
     public AchievementCreator(Context context)
     {
 
@@ -22,6 +29,11 @@ public class AchievementCreator extends Observable
 
     }
 
+    /**
+     * Creates an Achievement object of type CounterAchievement
+     * @param data the data describing the Achievement
+     * @return the newly created Achievement
+     */
     public CounterAchievement createCounterAchievement(String[] data)
     {
         //Arguments are (String Name, int points, String img, String id)
@@ -38,6 +50,11 @@ public class AchievementCreator extends Observable
         return achievement;
     }
 
+    /**
+     * Creates an Achievement object of type CollectionAchievement
+     * @param data the data describing the Achievement
+     * @return the newly created Achievement
+     */
     public CollectionAchievement createCollectionAchievement(String[] data)
     {
         CollectionAchievement achievement = new CollectionAchievement(data[1], Integer.parseInt(data[2]), data[3],
@@ -46,6 +63,11 @@ public class AchievementCreator extends Observable
         return achievement;
     }
 
+    /**
+     * Attempts to create multiple Achievements from file.
+     * New Achievement objects are sent out via Observable.notifyAll()
+     * @see Observable
+     */
     public void createFromFile()
     {
         try
@@ -84,6 +106,10 @@ public class AchievementCreator extends Observable
         }
 
     }
+
+    /**
+     * Creates a basic Achievement for testing purposes
+     */
     public void createTestAch()
     {
         String line = "CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1";
@@ -103,6 +129,11 @@ public class AchievementCreator extends Observable
                 notifyObservers(achievement);
         }
     }
+
+    /**
+     * Used to create a new Achievement based on argument
+     * @param achievement an old Achievement
+     */
     public void createAchievement (Achievement achievement)
     {
 

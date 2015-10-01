@@ -31,6 +31,11 @@ import com.soctec.soctec.network.ConnectionReceiver;
 import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 
+/**
+ * MainActivity is a tabbed activity, and sets up most of the other objects for the App
+ * @author Jesper, Joakim, David
+ * @version 1.1
+ */
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
 
@@ -154,6 +159,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Toast.makeText(getApplicationContext(), idFromPeer, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Returns the device's google account name
+     * @return the device's google account name
+     */
     private String getPlayAcc()
     {
         String accMail = null;
@@ -175,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     //--------------- Below is all auto-generated code from ActionBar --------------------
 
     /**
-     * Setup the ActionBar
+     * Sets up the ActionBar
      */
     private void setupActionBar()
     {
