@@ -72,7 +72,7 @@ public class AchievementCreator extends Observable
     public void createFromFile()
     {
         FileHandler fH = FileHandler.getInstance();
-        ArrayList<String> fromFile = fH.readFile(fH.getResourceID("counterAchievements", "values"));
+        ArrayList<String> fromFile = fH.readFile(fH.getResourceID("counterAchievements", "array"));
         for(String item : fromFile)
         {
             String[] data = item.split(", ");
@@ -81,7 +81,7 @@ public class AchievementCreator extends Observable
             notifyObservers(achievement);
         }
 
-        fromFile = fH.readFile(fH.getResourceID("collectionAchievements", "values"));
+        fromFile = fH.readFile(fH.getResourceID("collectionAchievements", "array"));
         for(String item : fromFile)
         {
             String[] data = item.split(", ");
@@ -94,9 +94,9 @@ public class AchievementCreator extends Observable
     /**
      * Creates a basic Achievement for testing purposes
      */
-    public void createTestAch()
+    public void createTestAch(String line)
     {
-        String line = "CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1";
+
 
         String[] data = line.split(", ");
         if(data[0].equals("CNT"))
