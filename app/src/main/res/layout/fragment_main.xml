@@ -1,17 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment"
-    android:background="#95ff68"
+    android:background="#58A449"
     android:nestedScrollingEnabled="false">
 
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:id="@+id/imageView"
+        android:id="@+id/qr_image"
         android:src="@mipmap/qrcode"
         android:adjustViewBounds="false"
         android:layout_marginTop="76dp"
@@ -40,7 +39,7 @@
         android:textStyle="bold"
         android:textSize="30dp"
         android:layout_marginTop="49dp"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/qr_image"
         android:layout_centerHorizontal="true"/>
 
     <RatingBar
@@ -54,7 +53,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:id="@+id/scanButton"
-        android:layout_alignBottom="@+id/imageView"
+        android:layout_alignBottom="@+id/qr_image"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="39dp"

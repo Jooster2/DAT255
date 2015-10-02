@@ -1,7 +1,5 @@
 package com.soctec.soctec.network;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -79,7 +77,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                         @Override
                         public void run()
                         {
-                            myActivity.receiveDataFromPeer(id, profile); //TODO: User observer here?
+                            myActivity.receiveDataFromPeer(id, profile);
                         }
                     });
 
@@ -98,8 +96,9 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     }
 
     /**
-     * Singleton pattern
-     * First time called, connectoin listener thread will start automatically.
+     * Singleton pattern. Whenever you want to call a method in this class, use:
+     * NetworkHandler.getInstance().aMethod();
+     * First time called, connectionListenerThread will start automatically.
      * @param activity The main activity.
      * @return The one instance of NetworkHandler.
      */
@@ -112,48 +111,36 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     }
 
     /**
-     * This method is used when data needs to be backed up.
+     * This method is used when data needs to be backed up to the server.
      */
     public void backupData()
     {
-        if(!hasNetworkAccess(myActivity.getApplicationContext()))
-        {
-            Log.i("NetworkHandler", "No WIFI access, aborting network task");
-        }
-        else
-        {
-            msgType = BACKUP_MSG;
-            //Put together data to send to server: ID + TYPE + DATA
-            dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
-            execute();
-        }
+        msgType = BACKUP_MSG;
+        //Put together data to send to server: ID + TYPE + DATA
+        dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
+        execute();
     }
 
     /**
-     * This method is used when the profile needs to be downloaded to a new device.
+     * This method is used when the profile needs to be downloaded from the server to a new device.
      */
     public void downloadData()
     {
-        if(!hasNetworkAccess(myActivity.getApplicationContext()))
-        {
-            Log.i("NetworkHandler", "No WIFI access, aborting network task");
-        }
-        else
-        {
-            msgType = DOWNLOAD_MSG;
-            //Put together data to send to server: ID + TYPE
-            dataToSend = "<Insert my ID here>" + ":1";
-            execute();
-        }
+        msgType = DOWNLOAD_MSG;
+        //Put together data to send to server: ID + TYPE
+        dataToSend = "<Insert my ID here>" + ":1";
+        execute();
     }
 
     /**
-     * This method is called when a scan has taken place and we need to connect to a peer
+     * This method is called when a scan has taken place and we need to connect to a peer.
+     * This method will connect to the other device and exchange ID and profile data.
+     * MainActivity is called when this process in done.
      * @param scannedAddress The peer's address, scanned from QR
      */
     public void sendScanInfoToPeer(String scannedAddress)
     {
-        if (!hasNetworkAccess(myActivity.getApplicationContext()))
+        if (!ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
             Log.i("NetworkHandler", "No WIFI access, aborting network task");
         }
@@ -168,8 +155,8 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
 
     /**
      * Start the connectionListener Thread
-     * This is done automatically in the constructor. No need to call this function
-     * after class in initialized.
+     * This is done automatically in the constructor. Therefore, no need to call this function
+     * after class in initialized (initialization = calling .getInstance() the first time).
      */
     public void startConnectionListener()
     {
@@ -262,7 +249,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                     @Override
                     public void run()
                     {
-                        myActivity.receiveDataFromPeer(id, profile);  //TODO: User observer here?
+                        myActivity.receiveDataFromPeer(id, profile);
                     }
                 });
             }
@@ -275,25 +262,12 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                     @Override
                     public void run()
                     {
-                        myActivity.receiveDataFromServer(dataReceived);  //TODO: User observer here?
+                        myActivity.receiveDataFromServer(dataReceived);
                     }
                 });
             }
         }
 
         instance = new NetworkHandler(myActivity);
-    }
-
-    /**
-     * Checks if user is connected to Electricity wifi
-     * @param myContext Context of calling activity
-     * @return True if connected to Electricity wifi, o/w false
-     */
-    public static boolean hasNetworkAccess(Context myContext)
-    {
-        //TODO null if not on wifi??
-        ConnectivityManager connMgr =
-                (ConnectivityManager)myContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return (connMgr.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI);
     }
 }
