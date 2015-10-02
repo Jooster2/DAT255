@@ -6,7 +6,6 @@ package com.soctec.soctec.achievements;
  */
 public abstract class Achievement
 {
-    //TODO create a counter which can be incremented between achievement objects for use in infinite demands
     private String name;
     private int points;
     private String imageName;
@@ -66,11 +65,19 @@ public abstract class Achievement
         return id;
     }
 
+    /**
+     * Returns the type of the Achievement (SIN/INF)
+     * @return the type of the Achievement (SIN/INF)
+     */
     public String getType()
     {
         return type;
     }
 
+    /**
+     * Returns an Array containing basic information used to build this Achievement
+     * @return an Array containing basic information used to build this Achievement
+     */
     public String[] getAllData()
     {
         String[] data = {name, String.valueOf(points), imageName, id, type};

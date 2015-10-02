@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="counterAchievements">
+        <!--Singular Achievements-->
         <item>First Scan!, 50, someimg, S1, SIN, P_SCAN:1</item>
         <item>Second Scan!, 50, someimg2, S2, SIN, P_SCAN:2</item>
-        <item>GOGO! Towards Infinity!, 25, someimg3, S3, INF, P_SCAN:1:+ce2</item>
+
+
+        <!--Infinite Achievements-->
+        <item>GOGO! Towards Infinity!, 25, someimg3, S3, INF, P_SCAN:0:2ec</item>
     </string-array>
     <string-array name="collectionAchievements">
 

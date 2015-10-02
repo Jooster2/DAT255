@@ -46,7 +46,6 @@ public class CounterDemand
      */
     private int calculateDemand(int amount, String equation)
     {
-        //TODO "c" is not amount, c is a counter that must be created (number of achievemnts before current one)
         LinkedList<String> eq = (LinkedList)Arrays.asList(equation.split(""));
         if(eq.get(0).equals(""))
             eq.remove(0);

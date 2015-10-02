@@ -31,7 +31,7 @@ public class AchievementCreator extends Observable
      */
     public CounterAchievement createCounterAchievement(String[] data)
     {
-        //Arguments are (String Name, int points, String img, String id)
+        //Arguments are (String Name, int points, String img, String id, String type)
         CounterAchievement achievement = new CounterAchievement(data[0], Integer.parseInt(data[1]), data[2], data[3], data[4]);
         if(data[4].equals("SIN"))
             for(int i=5; i<data.length; i++)
@@ -58,8 +58,8 @@ public class AchievementCreator extends Observable
      */
     public CollectionAchievement createCollectionAchievement(String[] data)
     {
-        CollectionAchievement achievement = new CollectionAchievement(data[0], Integer.parseInt(data[1]), data[2],
-                data[3]);
+        CollectionAchievement achievement = new CollectionAchievement(data[0],
+                Integer.parseInt(data[1]), data[2], data[3]);
         //TODO everything...
         return achievement;
     }
@@ -71,8 +71,8 @@ public class AchievementCreator extends Observable
      */
     public void createFromFile()
     {
-        int resID = FileHandler.getInstance().getResourceID("counterAchievements", "values");
-        ArrayList<String> fromFile = FileHandler.getInstance().readFile(resID);
+        FileHandler fH = FileHandler.getInstance();
+        ArrayList<String> fromFile = fH.readFile(fH.getResourceID("counterAchievements", "values"));
         for(String item : fromFile)
         {
             String[] data = item.split(", ");
@@ -81,8 +81,7 @@ public class AchievementCreator extends Observable
             notifyObservers(achievement);
         }
 
-        resID = FileHandler.getInstance().getResourceID("collectionAchievements", "values");
-        fromFile = FileHandler.getInstance().readFile(resID);
+        fromFile = fH.readFile(fH.getResourceID("collectionAchievements", "values"));
         for(String item : fromFile)
         {
             String[] data = item.split(", ");
@@ -90,42 +89,6 @@ public class AchievementCreator extends Observable
             setChanged();
             notifyObservers(achievement);
         }
-
-        /*try
-        {
-            //TODO Input stream gives nullpointerexception (can't read file)
-            InputStream is = context.getResources().openRawResource(R.raw.achievement_definitions);
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
-            String line = buffer.readLine();
-            while(line != null)
-            {
-                if(line.charAt(0) == '#')
-                    continue;
-
-                String[] data = line.split(", ");
-                if(data[0].equals("CNT"))
-                {
-                    CounterAchievement achievement = createCounterAchievement(data);
-
-                    setChanged();
-                    notifyObservers(achievement);
-                }
-                else if(data[0].equals("COL"))
-                {
-                    CollectionAchievement achievement = createCollectionAchievement(data);
-                    setChanged();
-                    notifyObservers(achievement);
-                }
-
-                line = buffer.readLine();
-            }
-            buffer.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }*/
-
     }
 
     /**
@@ -153,15 +116,19 @@ public class AchievementCreator extends Observable
 
     /**
      * Used to create a new Achievement based on an old Achievement
+     * This can also be used to recreate a copy of the old Achievement
      * @param achievement an old Achievement
      */
     public void createAchievement (Achievement achievement)
     {
         String[] data = achievement.getAllData();
+        Achievement achi;
         if(achievement instanceof CounterAchievement)
-            createCounterAchievement(data);
-        else if(achievement instanceof CollectionAchievement)
-            createCollectionAchievement(data);
+            achi = createCounterAchievement(data);
+        else //if(achievement instanceof CollectionAchievement)
+            achi = createCollectionAchievement(data);
+        setChanged();
+        notifyObservers(achi);
 
     }
 }

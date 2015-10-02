@@ -46,11 +46,20 @@ public class CounterAchievement extends Achievement
     {
         demands.add(new CounterDemand(type, amount, equation));
     }
+
+    /**
+     * Returns a list of all Demands
+     * @return a list of all Demands
+     */
     public ArrayList<CounterDemand> getDemands ()
     {
         return demands;
     }
 
+    /**
+     * Returns an Array containing all information used to build this Achievement
+     * @return an Array containing all information used to build this Achievement
+     */
     @Override
     public String[] getAllData()
     {
