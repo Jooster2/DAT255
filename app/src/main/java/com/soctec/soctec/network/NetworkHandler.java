@@ -27,7 +27,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     private static final int DOWNLOAD_MSG = 1;
     private static final int SCAN_MSG = 2;
     private static final int SERVER_PORT_NR = 49999;
-    private static final int PEER_PORT_NR = 49998;
+    private static final int PEER_PORT_NR = 49997;
     private static final String SERVER_ADDRESS = "XXX.XXX.XXX.XXX";
 
     private int msgType;
@@ -205,7 +205,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                 Log.i("", params[0]);
                 //Send data to peer
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(params[0], PEER_PORT_NR), 1000);
+                socket.connect(new InetSocketAddress(params[0], PEER_PORT_NR), 10000);
 
                 Log.i("Client socket", "Socket created!");
 

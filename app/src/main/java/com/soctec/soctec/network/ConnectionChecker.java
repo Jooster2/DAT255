@@ -41,7 +41,11 @@ public class ConnectionChecker extends BroadcastReceiver
             "04:f0:21:10:09:53",
             "06:f0:21:10:0c:87",
             "06:f0:21:10:0c:ab",
-            "06:f0:21:11:5c:3d"
+            "06:f0:21:11:5c:3d",
+            "04:f0:21:11:a9:f7",
+            "06:f0:21:11:59:70",
+            "06:f0:21:11:59:3d",
+            "04:f0:21:10:09:5b"
     };
 
     public ConnectionChecker(MainActivity activity)

@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             account = "walla";
         //TODO crash and burn (handle this some way...)
 
-        String userCode = new Encryptor().encrypt(account);
-        Profile.setUserCode(userCode);
+        //String userCode = new Encryptor().encrypt(account);
+        Profile.setUserCode(account);
 
         //Initialize the FileHandler
         FileHandler.getInstance().setContext(this);
@@ -177,10 +177,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         vibrator.vibrate(100);
 
         unlocker.receiveEvent(1, idFromPeer);
-        String achievement = stats.getAchievements().getFirst().getName();
+        String achievement = stats.getlastScanned();
         Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
-
-
+        String time = String.valueOf(stats.getTimeTalked());
+        Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
     }
 
     /**

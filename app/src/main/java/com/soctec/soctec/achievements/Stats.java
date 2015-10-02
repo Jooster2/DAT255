@@ -29,6 +29,9 @@ public class Stats
         //TODO read db
     }
 
+    public int getTimeTalked (){
+        return timeTalked;
+    }
     /**
      * Returns the users points
      * @return the users points
