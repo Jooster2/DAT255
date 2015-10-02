@@ -175,7 +175,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
-        Toast.makeText(getApplicationContext(), idFromPeer, Toast.LENGTH_LONG).show();
+
+        unlocker.receiveEvent(1, idFromPeer);
+        String achievement = stats.getAchievements().getFirst().getName();
+        Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
+
+
     }
 
     /**
