@@ -2,12 +2,9 @@ package com.soctec.soctec.achievements;
 
 import android.content.Context;
 
-import com.soctec.soctec.R;
+import com.soctec.soctec.core.FileHandler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Observable;
 /**
  * An AchievementCreator creates Achievement objects on request.
@@ -24,9 +21,7 @@ public class AchievementCreator extends Observable
      */
     public AchievementCreator(Context context)
     {
-
         this.context = context;
-
     }
 
     /**
@@ -36,19 +31,25 @@ public class AchievementCreator extends Observable
      */
     public CounterAchievement createCounterAchievement(String[] data)
     {
-        //Arguments are (String Name, int points, String img, String id)
-        CounterAchievement achievement = new CounterAchievement(data[1], Integer.parseInt(data[2]), data[3], data[4]);
-        if(data[5].equals("SIN"))
-            for(int i=6; i<data.length; i++)
+        //Arguments are (String Name, int points, String img, String id, String type)
+        CounterAchievement achievement = new CounterAchievement(data[0], Integer.parseInt(data[1]), data[2], data[3], data[4]);
+        if(data[4].equals("SIN"))
+            for(int i=5; i<data.length; i++)
             {
                 String[] demand = data[i].split(":");
                 achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
             }
-        else if(data[5].equals("INF"))
-            return achievement;
-        //TODO create demand of infinite type
+        else if(data[4].equals("INF"))
+        {
+            for(int i = 5; i < data.length; i++)
+            {
+                String[] demand = data[i].split(":");
+                achievement.createDemand(demand[0], Integer.parseInt(demand[1]), demand[2]);
+            }
+        }
         return achievement;
     }
+
 
     /**
      * Creates an Achievement object of type CollectionAchievement
@@ -57,8 +58,8 @@ public class AchievementCreator extends Observable
      */
     public CollectionAchievement createCollectionAchievement(String[] data)
     {
-        CollectionAchievement achievement = new CollectionAchievement(data[1], Integer.parseInt(data[2]), data[3],
-                data[4]);
+        CollectionAchievement achievement = new CollectionAchievement(data[0],
+                Integer.parseInt(data[1]), data[2], data[3]);
         //TODO everything...
         return achievement;
     }
@@ -70,41 +71,24 @@ public class AchievementCreator extends Observable
      */
     public void createFromFile()
     {
-        try
+        FileHandler fH = FileHandler.getInstance();
+        ArrayList<String> fromFile = fH.readFile(fH.getResourceID("counterAchievements", "values"));
+        for(String item : fromFile)
         {
-            //TODO Input stream gives nullpointerexception (can't read file)
-            InputStream is = context.getResources().openRawResource(R.raw.achievement_definitions);
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
-            String line = buffer.readLine();
-            while(line != null)
-            {
-                if(line.charAt(0) == '#')
-                    continue;
-
-                String[] data = line.split(", ");
-                if(data[0].equals("CNT"))
-                {
-                    CounterAchievement achievement = createCounterAchievement(data);
-
-                    setChanged();
-                    notifyObservers(achievement);
-                }
-                else if(data[0].equals("COL"))
-                {
-                    CollectionAchievement achievement = createCollectionAchievement(data);
-                    setChanged();
-                    notifyObservers(achievement);
-                }
-
-                line = buffer.readLine();
-            }
-            buffer.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
+            String[] data = item.split(", ");
+            CounterAchievement achievement = createCounterAchievement(data);
+            setChanged();
+            notifyObservers(achievement);
         }
 
+        fromFile = fH.readFile(fH.getResourceID("collectionAchievements", "values"));
+        for(String item : fromFile)
+        {
+            String[] data = item.split(", ");
+            CollectionAchievement achievement = createCollectionAchievement(data);
+            setChanged();
+            notifyObservers(achievement);
+        }
     }
 
     /**
@@ -131,11 +115,20 @@ public class AchievementCreator extends Observable
     }
 
     /**
-     * Used to create a new Achievement based on argument
+     * Used to create a new Achievement based on an old Achievement
+     * This can also be used to recreate a copy of the old Achievement
      * @param achievement an old Achievement
      */
     public void createAchievement (Achievement achievement)
     {
+        String[] data = achievement.getAllData();
+        Achievement achi;
+        if(achievement instanceof CounterAchievement)
+            achi = createCounterAchievement(data);
+        else //if(achievement instanceof CollectionAchievement)
+            achi = createCollectionAchievement(data);
+        setChanged();
+        notifyObservers(achi);
 
     }
 }

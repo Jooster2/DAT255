@@ -1,6 +1,7 @@
 package com.soctec.soctec.core;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.Image;
 
 import java.io.BufferedReader;
@@ -8,8 +9,10 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 /**
  * FileHandler handles all reading and writing of files.
  * @singleton true
@@ -58,19 +61,34 @@ public class FileHandler
             String line = readBuffer.readLine();
             while(line != null)
             {
+                //For commenting in the file
                 if(line.charAt(0) == '#')
                     continue;
                 fromFile.add(line);
-
                 line = readBuffer.readLine();
             }
             readBuffer.close();
-
         }
         catch(IOException e)
         {
             e.printStackTrace();
         }
+        return fromFile;
+    }
+
+    /**
+     * Reads a String-Array from a resource
+     * @param resID ID of the resource to read from
+     * @return list of Strings found in resource
+     */
+    public ArrayList<String> readFile(int resID)
+    {
+        ArrayList<String> fromFile = new ArrayList<>();
+
+        Resources res = context.getResources();
+        String[] items = res.getStringArray(resID);
+        fromFile.addAll(Arrays.asList(items));
+
         return fromFile;
     }
 
