@@ -41,6 +41,24 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Achievement namn"
+        android:id="@+id/showerNameTextView"
+        android:layout_above="@+id/showerPointTextView"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="0 poäng"
+        android:id="@+id/showerPointTextView"
+        android:layout_above="@+id/showerQuitButton"
+        android:layout_centerHorizontal="true"/>
+
 
 </RelativeLayout>
 

@@ -8,8 +8,10 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.achievements.Achievement;
 
 public class AchievementShowerActivity extends Activity
 {
@@ -19,7 +21,7 @@ public class AchievementShowerActivity extends Activity
     private int headTextId;
     private int frontImageId;
     private int backImageId;
-
+    private Achievement achievement;
     //private Image button;
 
 
@@ -41,6 +43,13 @@ public class AchievementShowerActivity extends Activity
         mainImageFrontView.setImageResource(frontImageId);
 
 
+        TextView achNameView = (TextView)findViewById(R.id.showerNameTextView);
+        achNameView.setText(getName());
+
+        TextView achPointView = (TextView)findViewById(R.id.showerPointTextView);
+        achNameView.setText(getPoints());
+
+
         Button quitButton = (Button) findViewById(R.id.showerQuitButton);
         quitButton.setOnClickListener(
                 new View.OnClickListener()
@@ -56,6 +65,14 @@ public class AchievementShowerActivity extends Activity
 
 
 
+    public String getName()
+    {
+        return achievement.getName();
+    }
+    public int getPoints()
+    {
+        return achievement.getPoints();
+    }
 
     public int getAchievementImageId()
     {
