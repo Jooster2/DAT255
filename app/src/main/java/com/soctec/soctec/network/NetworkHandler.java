@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.soctec.soctec.core.MainActivity;
+import com.soctec.soctec.profile.Profile;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -66,12 +67,12 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                     //Write data
                     ObjectOutputStream dos = new ObjectOutputStream(
                             clientSocket.getOutputStream());
-                    dataToSend = "<Insert my ID here>" + "<Insert data here>";
+                    dataToSend = Profile.getUserCode() + "&" + Profile.getProfileString();
                     dos.writeObject(dataToSend);
 
                     //Send read data to MainActivity
-                    final String id = dataReceived;//.split(",")[0];
-                    final String profile = dataReceived;//.split(",")[1];
+                    final String id = dataReceived.split("&")[0];
+                    final String profile = dataReceived.split("&")[1];
                     myActivity.runOnUiThread(new Runnable()
                     {
                         @Override
@@ -147,8 +148,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
         else
         {
             msgType = SCAN_MSG;
-            //Put together data to send to server: ID + Profile data
-            dataToSend = "<Insert my ID here>" + "<Insert data here>";
+            dataToSend = Profile.getUserCode() + "&" + Profile.getProfileString();
             execute(scannedAddress);
         }
     }
@@ -241,8 +241,8 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             {
                 Log.i("PostExecute", "Received: " + dataReceived);
 
-                final String id = dataReceived;//.split(",")[0];
-                final String profile = dataReceived;//.split(",")[1];
+                final String id = dataReceived.split("&")[0];
+                final String profile = dataReceived.split("&")[1];
 
                 myActivity.runOnUiThread(new Runnable()
                 {

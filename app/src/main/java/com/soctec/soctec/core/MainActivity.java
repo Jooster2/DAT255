@@ -34,6 +34,7 @@ import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.network.ConnectionChecker;
 import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
+import com.soctec.soctec.profile.ProfileActivity;
 
 /**
  * MainActivity is a tabbed activity, and sets up most of the other objects for the App
@@ -277,6 +278,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         if(id == R.id.action_settings)
         {
             return true;
+        }
+        else if(id == R.id.action_profile)
+        {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

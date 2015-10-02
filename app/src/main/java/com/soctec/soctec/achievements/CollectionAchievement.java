@@ -10,7 +10,7 @@ public class CollectionAchievement extends Achievement
     private List <CollectionDemand> finishedList;
     public CollectionAchievement(String name, int points, String imageName, String id)
     {
-        super (name, points,imageName, id);
+        super (name, points,imageName, id, null);
     }
 
     /**
