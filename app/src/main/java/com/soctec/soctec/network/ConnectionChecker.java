@@ -90,7 +90,7 @@ public class ConnectionChecker extends BroadcastReceiver
         WifiManager wm = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         WifiInfo wi = wm.getConnectionInfo();
-        boolean connectedToElectricity = false;
+        boolean connectedToElectricity = true;
 
         if(ni.isConnected())
         {
