@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         String account = getPlayAcc();
         if(account == null)
-            System.exit(0);
+            account = "walla";
         //TODO crash and burn (handle this some way...)
 
         String userCode = new Encryptor().encrypt(account);

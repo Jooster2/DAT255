@@ -137,6 +137,6 @@ public class FileHandler
      */
     public int getResourceID(String name, String type)
     {
-        return context.getResources().getIdentifier(name, type, context.getPackageName());
+        return context.getResources().getIdentifier(name, type,context.getPackageName());
     }
 }

@@ -46,7 +46,7 @@ public class CounterDemand
      */
     private int calculateDemand(int amount, String equation)
     {
-        LinkedList<String> eq = (LinkedList)Arrays.asList(equation.split(""));
+        LinkedList<String> eq = new LinkedList<>(Arrays.asList(equation.split("")));
         if(eq.get(0).equals(""))
             eq.remove(0);
         eq.set(eq.indexOf("c"), String.valueOf(amount));
@@ -58,9 +58,10 @@ public class CounterDemand
                 int i = eq.indexOf("e");
                 double x = Double.parseDouble(eq.get(i-1));
                 double y = Double.parseDouble(eq.get(i+1));
-                eq.set(i, String.valueOf((int)Math.pow(x,y)));
-                eq.remove(i-1);
+                eq.set(i, String.valueOf((int) Math.pow(x, y)));
                 eq.remove(i+1);
+                eq.remove(i-1);
+
             }
             else if(eq.contains("*"))
             {
@@ -68,17 +69,17 @@ public class CounterDemand
                 int x = Integer.parseInt(eq.get(i-1));
                 int y = Integer.parseInt(eq.get(i+1));
                 eq.set(i, String.valueOf(x*y));
-                eq.remove(i-1);
                 eq.remove(i+1);
+                eq.remove(i-1);
             }
-            if(eq.contains("/"))
+            else if(eq.contains("/"))
             {
                 int i = eq.indexOf("/");
                 double x = Double.parseDouble(eq.get(i-1));
                 double y = Double.parseDouble(eq.get(i+1));
                 eq.set(i, String.valueOf((int)(x/y)));
-                eq.remove(i-1);
                 eq.remove(i+1);
+                eq.remove(i-1);
             }
             else if(eq.contains("+"))
             {
@@ -86,8 +87,8 @@ public class CounterDemand
                 int x = Integer.parseInt(eq.get(i-1));
                 int y = Integer.parseInt(eq.get(i+1));
                 eq.set(i, String.valueOf(x+y));
-                eq.remove(i-1);
                 eq.remove(i+1);
+                eq.remove(i-1);
             }
             else if(eq.contains("-"))
             {
@@ -95,8 +96,8 @@ public class CounterDemand
                 int x = Integer.parseInt(eq.get(i-1));
                 int y = Integer.parseInt(eq.get(i+1));
                 eq.set(i, String.valueOf(x+y));
-                eq.remove(i-1);
                 eq.remove(i+1);
+                eq.remove(i-1);
             }
         }
         return Integer.parseInt(eq.getFirst());

@@ -26,7 +26,7 @@ public class AchievementTest extends AndroidTestCase
     public void testCreateAchievement () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch();
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
         assertEquals( 1, unlocker.getUnlockableAchievements().size());
     }
 
@@ -37,7 +37,7 @@ public class AchievementTest extends AndroidTestCase
     public void testScanCountInc () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch();
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(stats.getScanCount(), 1);
 
@@ -50,7 +50,7 @@ public class AchievementTest extends AndroidTestCase
     public void testLastScanned () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch();
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals("JOCKE", stats.getlastScanned());
     }
@@ -61,7 +61,7 @@ public class AchievementTest extends AndroidTestCase
     public void testUnlockAchievement () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch();
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
@@ -74,12 +74,18 @@ public class AchievementTest extends AndroidTestCase
     public void testCreate4Achievements () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch();
-        creator.createTestAch();
-        creator.createTestAch();
-        creator.createTestAch();
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
         assertEquals(4, unlocker.getUnlockableAchievements().size());
 
         //TODO : Write more tests, what kind of tests?
+    }
+    public void testCreateInfiniteAchievements () throws Exception
+    {
+        creator.addObserver(unlocker);
+        creator.createTestAch("CNT, First Scan!, 50, someimg, S1, INF, P_SCAN:0:2ec");
+        unlocker.receiveEvent(1, "JOCKE");
     }
 }
