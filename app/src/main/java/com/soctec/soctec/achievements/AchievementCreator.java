@@ -121,6 +121,7 @@ public class AchievementCreator extends Observable
      */
     public void createAchievement (Achievement achievement)
     {
+        //TODO update achievements id?
         String[] data = achievement.getAllData();
         Achievement achi;
         if(achievement instanceof CounterAchievement)
