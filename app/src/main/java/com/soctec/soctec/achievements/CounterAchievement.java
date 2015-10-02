@@ -63,11 +63,11 @@ public class CounterAchievement extends Achievement
     @Override
     public String[] getAllData()
     {
-        ArrayList<String> data = (ArrayList) Arrays.asList(super.getAllData());
+        ArrayList<String> data = new ArrayList<>( Arrays.asList(super.getAllData()));
         for(CounterDemand demand : demands)
         {
             data.add(demand.type + ":" + demand.amount + ":" + demand.equation);
         }
-        return (String[])data.toArray();
+        return data.toArray(new String[data.size()]);
     }
 }

@@ -66,9 +66,10 @@ public class AchievementUnlocker implements Observer
                 if (achievementUnlocked == true)
                 {
                     currentStats.addCompletedAchievement(element);
+                    it.remove();
                     if (element.getType().equals("INF"))
                         creator.createAchievement(element);
-                    it.remove();
+
                 }
             }
         }
