@@ -50,38 +50,12 @@ public class QRMain
     }
 
 
-    public String getUserIP()
+
+
+    /*public Bitmap getQrOfIp()
     {
-
-        WifiManager manager = (WifiManager) mContext.getSystemService(mContext.WIFI_SERVICE);
-        int ipAddress = manager.getConnectionInfo().getIpAddress();
-
-
-        // Convert little-endian to big-endianif needed
-        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN))
-        {
-            ipAddress = Integer.reverseBytes(ipAddress);
-        }
-
-        byte[] ipByteArray = BigInteger.valueOf(ipAddress).toByteArray();
-
-        String ipAddressString;
-        try
-        {
-            ipAddressString = InetAddress.getByAddress(ipByteArray).getHostAddress();
-        } catch (UnknownHostException e)
-        {
-            Log.e("WIFIIP", "Unable to get host address.");
-            ipAddressString = null;
-        }
-
-        return ipAddressString;
-    }
-
-    public Bitmap getQrOfIp()
-    {
-        return qrGen.getQR(getUserIP());
-    }
+        //return qrGen.getQR(getUserIP());
+    }*/
 
     public String getEncryptedAcc()
     {

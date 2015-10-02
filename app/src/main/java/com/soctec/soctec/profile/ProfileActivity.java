@@ -16,10 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- *
- * @see SystemUiHider
+ * A ProfileActivity is an Activity that shows and allows edits to the profile data
+ * @author Joakim Schmidt
+ * @version 1.0
  */
 public class ProfileActivity extends Activity
 {
@@ -54,6 +53,9 @@ public class ProfileActivity extends Activity
         writeToFile();
     }
 
+    /**
+     * Updates the local profile list with data from the GUI
+     */
     private void updateProfileItems()
     {
         profileItems = new ArrayList<>();
@@ -68,6 +70,9 @@ public class ProfileActivity extends Activity
         }
     }
 
+    /**
+     * Attempts to load the old profile from file
+     */
     private void createFromFile()
     {
         try
@@ -96,6 +101,9 @@ public class ProfileActivity extends Activity
         }
     }
 
+    /**
+     * Attempts to save the current profile to file
+     */
     private void writeToFile()
     {
         try
@@ -124,6 +132,9 @@ public class ProfileActivity extends Activity
         }
     }
 
+    /**
+     * Inserts the local profile into the GUI
+     */
     public void populateListView()
     {
         int i=0;

@@ -6,6 +6,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.net.wifi.WifiManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -16,21 +17,29 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
 import com.soctec.soctec.achievements.Stats;
-import com.soctec.soctec.network.ConnectionReceiver;
+import com.soctec.soctec.network.ConnectionChecker;
 import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 
+/**
+ * MainActivity is a tabbed activity, and sets up most of the other objects for the App
+ * @author Jesper, Joakim, David
+ * @version 1.1
+ */
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
 
@@ -48,11 +57,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    ConnectionReceiver connectionReceiver;
+    ConnectionChecker connectionChecker = null;
 
-    AchievementCreator creator;
-    AchievementUnlocker unlocker;
-    Stats stats;
+    private Stats stats;
+    private AchievementCreator creator;
+    private AchievementUnlocker unlocker;
 
 
     private static int REQUEST_CODE = 0;
@@ -66,10 +75,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         String account = getPlayAcc();
         if(account == null)
             System.exit(0);
-            //TODO crash and burn (handle this some way...)
+        //TODO crash and burn (handle this some way...)
 
         String userCode = new Encryptor().encrypt(account);
         Profile.setUserCode(userCode);
+
+        //Initialize the FileHandler
+        FileHandler.getInstance().setContext(this);
 
         //Initialize the Achievement engine
         stats = new Stats();
@@ -81,29 +93,22 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this);
 
-        //Initialize broadcastReceiver
-        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(connectionReceiver = new ConnectionReceiver(), intentFilter);
-
+        //Initialize the ActionBar
         setupActionBar();
     }
 
-    @Override
-    protected void onPause()
+    /**
+     * Initiate the BroadcastReceiver and register it.
+     */
+    public void startReceiver()
     {
-        super.onPause();
-        NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
-        unregisterReceiver(connectionReceiver);
-    }
+        IntentFilter intentFilter =
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(
+                connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
 
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        NetworkHandler.getInstance(this).startConnectionListener();
-
-        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        registerReceiver(connectionReceiver, intentFilter);
+        Log.i("Main", "Receiver started!");
     }
 
     /**
@@ -132,7 +137,25 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         }
     }
 
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
+        unregisterReceiver(connectionChecker);
+    }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        NetworkHandler.getInstance(this).startConnectionListener();
+
+        IntentFilter intentFilter =
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(connectionChecker, intentFilter);
+    }
 
     /**
      * Called by NetworkHandler when data has been received from the server.
@@ -150,10 +173,26 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
     {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        vibrator.vibrate(500);
+        vibrator.vibrate(100);
         Toast.makeText(getApplicationContext(), idFromPeer, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Update the QR image
+     * @param QR
+     */
+    public void updateQR(Bitmap QR)
+    {
+        Log.i("MainFrag", "Update qr");
+
+        ImageView im = (ImageView) findViewById(R.id.qr_image);
+        im.setImageBitmap(QR);
+    }
+
+    /**
+     * Returns the device's google account name
+     * @return the device's google account name
+     */
     private String getPlayAcc()
     {
         String accMail = null;
@@ -175,12 +214,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     //--------------- Below is all auto-generated code from ActionBar --------------------
 
     /**
-     * Setup the ActionBar
+     * Sets up the ActionBar
      */
     private void setupActionBar()
     {
-        // This used to be in onCreate, but it took up to much space
-        // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -191,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
@@ -218,6 +254,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -286,6 +324,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     return new MainFragment();
                 case 1:
                     return new AchievementsFragment();
+                //case 2:
+                //    return new LeftFragment();
             }
             return null;
         }
@@ -307,6 +347,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_section2).toUpperCase(l);
+                //case 2:
+                //    return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }
