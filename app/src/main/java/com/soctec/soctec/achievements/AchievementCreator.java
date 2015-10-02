@@ -99,19 +99,14 @@ public class AchievementCreator extends Observable
 
 
         String[] data = line.split(", ");
-        if(data[0].equals("CNT"))
-        {
-                CounterAchievement achievement = createCounterAchievement(data);
 
-                setChanged();
-                notifyObservers(achievement);
-        }
-        else if(data[0].equals("COL"))
-        {
-                CollectionAchievement achievement = createCollectionAchievement(data);
-                setChanged();
-                notifyObservers(achievement);
-        }
+
+        CounterAchievement achievement = createCounterAchievement(data);
+
+        setChanged();
+        notifyObservers(achievement);
+
+
     }
 
     /**
