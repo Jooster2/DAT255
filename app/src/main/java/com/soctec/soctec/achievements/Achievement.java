@@ -53,9 +53,9 @@ public class Achievement
      * @param amount the amount of counts before unlocked
      * @param equation equation used for to calculate next demand in infinite achievements
      */
-    public void createDemand(String type, int amount, String equation)
+    public void createDemand(String type, int amount, String equation, int cycle)
     {
-        demands.add(new Demand(type, amount, equation));
+        demands.add(new Demand(type, amount, equation, cycle));
     }
 
     /**

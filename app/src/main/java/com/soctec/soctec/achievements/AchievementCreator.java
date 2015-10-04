@@ -21,6 +21,7 @@ public class AchievementCreator extends Observable
 
     public Achievement createAchievement(String[] def)
     {
+        // Arguments are: Name, Points, Image-name, ID, Type-name
         Achievement achievement = new Achievement(def[0], Integer.parseInt(def[1]),
                 def[2], def[3], def[4]);
         for(int i=5; i<def.length; i++)
@@ -33,10 +34,12 @@ public class AchievementCreator extends Observable
                     achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
                     break;
                 case "INF":
-                    achievement.createDemand(demand[0], Integer.parseInt(demand[1]), demand[2]);
+                    achievement.createDemand(demand[0], Integer.parseInt(demand[1]),
+                            demand[2], getIDNumber(def[3]));
                     break;
                 case "COL":
                     FileHandler fH = FileHandler.getInstance();
+                    // See achievement_definitions.xml for explanation
                     String[] requirements = demand[1].split("/");
                     for(String req : requirements)
                     {
@@ -85,7 +88,7 @@ public class AchievementCreator extends Observable
     {
         CollectionAchievement achievement = new CollectionAchievement(data[0],
                 Integer.parseInt(data[1]), data[2], data[3]);
-        //TODO everything...
+
         return achievement;
     }*/
 
@@ -142,8 +145,9 @@ public class AchievementCreator extends Observable
      */
     public void recreateAchievement (Achievement achievement)
     {
-        //TODO update achievements id?
         String[] data = achievement.getAllData();
+        if(achievement.getType().equals("INF"))
+            data[3] = incID(data[3]);
         Achievement achi = createAchievement(data);
         /*if(achievement instanceof CounterAchievement)
             achi = createCounterAchievement(data);
@@ -152,5 +156,28 @@ public class AchievementCreator extends Observable
         setChanged();
         notifyObservers(achi);
 
+    }
+
+    /**
+     * Creates a new ID based on the old one, by incrementing the number by one.
+     * @param ID the ID to be incremented
+     * @return the new, incremented, ID
+     */
+    private String incID(String ID)
+    {
+        //Splits into a limited array (max length 2). First letters, then numbers
+        String[] splitted = ID.split("(?=[^a-zA-Z])", 2);
+        return splitted[0] + String.valueOf(Integer.parseInt(splitted[1])+1);
+    }
+
+    /**
+     * Extracts the number part of the ID
+     * @param ID ID to be extracted from
+     * @return the number found in ID
+     */
+    private int getIDNumber(String ID)
+    {
+        String[] splitted = ID.split("(?=[^a-zA-Z])", 2);
+        return Integer.parseInt(splitted[1]);
     }
 }

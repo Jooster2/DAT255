@@ -90,9 +90,9 @@ public class AchievementTest extends AndroidTestCase
     public void testCreateInfiniteAchievements () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, I1, INF, P_SCAN:0:2^c");
+        creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:+2^c");
         unlocker.receiveEvent(1, "JOCKE");
-        assertEquals(stats.getAchievements().getFirst().getId(), "I1");
+        assertEquals(stats.getAchievements().getFirst().getId(), "SI0");
         assertEquals(1, unlocker.getUnlockableAchievements().size());
         // Check that the new achievements goal is set correctly according to equation
         // Should be 2 (current total of scans is 1)
@@ -102,7 +102,7 @@ public class AchievementTest extends AndroidTestCase
         assertEquals(4, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
         unlocker.receiveEvent(1, "JOCKE");
         unlocker.receiveEvent(1, "JOCKE");
-        // Should be 16 (current total of scans is 4)
-        assertEquals(16, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
+        // Should be 8 (current total of scans is 4)
+        assertEquals(8, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
     }
 }

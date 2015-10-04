@@ -7,7 +7,7 @@
 
 
         <!--Infinite Achievements-->
-        <item>GOGO! Towards Infinity!, 25, someimg3, I1, INF, P_SCAN:0:2^c</item>
+        <item>GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:+2^c</item>
 
         <!--Collection Achievements-->
         <item>Gotta Catch em All!, 50, someimg, C1, COL, C_SCAN:BUS1/BUS2/BUS3</item>
