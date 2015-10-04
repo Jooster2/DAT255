@@ -63,62 +63,48 @@ public class Demand
      */
     private int calculateDemand(int amount, String equation, int cycle)
     {
+        //TODO might want to migrate eq to LinkedList<Character> for optimization, but maybe not worth it
         LinkedList<String> eq = new LinkedList<>(Arrays.asList(equation.split("")));
         // In Java 7, the above code will result in an empty element at first place, which we remove
         if(eq.get(0).equals(""))
             eq.remove(0);
-        eq.addFirst(String.valueOf(amount));
-        eq.set(eq.indexOf("c"), String.valueOf(cycle));
+        // Replace all instances of 'a' with amount
+        while(eq.contains("a"))
+            eq.set(eq.indexOf("a"), String.valueOf(amount));
+        // Replace all instances of 'c' with cycle
+        while(eq.contains("c"))
+            eq.set(eq.indexOf("c"), String.valueOf(cycle));
         while(eq.size() > 1)
         {
 
             if(eq.contains("^"))
-            {
-                int i = eq.indexOf("^");
-                double x = Double.parseDouble(eq.get(i-1));
-                double y = Double.parseDouble(eq.get(i+1));
-                eq.set(i, String.valueOf((int) Math.pow(x, y)));
-                eq.remove(i+1);
-                eq.remove(i-1);
-
-            }
+                calc(eq, "^");
             else if(eq.contains("*"))
-            {
-                int i = eq.indexOf("*");
-                int x = Integer.parseInt(eq.get(i-1));
-                int y = Integer.parseInt(eq.get(i+1));
-                eq.set(i, String.valueOf(x*y));
-                eq.remove(i+1);
-                eq.remove(i-1);
-            }
+                calc(eq, "*");
             else if(eq.contains("/"))
-            {
-                int i = eq.indexOf("/");
-                double x = Double.parseDouble(eq.get(i-1));
-                double y = Double.parseDouble(eq.get(i+1));
-                eq.set(i, String.valueOf((int)(x/y)));
-                eq.remove(i+1);
-                eq.remove(i-1);
-            }
+                calc(eq, "/");
             else if(eq.contains("+"))
-            {
-                int i = eq.indexOf("+");
-                int x = Integer.parseInt(eq.get(i-1));
-                int y = Integer.parseInt(eq.get(i+1));
-                eq.set(i, String.valueOf(x+y));
-                eq.remove(i+1);
-                eq.remove(i-1);
-            }
+                calc(eq, "+");
             else if(eq.contains("-"))
-            {
-                int i = eq.indexOf("+");
-                int x = Integer.parseInt(eq.get(i-1));
-                int y = Integer.parseInt(eq.get(i+1));
-                eq.set(i, String.valueOf(x+y));
-                eq.remove(i+1);
-                eq.remove(i-1);
-            }
+                calc(eq, "-");
         }
         return Integer.parseInt(eq.getFirst());
+    }
+
+    private void calc(LinkedList<String> eq, String op)
+    {
+        int i = eq.indexOf(op);
+        double x = Double.parseDouble(eq.get(i-1));
+        double y = Double.parseDouble(eq.get(i+1));
+        switch(op)
+        {
+            case "^": eq.set(i, String.valueOf((int)Math.pow(x, y))); break;
+            case "*": eq.set(i, String.valueOf((int)(x*y))); break;
+            case "/": eq.set(i, String.valueOf((int)(x/y))); break;
+            case "+": eq.set(i, String.valueOf((int)(x+y))); break;
+            case "-": eq.set(i, String.valueOf((int)(x-y))); break;
+        }
+        eq.remove(i+1);
+        eq.remove(i-1);
     }
 }

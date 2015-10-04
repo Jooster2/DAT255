@@ -1,8 +1,6 @@
 package com.soctec.soctec.test;
 
 import android.test.AndroidTestCase;
-import android.test.InstrumentationTestCase;
-import android.util.Log;
 
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
@@ -90,7 +88,7 @@ public class AchievementTest extends AndroidTestCase
     public void testCreateInfiniteAchievements () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:+2^c");
+        creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:2^c");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(stats.getAchievements().getFirst().getId(), "SI0");
         assertEquals(1, unlocker.getUnlockableAchievements().size());

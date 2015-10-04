@@ -7,7 +7,7 @@
 
 
         <!--Infinite Achievements-->
-        <item>GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:+2^c</item>
+        <item>GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:2^c</item>
 
         <!--Collection Achievements-->
         <item>Gotta Catch em All!, 50, someimg, C1, COL, C_SCAN:BUS1/BUS2/BUS3</item>
@@ -18,8 +18,11 @@
 <!--
 Singular achievements:
 name, points, imageFileName, ID, type, demandtype:amount, demandtype:amount
+
 Infinite achievements:
 name, points, imageFileName, ID, type, demandtype:amount:equation, demandtype:amount:equation
+equation: supports ^, *, /, +, -, a, c where a=amount (previous) and c=numerical part of ID
+
 Collection achievements (note: demandtype is maybe (probably) not needed):
 name, points, imageFileName, ID, type, demandtype:item1/item2/itemN, demandtype:thing1/thing2 etc
 -->
