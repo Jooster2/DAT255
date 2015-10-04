@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //Initialize the Achievement engine
         stats = new Stats();
-        creator = new AchievementCreator(this);
+        creator = new AchievementCreator();
         unlocker = new AchievementUnlocker(stats, creator);
         creator.addObserver(unlocker);
         creator.createFromFile();

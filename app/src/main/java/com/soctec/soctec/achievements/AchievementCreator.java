@@ -7,7 +7,7 @@ import java.util.Observable;
 /**
  * An AchievementCreator creates Achievement objects on request.
  * @author Joakim Schmidt
- * @version 1.1
+ * @version 2.0
  */
 public class AchievementCreator extends Observable
 {
@@ -26,6 +26,7 @@ public class AchievementCreator extends Observable
         for(int i=5; i<def.length; i++)
         {
             String[] demand = def[i].split(":");
+            // def[4] is type (SIN/INF/COL)
             switch(def[4])
             {
                 case "SIN":
@@ -36,7 +37,6 @@ public class AchievementCreator extends Observable
                     break;
                 case "COL":
                     FileHandler fH = FileHandler.getInstance();
-
                     String[] requirements = demand[1].split("/");
                     for(String req : requirements)
                     {
