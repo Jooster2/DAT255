@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="counterAchievements">
+    <string-array name="Achievements">
         <!--Singular Achievements-->
         <item>First Scan!, 50, someimg, S1, SIN, P_SCAN:1</item>
         <item>Second Scan!, 50, someimg2, S2, SIN, P_SCAN:2</item>
 
 
         <!--Infinite Achievements-->
-        <item>GOGO! Towards Infinity!, 25, someimg3, S3, INF, P_SCAN:0:2ec</item>
-    </string-array>
-    <string-array name="collectionAchievements">
+        <item>GOGO! Towards Infinity!, 25, someimg3, I1, INF, P_SCAN:0:2^c</item>
 
+        <!--Collection Achievements-->
+        <item>Gotta Catch em All!, 50, someimg, C1, COL, C_SCAN:BUS1/BUS2/BUS3</item>
     </string-array>
+
 </resources>
+
+<!--
+Singular achievements:
+name, points, imageFileName, ID, type, demandtype:amount, demandtype:amount
+Infinite achievements:
+name, points, imageFileName, ID, type, demandtype:amount:equation, demandtype:amount:equation
+Collection achievements (note: demandtype is maybe (probably) not needed):
+name, points, imageFileName, ID, type, demandtype:item1/item2/itemN, demandtype:thing1/thing2 etc
+-->

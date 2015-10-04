@@ -50,9 +50,9 @@ public class AchievementUnlocker implements Observer
             Iterator it = unlockableAchievements.iterator();
             while (it.hasNext())
             {
-                CounterAchievement element =(CounterAchievement) it.next();
+                Achievement element =(Achievement) it.next();
                 boolean achievementUnlocked = true;
-                for(CounterDemand demand : element.getDemands())
+                for(Demand demand : element.getDemands())
                 {
                     if(demand.type.equals("P_SCAN"))
                     {
@@ -68,7 +68,7 @@ public class AchievementUnlocker implements Observer
                     currentStats.addCompletedAchievement(element);
                     it.remove();
                     if (element.getType().equals("INF"))
-                        creator.createAchievement(element);
+                        creator.recreateAchievement(element);
 
                 }
             }

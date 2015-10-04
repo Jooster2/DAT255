@@ -81,7 +81,7 @@ public class FileHandler
      * @param resID ID of the resource to read from
      * @return list of Strings found in resource
      */
-    public ArrayList<String> readFile(int resID)
+    public ArrayList<String> readArray(int resID)
     {
         ArrayList<String> fromFile = new ArrayList<>();
 
@@ -90,6 +90,12 @@ public class FileHandler
         fromFile.addAll(Arrays.asList(items));
 
         return fromFile;
+    }
+    public String readString(int resID)
+    {
+        Resources res = context.getResources();
+        String item = res.getString(resID);
+        return item;
     }
 
     /**

@@ -8,18 +8,19 @@ import java.util.LinkedList;
  * @author Carl-Henrik Hult
  * @version 1.1
  */
-public class CounterDemand
+public class Demand
 {
     public String type;
     public int amount;
     public String equation;
+    public String requirement;
 
     /**
      * Constructor that sets class variables to received parameters.
      * @param type type of demand
      * @param amount the amount of times, for example " the number of scans before unlocked".
      */
-    public CounterDemand (String type, int amount)
+    public Demand(String type, int amount)
     {
         this.type = type;
         this.amount = amount;
@@ -31,11 +32,22 @@ public class CounterDemand
      * @param amount amount of type-events needed to unlock
      * @param equation equation for infinite demands
      */
-    public CounterDemand (String type, int amount, String equation)
+    public Demand(String type, int amount, String equation)
     {
         this.type = type;
         this.amount = calculateDemand(amount, equation);
         this.equation = equation;
+    }
+
+    /**
+     * Constructor that sets class variables to received parameters.
+     * @param requirement Requirement for completion
+     */
+    public Demand(String type, String requirement)
+    {
+        //TODO determine if type is really necessary for this type of demand
+        this.type = type;
+        this.requirement = requirement;
     }
 
     /**
@@ -53,9 +65,9 @@ public class CounterDemand
         while(eq.size() > 1)
         {
 
-            if(eq.contains("e"))
+            if(eq.contains("^"))
             {
-                int i = eq.indexOf("e");
+                int i = eq.indexOf("^");
                 double x = Double.parseDouble(eq.get(i-1));
                 double y = Double.parseDouble(eq.get(i+1));
                 eq.set(i, String.valueOf((int) Math.pow(x, y)));

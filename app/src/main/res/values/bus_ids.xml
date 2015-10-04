@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="BUS1">someQRcode1</string>
+    <string name="BUS2">someQRcode2</string>
+    <string name="BUS3">someQRcode3</string>
+</resources>
+
+<!--
+For collection achievement purposes, used to translate from some token name
+(used in achievement_definitions.xml) to a usable code
+-->
