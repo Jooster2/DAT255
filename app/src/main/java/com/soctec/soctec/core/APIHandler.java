@@ -233,7 +233,7 @@ public class APIHandler
     /**
      * Class containing public variables for all data that can be read from Icomera
      */
-    private class Icomera
+    public class Icomera
     {
         public int system_id;
 
