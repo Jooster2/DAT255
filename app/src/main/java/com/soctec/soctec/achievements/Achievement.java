@@ -1,5 +1,6 @@
 package com.soctec.soctec.achievements;
 
+import java.io.Serializable;
 /**
  * Created by Carl-Henrik Hult on 2015-09-22.
  * An abstract superclass for all achievements.
