@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -24,24 +23,19 @@ import javax.net.ssl.HttpsURLConnection;
 public class APIHandler
 {
     private static APIHandler ourInstance = new APIHandler();
-
     public static APIHandler getInstance()
     {
         return ourInstance;
     }
 
-    private String usernamePass;
-    private String encodedUsernamePass;
-    private String authorization;
+    private String key;
 
     /**
      * Constructs an API Handler
      */
     private APIHandler()
     {
-        usernamePass = "grp24:QX4NNVfBwf";
-        encodedUsernamePass = Base64.encodeToString(usernamePass.getBytes(), Base64.DEFAULT);
-        authorization = "Authorization:Basic" + encodedUsernamePass;
+        key = "Basic Z3JwMjQ6UVg0Tk5WZkJ3Zg==";
     }
 
     /**
@@ -49,7 +43,7 @@ public class APIHandler
      * @param vinNumber VIN-number to read from
      * @param sensor sensor to read
      * @param readTime how long to listen
-     * @return arraylist containing all data read
+     * @return list containing either all data read, or the http response code if no data read
      */
     public ArrayList<String> readElectricity(String vinNumber, String sensor, int readTime)
     {
@@ -57,13 +51,17 @@ public class APIHandler
         long t2 = System.currentTimeMillis();
         long t1 = t2-(1000*readTime);
         String url = "https://ece01.ericsson.net:4443/ecity?dgw=Ericsson$"
-                + vinNumber + "&sensorSpec=&" + sensor +"t1=" + t1 + "&t2=" + t2;
+                + vinNumber + "&sensorSpec=Ericsson$" + sensor +"&t1=" + t1 + "&t2=" + t2;
+
+        String responseCode = "";
         try
         {
             URL requestURL = new URL(url);
             HttpsURLConnection conn = (HttpsURLConnection) requestURL.openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Authorization", encodedUsernamePass);
+            conn.setRequestProperty("Authorization", key);
+            responseCode = String.valueOf(conn.getResponseCode());
+
 
             BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = input.readLine();
@@ -78,6 +76,8 @@ public class APIHandler
         {
             e.printStackTrace();
         }
+        if(responseData.size() == 0)
+            responseData.add(responseCode);
         return responseData;
     }
 
@@ -253,6 +253,9 @@ public class APIHandler
         public int user_online;
         public int user_class;
 
+        /**
+         * Constructs an empty Icomera object
+         */
         public Icomera()
         {
 
