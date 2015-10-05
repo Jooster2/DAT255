@@ -17,13 +17,13 @@ import java.util.ArrayList;
  * @version 1.0
  * @see ArrayAdapter TextView EditText
  */
-public class ProfileAdapter extends ArrayAdapter
+/*public class ProfileAdapter extends ArrayAdapter
 {
     public ProfileAdapter(Context context, ArrayList<String> contents)
     {
         super(context, R.layout.row_profile, contents);
-
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
@@ -40,4 +40,5 @@ public class ProfileAdapter extends ArrayAdapter
 
         return customView;
     }
-    }
+}
+*/

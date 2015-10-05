@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         String userCode = new Encryptor().encrypt(account);
         Profile.setUserCode(userCode);
+        Profile.initProfile();
 
         //Initialize the FileHandler
         FileHandler.getInstance().setContext(this);

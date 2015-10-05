@@ -8,20 +8,17 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/TitleText"
+        android:id="@+id/titleText"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textStyle="bold"/>
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/contentText"
-        android:layout_below="@+id/TitleText"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/TitleText"
-        android:layout_alignEnd="@+id/TitleText"/>
+        android:layout_below="@+id/titleText"
+        android:inputType="text"/>
 
 </RelativeLayout>

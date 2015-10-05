@@ -1,19 +1,23 @@
 package com.soctec.soctec.profile;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.core.FileHandler;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 /**
  * A ProfileActivity is an Activity that shows and allows edits to the profile data
@@ -22,156 +26,191 @@ import java.util.Collections;
  */
 public class ProfileActivity extends Activity
 {
-    private Context context;
-    private ListView listView;
-    private ProfileAdapter profileAdapter;
-    private ArrayList<ArrayList<String>> profileItems;
+    private ArrayList<String> profileItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        listView = (ListView)findViewById(R.id.listView);
-        profileItems = new ArrayList<>(2);
-        createFromFile();
-        populateListView();
+        createListFromFile();
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(new ProfileAdapter(getApplicationContext()));
     }
 
+    /**
+     * Saves the current state of the profile into the Profile class.
+     */
     @Override
     protected void onPause()
     {
         super.onPause();
-        updateProfileItems();
-        Profile.setProfile(profileItems);
+        ArrayList<ArrayList<String>> profileList = new ArrayList<>();
+        for(int i = 0; i < Profile.NR_OF_CATEGORIES; i++)
+        {
+            profileList.add(new ArrayList<>(Arrays.asList(profileItems.get(i).split(","))));
+        }
+        Profile.setProfile(profileList);
     }
 
+    /**
+     * Saves the current state of the profile to a file
+     */
     @Override
     protected void onStop()
     {
         super.onStop();
-        writeToFile();
+        writeListToFile();
     }
 
     /**
-     * Updates the local profile list with data from the GUI
+     * Reads data from file and stores it in the local list.
      */
-    private void updateProfileItems()
+    private void createListFromFile()
     {
         profileItems = new ArrayList<>();
-        for(int i=0; i<profileAdapter.getCount(); i++)
+        ArrayList<String> tmpList = FileHandler.getInstance().readFile("profile");
+        //Check if app is started for the first time
+        if(tmpList.size() == 0)
         {
-            profileItems.add(new ArrayList<String>());
-            String item = (String)profileAdapter.getItem(i);
-            String[] subItem = item.split(":");
-            profileItems.get(i).add(subItem[0]);
-            String[] contents = subItem[1].split(", ");
-            Collections.addAll(profileItems.get(i), contents);
+            for(int i = 1; i < Profile.NR_OF_CATEGORIES*2; i+=2)
+            {
+                profileItems.add("");
+            }
+            return;
+        }
+
+        for(int i = 1; i < Profile.NR_OF_CATEGORIES*2; i+=2)
+        {
+            profileItems.set(((i-1)/2), tmpList.get(i));
         }
     }
 
     /**
-     * Attempts to load the old profile from file
+     * Saves the current profile to file
      */
-    private void createFromFile()
+    private void writeListToFile()
     {
-        try
+        ArrayList<String> tmpList = new ArrayList<>();
+        for (int i = 0; i < Profile.NR_OF_CATEGORIES; i++)
         {
-            BufferedReader readBuffer = new BufferedReader(new FileReader("profile"));
-            String line = readBuffer.readLine();
-            ArrayList<String> currentList = null;
-            while(line != null)
-            {
-                //Easy solution, may exist nicer ones
-                switch(line)
-                {
-                    case "music": currentList = profileItems.get(0); break;
-                    case "movie": currentList = profileItems.get(1); break;
-                    //TODO more cases here
-                    default: currentList.add(line); break;
-                }
-                line = readBuffer.readLine();
-
-            }
-            readBuffer.close();
+            tmpList.add(intToCategory(i));
+            tmpList.add(profileItems.get(i));
         }
-        catch(IOException e)
+        FileHandler.getInstance().writeFile("profile", tmpList);
+    }
+
+    /**
+     * Converts an integer to a category String. (0 -> "Music", 1 -> "Movies" ... etc)
+     * @param i The index of the category
+     * @return The name of the category
+     */
+    private static String intToCategory(int i)
+    {
+        switch(i)
         {
-            e.printStackTrace();
+            case 0:
+                return "Music";
+            case 1:
+                return "Movies";
+
+            //TODO more cases here
+            default:
+                return "";
         }
     }
 
     /**
-     * Attempts to save the current profile to file
+     * This class is used as an Adapter for the profile activity.
      */
-    private void writeToFile()
+    private class ProfileAdapter extends BaseAdapter
     {
-        try
+        Context context;
+
+        /**
+         * Sets the context of the Activity
+         * @param context The context of the Activity
+         */
+        public ProfileAdapter(Context context)
         {
-            BufferedWriter writeBuffer = new BufferedWriter(new FileWriter("profile"));
-            //FileOutputStream output = openFileOutput("profile", Context.MODE_PRIVATE);
-            int i=0;
-            for(ArrayList<String> item : profileItems)
-            {
-                switch(i)
-                {
-                    case 0: writeBuffer.write("music\n"); break;
-                    case 1: writeBuffer.write("movie\n"); break;
-                }
-                for(String str : item)
-                {
-                    writeBuffer.write(str + '\n');
-                }
-                i++;
-            }
-            writeBuffer.close();
+            super();
+            this.context = context;
         }
-        catch(IOException e)
+
+        /**
+         * Simple struct-like class for holding a view
+         */
+        private class ViewHolder{EditText editText; TextView textView;}
+
+        /**
+         * Returns the View at the given position.
+         * @param position The position of the View
+         * @param convertView The view
+         * @param parent The viewGroup
+         * @return The view
+         */
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent)
         {
-            e.printStackTrace();
+            ViewHolder viewHolder;
+            if (convertView == null)
+            {
+                LayoutInflater inflater = LayoutInflater.from(context);
+                convertView = inflater.inflate(R.layout.row_profile, parent, false);
+                viewHolder = new ViewHolder();
+                convertView.setTag(viewHolder);
+                viewHolder.textView = (TextView) convertView.findViewById(R.id.titleText);
+                viewHolder.editText = (EditText) convertView.findViewById(R.id.contentText);
+                viewHolder.editText.addTextChangedListener(new ProfileTextWatcher(position)
+                {
+                    @Override
+                    public void afterTextChanged(Editable s)
+                    {
+                        profileItems.set(position, s.toString());
+                    }
+                });
+            }
+            else
+            {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.textView.setText(intToCategory(position));
+            viewHolder.editText.setText(getItem(position).toString());
+
+            return convertView;
+        }
+
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+
+        @Override
+        public int getCount()
+        {
+            return Profile.NR_OF_CATEGORIES;
+        }
+
+        @Override
+        public Object getItem(int position)
+        {
+            return profileItems.get(position);
         }
     }
 
     /**
-     * Inserts the local profile into the GUI
+     * This class is used as an abstract "TextChangedListener" for the profile list.
      */
-    public void populateListView()
+    private abstract class ProfileTextWatcher implements TextWatcher
     {
-        int i=0;
-        ArrayList<String> showList = new ArrayList<>();
-        for(ArrayList<String> item : profileItems)
-        {
-            StringBuilder sb = new StringBuilder();
-            switch(i)
-            {
-                case 0: sb.append("Musik:"); break;
-                case 1: sb.append("Film:"); break;
-            }
-            for(String str : item)
-            {
-                sb.append(str);
-                sb.append(", ");
-            }
-            showList.add(sb.toString());
-            i++;
-        }
-        profileAdapter = new ProfileAdapter(this, showList);
-        listView.setAdapter(profileAdapter);
+        int position;
+        public ProfileTextWatcher(int pos){position = pos;}
+        @Override
+        public void afterTextChanged(Editable s){}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count){}
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
     }
-
-    /*public void editList(View currentView)
-    {
-        TextView titleText = (TextView)currentView.findViewById(R.id.titleText);
-        String title = (String)titleText.getText();
-        TextView contentText = (TextView)currentView.findViewById(R.id.contentText);
-        String content = (String)contentText.getText();
-        Bundle fragmentBundle = new Bundle();
-        fragmentBundle.putString("title", title);
-        fragmentBundle.putString("content", content);
-
-
-
-    }*/
-
-
 }
