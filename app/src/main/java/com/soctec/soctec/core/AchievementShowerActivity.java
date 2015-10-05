@@ -21,6 +21,8 @@ public class AchievementShowerActivity extends Activity
     private int headTextId;
     private int frontImageId;
     private int backImageId;
+    ImageView mainImageBackView;
+    ImageView mainImageFrontView;
     private Achievement achievement;
     //private Image button;
 
@@ -28,40 +30,35 @@ public class AchievementShowerActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        achievement = (Achievement) getIntent().getSerializableExtra("achievementObject");
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement_shower);
 
-        ImageView headImage = (ImageView)findViewById(R.id.showerHeadView);
-        headImage.setImageResource(headTextId);
+        ImageView headImageView = (ImageView)findViewById(R.id.showerHeadView);
+        headImageView.setImageResource(R.drawable.shower_head_text);
 
 
-        ImageView mainImageBackView = (ImageView)findViewById(R.id.showerAchViewBack);
-        mainImageBackView.setImageResource(backImageId);
+        mainImageBackView = (ImageView)findViewById(R.id.showerAchBack);
+        //mainImageBackView.setImageResource(backImageId);
 
 
-        ImageView mainImageFrontView = (ImageView)findViewById(R.id.showerAchViewFront);
+        mainImageFrontView = (ImageView)findViewById(R.id.showerAchFront);
         mainImageFrontView.setImageResource(frontImageId);
 
+        TextView nameView = (TextView)findViewById(R.id.showerNameText);
+        nameView.setText(getName());
 
-        TextView achNameView = (TextView)findViewById(R.id.showerNameTextView);
-        achNameView.setText(getName());
+        TextView pointsView = (TextView)findViewById(R.id.showerPointsText);
+        pointsView.setText("Detta ger "+ getPoints() +" poäng!");
 
-        TextView achPointView = (TextView)findViewById(R.id.showerPointTextView);
-        achNameView.setText(getPoints());
+        ImageView closeButtonImg = (ImageView)findViewById(R.id.showerCloseButtonImg);
+        closeButtonImg.setImageResource(R.drawable.shower_close_button);
 
-
-        Button quitButton = (Button) findViewById(R.id.showerQuitButton);
-        quitButton.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View V)
-                    {
-                        finish();
-                    }
-                }
-        );
     }
+
+
 
 
 
@@ -78,25 +75,46 @@ public class AchievementShowerActivity extends Activity
     {
         return 1;
     }
-    public void getHeadText()
-    {
 
-    }
 
-    public void getAchievementPoints()
-    {
 
-    }
     public int getAchievementRank()
     {
+        return achievement.getRank();
         //Får info vilken grad achievementet har. Tex guld, silver, brons
+        //alternativ: Standard bakgrund=0 Brons=1 Silver=2 Guld=3
         return 1;
     }
 
+    //sätter olika bakgrunder beroende på rank
     public void setAchievementImageBackground()
     {
         int rank = getAchievementRank();
-        //sätter olika bakgrunder beroende på rank
+
+        switch (rank)
+        {
+            case 1:
+                mainImageBackView.setImageResource(R.drawable.ach_back_1);
+                break;
+
+            case 2:
+                mainImageBackView.setImageResource(R.drawable.ach_back_2);
+                break;
+
+            case 3:
+                mainImageBackView.setImageResource(R.drawable.ach_back_3);
+                break;
+
+            default:
+                mainImageBackView.setImageResource(R.drawable.ach_back_default);
+                break;
+        }
+    }
+
+    public void setAchievementImageFront()
+    {
+        //achievement.getImageName();
+        //mainImageFrontView.setImageResource(R.drawable);
     }
 
 

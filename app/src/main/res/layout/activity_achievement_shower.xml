@@ -10,54 +10,52 @@
                 android:background="#dbdbe4b7">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="400dp"
+        android:layout_height="80dp"
         android:id="@+id/showerHeadView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/showerAchViewBack"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:id="@+id/showerAchBack"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_centerHorizontal="true" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/showerAchViewFront"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/showerAchFront"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+        android:layout_centerHorizontal="true" />
 
-        />
-
-    <Button
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="OK"
-        android:id="@+id/showerQuitButton"
+        android:id="@+id/showerCloseButtonImg"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="AchievementName"
+        android:id="@+id/showerNameText"
+        android:layout_below="@+id/showerHeadView"
         android:layout_centerHorizontal="true"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Achievement namn"
-        android:id="@+id/showerNameTextView"
-        android:layout_above="@+id/showerPointTextView"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="0 poäng"
-        android:id="@+id/showerPointTextView"
-        android:layout_above="@+id/showerQuitButton"
-        android:layout_centerHorizontal="true"/>
+        android:text="Detta ger x poäng!"
+        android:id="@+id/showerPointsText"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"/>
 
 
 </RelativeLayout>
