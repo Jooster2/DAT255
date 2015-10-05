@@ -26,7 +26,21 @@ public class AchievementShowerActivity extends Activity
     private Achievement achievement;
     //private Image button;
 
+    /*
+---------------------------------------------------------------------------
+    MainActivity:
+    Achievement dummyAch = new Achievement("DummyNamn", 10, "ImgName", "ID");
+    Intent intent = new Intent(this, AchievementShowerActivity.class);
+    intent.putExtra("AchievementObject", dummyAch);
+    startActivity(intent);
 
+    Achievement:
+        private static final long serialVersionUID = 1L;
+
+
+        implements Serializable
+---------------------------------------------------------------------------
+*/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
