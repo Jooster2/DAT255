@@ -15,16 +15,11 @@ import com.soctec.soctec.achievements.Achievement;
 
 public class AchievementShowerActivity extends Activity
 {
-    private Image mainImageBack;
-    private Image mainImageFront;
-    private Image headText;
-    private int headTextId;
-    private int frontImageId;
-    private int backImageId;
+
     ImageView mainImageBackView;
     ImageView mainImageFrontView;
     private Achievement achievement;
-    //private Image button;
+
 
     /*
 ---------------------------------------------------------------------------
@@ -44,11 +39,10 @@ public class AchievementShowerActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        achievement = (Achievement) getIntent().getSerializableExtra("achievementObject");
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement_shower);
+
+        achievement = (Achievement) getIntent().getSerializableExtra("achievementObject");
 
         ImageView headImageView = (ImageView)findViewById(R.id.showerHeadView);
         headImageView.setImageResource(R.drawable.shower_head_text);
