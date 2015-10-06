@@ -1,6 +1,7 @@
 package com.soctec.soctec.core;
 
 import android.util.Base64;
+import android.util.JsonReader;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -18,7 +19,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  *  Handles all API-reading
  *  @author Joakim Schmidt
- *  @version 1.0
+ *  @version 1.1
  */
 public class APIHandler
 {
@@ -48,9 +49,9 @@ public class APIHandler
      * @param readTime how long to listen
      * @return list containing either all data read, or the http response code if no data read
      */
-    public ArrayList<String> readElectricity(String vinNumber, String sensor, int readTime)
+    public ArrayList<ArrayList<String>> readElectricity(String vinNumber, String sensor, int readTime)
     {
-        ArrayList<String> responseData = new ArrayList<>();
+        ArrayList<ArrayList<String>> responseData = new ArrayList<>();
         long t2 = System.currentTimeMillis();
         long t1 = t2-(1000*readTime);
         String url = "https://ece01.ericsson.net:4443/ecity?dgw=Ericsson$"
@@ -65,23 +66,45 @@ public class APIHandler
             conn.setRequestProperty("Authorization", key);
             responseCode = String.valueOf(conn.getResponseCode());
 
+            JsonReader reader = new JsonReader(new InputStreamReader(conn.getInputStream()));
 
-            BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = input.readLine();
-            while(line != null)
-            {
-                responseData.add(line);
-                line = input.readLine();
-            }
-            input.close();
+            reader.beginArray();
+            while(reader.hasNext())
+                responseData.add(getMessages(reader));
+            reader.endArray();
+
+            reader.close();
         }
         catch(IOException e)
         {
             e.printStackTrace();
         }
         if(responseData.size() == 0)
-            responseData.add(responseCode);
+        {
+            responseData.add(new ArrayList<String>());
+            responseData.get(0).add(responseCode);
+        }
         return responseData;
+    }
+
+    /**
+     * Basic Json parsing
+     * @param reader JsonReader to parse
+     * @return list of string where each string is "key:value"
+     * @throws IOException
+     */
+    private ArrayList<String> getMessages(JsonReader reader) throws IOException
+    {
+        ArrayList<String> message = new ArrayList<>();
+
+        reader.beginObject();
+        while(reader.hasNext())
+        {
+            message.add(reader.nextName() + ":" + reader.nextString());
+        }
+        reader.endObject();
+
+        return message;
     }
 
     /**
