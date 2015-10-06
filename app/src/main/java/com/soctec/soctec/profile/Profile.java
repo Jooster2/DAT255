@@ -16,10 +16,9 @@ import java.util.Arrays;
  */
 public class Profile
 {
-
     private static ArrayList<ArrayList<String>> profileItems;
     private static String userCode = "";
-    public static final int NR_OF_CATEGORIES = 2;
+    public static final int NR_OF_CATEGORIES = 5;
 
     /**
      * Sets the User Code to argument
