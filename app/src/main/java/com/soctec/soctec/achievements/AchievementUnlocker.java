@@ -26,8 +26,6 @@ public class AchievementUnlocker implements Observer
         unlockableAchievements = new ArrayList<Achievement>();
         currentStats = newStats;
         this.creator = creator;
-
-
     }
 
     /**

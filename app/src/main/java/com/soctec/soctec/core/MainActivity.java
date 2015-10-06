@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     private AchievementUnlocker unlocker;
 
 
+
     private static int REQUEST_CODE = 0;
 
     @Override
@@ -87,12 +88,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize the Achievement engine
         stats = new Stats();
         creator = new AchievementCreator();
+
         unlocker = new AchievementUnlocker(stats, creator);
         creator.addObserver(unlocker);
         creator.createFromFile();
 
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this);
+
 
         //Initialize the ActionBar
         setupActionBar();
@@ -110,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
 
         Log.i("Main", "Receiver started!");
+
     }
 
     /**
@@ -217,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         return accMail;
     }
 
+
     //--------------- Below is all auto-generated code from ActionBar --------------------
 
     /**
@@ -224,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     private void setupActionBar()
     {
+
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -234,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
@@ -260,8 +267,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         }
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -335,8 +340,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     return new MainFragment();
                 case 1:
                     return new AchievementsFragment();
-                //case 2:
-                //    return new LeftFragment();
             }
             return null;
         }
@@ -358,8 +361,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_section2).toUpperCase(l);
-                //case 2:
-                //    return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }
