@@ -9,6 +9,7 @@ import java.util.Collections;
  */
 public class Achievement implements Serializable
 {
+    private static final long serialVersionUID = 1L;
     private String name;
     private int points;
     private String imageName;
