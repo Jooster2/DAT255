@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.achievements.Achievement;
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
 import com.soctec.soctec.achievements.Stats;
@@ -186,6 +187,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
         String time = String.valueOf(stats.getTimeTalked());
         Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
+
+        for(Achievement achi : stats.getLastCompleted())
+        {
+            Intent intent = new Intent(this, AchievementShowerActivity.class);
+            intent.putExtra("AchievementObject", achi);
+            startActivity(intent);
+        }
     }
 
     /**

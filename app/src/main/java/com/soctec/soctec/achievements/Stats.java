@@ -20,6 +20,7 @@ public class Stats
     private int timeTalked;
     private String lastScanned;
     private LinkedList<Achievement> completedAchievements;
+    private LinkedList<Achievement> lastCompletedAchievements;
     private long lastScannedTime;
     private boolean talkDone = false;
     Context mContext;
@@ -33,6 +34,7 @@ public class Stats
         lastScannedTime = 0;
         lastScanned = "";
         completedAchievements = new LinkedList<>();
+        lastCompletedAchievements = new LinkedList<>();
         //TODO read db
     }
 
@@ -163,10 +165,16 @@ public class Stats
     {
         completedAchievements.add(achievement);
         addPoints(achievement.getPoints());
+        lastCompletedAchievements.add(achievement);
 
-        Intent intent = new Intent(mContext, AchievementShowerActivity.class);
-        intent.putExtra("AchievementObject", achievement);
-        mContext.startActivity(intent);
+    }
+
+    public LinkedList<Achievement> getLastCompleted()
+    {
+        LinkedList<Achievement> temp = new LinkedList<>();
+        temp.addAll(lastCompletedAchievements);
+        lastCompletedAchievements.clear();
+        return temp;
     }
 
 }
