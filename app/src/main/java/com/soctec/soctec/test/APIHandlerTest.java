@@ -14,6 +14,8 @@ import java.util.ArrayList;
 public class APIHandlerTest extends AndroidTestCase
 {
     APIHandler aH = APIHandler.getInstance();
+    // Insert key from klotterplank here
+    public static String key = "";
 
 
     /**
@@ -22,7 +24,7 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testReadElecAPI() throws Exception
     {
-        aH.setKey(/*Insert key from klotterplank*/);
+        aH.setKey(key);
         ArrayList<ArrayList<String>> data = aH.readElectricity("Vin_Num_001", "Total_Vehicle_Distance", 5);
         assertEquals(1, data.size());
         assertEquals("resourceSpec:Total_Vehicle_Distance_Value", data.get(0).get(0));
@@ -36,7 +38,7 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testBadElecAPI() throws Exception
     {
-        aH.setKey(/*Insert key from klotterplank*/);
+        aH.setKey(key);
         ArrayList<ArrayList<String>> data = aH.readElectricity("Vin_Num_001", "Tralala", 60);
         assertEquals(1, data.size());
         assertEquals(1, data.get(0).size());
