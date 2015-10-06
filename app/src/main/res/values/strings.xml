@@ -8,9 +8,7 @@
     <string name="hello_world">Hello world!</string>
 
     <string name="action_settings">Settings</string>
-<<<<<<< HEAD
+
     <string name="profile_activity_name">Profile</string>
-=======
-    <string name="shower_head_text">Ny utmärkelse!</string>
->>>>>>> origin/achievementShower
+
 </resources>
