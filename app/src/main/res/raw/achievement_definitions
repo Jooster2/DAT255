@@ -1,2 +1,2 @@
-CNT, First Scan!, 50, someimg, S1, SIN, P_SCAN:1
-CNT, Second Scan!, 50, someimg, S1, SIN, P_SCAN:2
+CNT, First Scan!, 50, ach_front_test, S1, SIN, P_SCAN:1
+CNT, Second Scan!, 50, ach_front_test, S1, SIN, P_SCAN:2

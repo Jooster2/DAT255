@@ -23,22 +23,6 @@ public class AchievementShowerActivity extends Activity
     private int silver = 30;
     private int bronze = 10;
 
-
-    /*
----------------------------------------------------------------------------
-    MainActivity:
-    Achievement dummyAch = new Achievement("DummyNamn", 10, "ImgName", "ID");
-    Intent intent = new Intent(this, AchievementShowerActivity.class);
-    intent.putExtra("AchievementObject", dummyAch);
-    startActivity(intent);
-
-    Achievement:
-        private static final long serialVersionUID = 1L;
-
-
-        implements Serializable
----------------------------------------------------------------------------
-*/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -50,7 +34,6 @@ public class AchievementShowerActivity extends Activity
         ImageView headImageView = (ImageView)findViewById(R.id.showerHeadView);
         headImageView.setImageResource(R.drawable.shower_head_text);
 
-
         mainImageBackView = (ImageView)findViewById(R.id.showerAchBack);
         setAchievementImageBackground();
 
@@ -58,41 +41,26 @@ public class AchievementShowerActivity extends Activity
         setAchievementImageFront();
 
         TextView nameView = (TextView)findViewById(R.id.showerNameText);
-        nameView.setText(getName());
+        nameView.setText(achievement.getName());
 
         TextView pointsView = (TextView)findViewById(R.id.showerPointsText);
-        pointsView.setText("Detta ger "+ getPoints() +" poäng!");
+        pointsView.setText("Detta ger "+ achievement.getPoints() +" poäng!");
 
         ImageView closeButtonImg = (ImageView)findViewById(R.id.showerCloseButtonImg);
         closeButtonImg.setImageResource(R.drawable.shower_close_button);
-
     }
-
-    public String getName()
-    {
-        return achievement.getName();
-    }
-    public int getPoints()
-    {
-        return achievement.getPoints();
-    }
-
-    public int getAchievementImageId()
-    {
-        return 1;
-    }
-
-
 
     public int getAchievementRank()
     {
-        //Får info vilken grad achievementet har. Tex guld, silver, brons
-        //alternativ: Standard bakgrund=0 Brons=1 Silver=2 Guld=3
+        /*
+        Får info vilken grad achievementet har. Tex guld, silver, brons
+        Standard bakgrund=0 Brons=1 Silver=2 Guld=3
 
-        //alt 1: Varje achivement har bestämd rank
-        //return achievement.getRank();
+        alt 1: Varje achivement har bestämd rank
+            return achievement.getRank();
 
-        //alt 2: Rank baseras på antal poäng
+        alt 2: Rank baseras på antal poäng
+        */
 
         int points = achievement.getPoints();
 
@@ -136,6 +104,4 @@ public class AchievementShowerActivity extends Activity
         FileHandler fileHandler = FileHandler.getInstance();
         mainImageFrontView.setImageResource(fileHandler.getResourceID(achievement.getImageName(), "drawable"));
     }
-
-
 }
