@@ -15,12 +15,14 @@ public class APIHandlerTest extends AndroidTestCase
 {
     APIHandler aH = APIHandler.getInstance();
 
+
     /**
      * Tests that we get exactly one element in the response list
      * @throws Exception
      */
     public void testReadElecAPI() throws Exception
     {
+        aH.setKey(/* Insert key here, see klotterplank*/);
         ArrayList<String> data = aH.readElectricity("Vin_Num_001", "Total_Vehicle_Distance", 60);
         assertEquals(1, data.size());
     }
@@ -32,6 +34,7 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testBadElecAPI() throws Exception
     {
+        aH.setKey(/* Insert key here, see klotterplank*/);
         ArrayList<String> data = aH.readElectricity("Vin_Num_001", "Tralala", 60);
         assertEquals(1, data.size());
         assertEquals("400", data.get(0));

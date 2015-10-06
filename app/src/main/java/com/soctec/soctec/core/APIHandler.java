@@ -35,7 +35,10 @@ public class APIHandler
      */
     private APIHandler()
     {
-        key = "Basic Z3JwMjQ6UVg0Tk5WZkJ3Zg==";
+    }
+    public void setKey(String key)
+    {
+        this.key = key;
     }
 
     /**
