@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Basic test cases for the APIHeader class
  * @author Joakim Schmidt
- * @version 1.0
+ * @version 1.1
  */
 public class APIHandlerTest extends AndroidTestCase
 {
@@ -22,9 +22,11 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testReadElecAPI() throws Exception
     {
-        aH.setKey(/* Insert key here, see klotterplank*/);
-        ArrayList<String> data = aH.readElectricity("Vin_Num_001", "Total_Vehicle_Distance", 60);
+        aH.setKey(/*Insert key from klotterplank*/);
+        ArrayList<ArrayList<String>> data = aH.readElectricity("Vin_Num_001", "Total_Vehicle_Distance", 5);
         assertEquals(1, data.size());
+        assertEquals("resourceSpec:Total_Vehicle_Distance_Value", data.get(0).get(0));
+        assertEquals("gatewayId:Vin_Num_001", data.get(0).get(3));
     }
 
     /**
@@ -34,9 +36,10 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testBadElecAPI() throws Exception
     {
-        aH.setKey(/* Insert key here, see klotterplank*/);
-        ArrayList<String> data = aH.readElectricity("Vin_Num_001", "Tralala", 60);
+        aH.setKey(/*Insert key from klotterplank*/);
+        ArrayList<ArrayList<String>> data = aH.readElectricity("Vin_Num_001", "Tralala", 60);
         assertEquals(1, data.size());
-        assertEquals("400", data.get(0));
+        assertEquals(1, data.get(0).size());
+        assertEquals("400", data.get(0).get(0));
     }
 }
