@@ -29,7 +29,7 @@ public class AchievementShowerActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievement_shower);
 
-        achievement = (Achievement) getIntent().getSerializableExtra("achievementObject");
+        achievement = (Achievement) getIntent().getSerializableExtra("AchievementObject");
 
         ImageView headImageView = (ImageView)findViewById(R.id.showerHeadView);
         headImageView.setImageResource(R.drawable.shower_head_text);
