@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         FileHandler.getInstance().setContext(this);
 
         //Initialize the Achievement engine
-        stats = new Stats();
+        stats = new Stats(this);
         creator = new AchievementCreator();
 
         unlocker = new AchievementUnlocker(stats, creator);
