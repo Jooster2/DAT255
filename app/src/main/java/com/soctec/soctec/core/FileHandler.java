@@ -3,13 +3,22 @@ package com.soctec.soctec.core;
 import android.content.Context;
 import android.content.res.Resources;
 import android.media.Image;
+import android.os.Environment;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,13 +37,13 @@ public class FileHandler
     }
 
     private Context context;
+    private static File path;
 
     /**
      * Constructs an empty FileHandler
      */
     private FileHandler()
     {
-
     }
 
     /**
@@ -44,6 +53,7 @@ public class FileHandler
     public void setContext(Context context)
     {
         this.context = context;
+        path = context.getFilesDir();
     }
 
     /**
@@ -57,7 +67,8 @@ public class FileHandler
         ArrayList<String> fromFile = new ArrayList<>();
         try
         {
-            BufferedReader readBuffer = new BufferedReader(new FileReader(filename));
+            BufferedReader readBuffer = new BufferedReader(
+                    new FileReader(new File(path, filename)));
             String line = readBuffer.readLine();
             while(line != null)
             {
@@ -109,13 +120,18 @@ public class FileHandler
     {
         try
         {
-            BufferedWriter buffer = new BufferedWriter(new FileWriter(filename));
+            File myFile = new File(path, filename);
+            if(!myFile.exists()) {
+                myFile.createNewFile();
+                Log.i("myTag", "New file created: " + myFile.toString());
+            }
+            BufferedWriter buffer = new BufferedWriter(new FileWriter(myFile));
 
             for(T item : data)
             {
                 if(item instanceof String)
                 {
-                    buffer.write((String)item);
+                    buffer.write((String) item);
                 }
                 else
                 {
@@ -144,5 +160,54 @@ public class FileHandler
     public int getResourceID(String name, String type)
     {
         return context.getResources().getIdentifier(name, type,context.getPackageName());
+    }
+
+    /**
+     * Serializes a object into a file
+     * @param fileName The filename
+     * @param obj The object
+     */
+    public void writeObject(String fileName, Serializable obj)
+    {
+        File myFile = new File(context.getFilesDir(), fileName);
+        try
+        {
+            if(myFile.createNewFile())
+                return;
+
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(myFile));
+            oos.writeObject(obj);
+            oos.flush();
+            oos.close();
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+            Log.e("Error", e.getMessage());
+        }
+    }
+
+    /**
+     * This method reads and returns a serializable object from file
+     * @param fileName The filename
+     * @return The object
+     */
+    public Object readObject(String fileName)
+    {
+        File myFile = new File(context.getFilesDir(), fileName);
+        Object obj = null;
+        try
+        {
+            if (!myFile.exists())
+                return null;
+
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(myFile));
+            obj = ois.readObject();
+            ois.close();
+        } catch(IOException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+            Log.e("Error", "" + e.getMessage());
+        }
+        return obj;
     }
 }

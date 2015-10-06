@@ -79,8 +79,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             account = "walla";
         //TODO crash and burn (handle this some way...)
 
-        //String userCode = new Encryptor().encrypt(account);
-        Profile.setUserCode(account);
+        String userCode = new Encryptor().encrypt(account);
+        Profile.setUserCode(userCode);
+        Profile.initProfile();
 
         //Initialize the FileHandler
         FileHandler.getInstance().setContext(this);

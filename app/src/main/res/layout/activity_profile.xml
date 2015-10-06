@@ -1,42 +1,102 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="#FFFFFF"
+             android:background="#DBE4B7"
              tools:context="com.soctec.soctec.profile.ProfileActivity">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
+
+    <TextView
+        android:paddingTop="10dp"
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profil"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ScrollView
+        android:id="@+id/scroller"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:padding="10dp">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="511dp"
-        android:layout_gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/list"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Skriv något om dig själv"
-            android:id="@+id/matchContent"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:textAlignment="center"
-            android:textColor="#006699"
-            android:textStyle="bold"
-            android:textSize="30dp"/>
+            android:orientation="vertical">
 
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/listView"
-            android:fastScrollEnabled="false"
-            android:layout_below="@+id/matchContent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            />
+            <TextView
+                android:id="@+id/label1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Namn"/>
+            <EditText
+                android:id="@+id/text_field1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
 
-    </RelativeLayout>
-</FrameLayout>
+            <TextView
+                android:id="@+id/label2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Musik"/>
+            <EditText
+                android:id="@+id/text_field2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+
+            <TextView
+                android:id="@+id/label3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sport"/>
+            <EditText
+                android:id="@+id/text_field3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+
+            <TextView
+                android:id="@+id/label4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filmer"/>
+            <EditText
+                android:id="@+id/text_field4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+
+            <TextView
+                android:id="@+id/label5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Övriga intressen"/>
+            <EditText
+                android:id="@+id/text_field5"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"/>
+
+            <!-- Insert more TextViews & EditTexts here -->
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scroller"
+        android:layout_centerHorizontal="true"
+        android:text="OK"
+        android:onClick="onFinishedClick"/>
+
+</RelativeLayout>

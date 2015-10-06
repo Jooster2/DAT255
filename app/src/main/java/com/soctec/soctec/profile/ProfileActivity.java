@@ -1,19 +1,27 @@
 package com.soctec.soctec.profile;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.core.FileHandler;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 /**
  * A ProfileActivity is an Activity that shows and allows edits to the profile data
@@ -22,156 +30,82 @@ import java.util.Collections;
  */
 public class ProfileActivity extends Activity
 {
-    private Context context;
-    private ListView listView;
-    private ProfileAdapter profileAdapter;
-    private ArrayList<ArrayList<String>> profileItems;
+    private ArrayList<String> profileItems;
+    private EditText[] textFields = new EditText[Profile.NR_OF_CATEGORIES];
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        listView = (ListView)findViewById(R.id.listView);
-        profileItems = new ArrayList<>(2);
-        createFromFile();
-        populateListView();
+
+        textFields[0] = (EditText) findViewById(R.id.text_field1);
+        textFields[1] = (EditText) findViewById(R.id.text_field2);
+        textFields[2] = (EditText) findViewById(R.id.text_field3);
+        textFields[3] = (EditText) findViewById(R.id.text_field4);
+        textFields[4] = (EditText) findViewById(R.id.text_field5);
+        //TODO add more
+
+        createListFromFile();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
+    /**
+     * Saves the current state of the profile into the Profile class.
+     */
     @Override
     protected void onPause()
     {
         super.onPause();
-        updateProfileItems();
-        Profile.setProfile(profileItems);
+        //Save to profileItems
+        profileItems = new ArrayList<>();
+        for(EditText text : textFields)
+        {
+            profileItems.add(text.getText().toString());
+        }
+        //Save to Profile class
+        ArrayList<ArrayList<String>> profileList = new ArrayList<>();
+        for(int i = 0; i < Profile.NR_OF_CATEGORIES; i++)
+        {
+            profileList.add(new ArrayList<>(Arrays.asList(profileItems.get(i).split(","))));
+        }
+        Profile.setProfile(profileList);
     }
 
+    /**
+     * Saves the current state of the profile to a file
+     */
     @Override
     protected void onStop()
     {
         super.onStop();
-        writeToFile();
+        FileHandler.getInstance().writeObject("profile.prof", profileItems);
     }
 
     /**
-     * Updates the local profile list with data from the GUI
+     * Reads data from file and stores it in the local list.
      */
-    private void updateProfileItems()
+    @SuppressWarnings("unchecked")
+    private void createListFromFile()
     {
-        profileItems = new ArrayList<>();
-        for(int i=0; i<profileAdapter.getCount(); i++)
+        ArrayList<String> tmpList = (ArrayList<String>)
+                FileHandler.getInstance().readObject("profile.prof");
+
+        //When app is launched for the first time, or when testing with new categories
+        if(tmpList == null || tmpList.size() < Profile.NR_OF_CATEGORIES)
         {
-            profileItems.add(new ArrayList<String>());
-            String item = (String)profileAdapter.getItem(i);
-            String[] subItem = item.split(":");
-            profileItems.get(i).add(subItem[0]);
-            String[] contents = subItem[1].split(", ");
-            Collections.addAll(profileItems.get(i), contents);
+            profileItems = new ArrayList<>();
+            for(int i = 0; i < Profile.NR_OF_CATEGORIES; i++)
+                profileItems.add("");
+        }
+        else
+            profileItems = tmpList;
+
+        for(int i = 0; i < Profile.NR_OF_CATEGORIES; i++)
+        {
+            textFields[i].setText(profileItems.get(i));
         }
     }
 
-    /**
-     * Attempts to load the old profile from file
-     */
-    private void createFromFile()
-    {
-        try
-        {
-            BufferedReader readBuffer = new BufferedReader(new FileReader("profile"));
-            String line = readBuffer.readLine();
-            ArrayList<String> currentList = null;
-            while(line != null)
-            {
-                //Easy solution, may exist nicer ones
-                switch(line)
-                {
-                    case "music": currentList = profileItems.get(0); break;
-                    case "movie": currentList = profileItems.get(1); break;
-                    //TODO more cases here
-                    default: currentList.add(line); break;
-                }
-                line = readBuffer.readLine();
-
-            }
-            readBuffer.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Attempts to save the current profile to file
-     */
-    private void writeToFile()
-    {
-        try
-        {
-            BufferedWriter writeBuffer = new BufferedWriter(new FileWriter("profile"));
-            //FileOutputStream output = openFileOutput("profile", Context.MODE_PRIVATE);
-            int i=0;
-            for(ArrayList<String> item : profileItems)
-            {
-                switch(i)
-                {
-                    case 0: writeBuffer.write("music\n"); break;
-                    case 1: writeBuffer.write("movie\n"); break;
-                }
-                for(String str : item)
-                {
-                    writeBuffer.write(str + '\n');
-                }
-                i++;
-            }
-            writeBuffer.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Inserts the local profile into the GUI
-     */
-    public void populateListView()
-    {
-        int i=0;
-        ArrayList<String> showList = new ArrayList<>();
-        for(ArrayList<String> item : profileItems)
-        {
-            StringBuilder sb = new StringBuilder();
-            switch(i)
-            {
-                case 0: sb.append("Musik:"); break;
-                case 1: sb.append("Film:"); break;
-            }
-            for(String str : item)
-            {
-                sb.append(str);
-                sb.append(", ");
-            }
-            showList.add(sb.toString());
-            i++;
-        }
-        profileAdapter = new ProfileAdapter(this, showList);
-        listView.setAdapter(profileAdapter);
-    }
-
-    /*public void editList(View currentView)
-    {
-        TextView titleText = (TextView)currentView.findViewById(R.id.titleText);
-        String title = (String)titleText.getText();
-        TextView contentText = (TextView)currentView.findViewById(R.id.contentText);
-        String content = (String)contentText.getText();
-        Bundle fragmentBundle = new Bundle();
-        fragmentBundle.putString("title", title);
-        fragmentBundle.putString("content", content);
-
-
-
-    }*/
-
-
+    public void onFinishedClick(View view){ finish(); }
 }
