@@ -25,7 +25,7 @@ public class Stats
     {
         lastScannedTime = 0;
         lastScanned = "";
-        completedAchievements = new LinkedList<Achievement>();
+        completedAchievements = new LinkedList<>();
         //TODO read db
     }
 

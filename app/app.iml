@@ -92,9 +92,8 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="commons-codec-1.8" level="project" />
     <orderEntry type="library" exported="" name="core-3.2.1" level="project" />
-    <orderEntry type="library" exported="" name="core-1.8.2" level="project" />
+    <orderEntry type="library" exported="" name="commons-codec-1.8" level="project" />
     <orderEntry type="library" exported="" name="org.apache.commons.codec-1.8" level="project" />
     <orderEntry type="library" exported="" name="zbar-1.8.2" level="project" />
     <orderEntry type="library" exported="" name="android-integration-3.2.1" level="project" />
