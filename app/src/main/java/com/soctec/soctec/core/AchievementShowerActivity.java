@@ -19,6 +19,9 @@ public class AchievementShowerActivity extends Activity
     ImageView mainImageBackView;
     ImageView mainImageFrontView;
     private Achievement achievement;
+    private int gold = 50;
+    private int silver = 30;
+    private int bronze = 10;
 
 
     /*
@@ -49,11 +52,10 @@ public class AchievementShowerActivity extends Activity
 
 
         mainImageBackView = (ImageView)findViewById(R.id.showerAchBack);
-        //mainImageBackView.setImageResource(backImageId);
-
+        setAchievementImageBackground();
 
         mainImageFrontView = (ImageView)findViewById(R.id.showerAchFront);
-        mainImageFrontView.setImageResource(frontImageId);
+        setAchievementImageFront();
 
         TextView nameView = (TextView)findViewById(R.id.showerNameText);
         nameView.setText(getName());
@@ -65,10 +67,6 @@ public class AchievementShowerActivity extends Activity
         closeButtonImg.setImageResource(R.drawable.shower_close_button);
 
     }
-
-
-
-
 
     public String getName()
     {
@@ -88,41 +86,55 @@ public class AchievementShowerActivity extends Activity
 
     public int getAchievementRank()
     {
-        return achievement.getRank();
         //Får info vilken grad achievementet har. Tex guld, silver, brons
         //alternativ: Standard bakgrund=0 Brons=1 Silver=2 Guld=3
-        return 1;
+
+        //alt 1: Varje achivement har bestämd rank
+        //return achievement.getRank();
+
+        //alt 2: Rank baseras på antal poäng
+
+        int points = achievement.getPoints();
+
+        if(points >= gold)
+            return 1;
+        else if(points>=silver)
+            return 2;
+        else if (points>=bronze)
+            return 3;
+        else
+            return 0;
     }
 
-    //sätter olika bakgrunder beroende på rank
     public void setAchievementImageBackground()
     {
+        //sätter olika bakgrunder beroende av rank
         int rank = getAchievementRank();
 
         switch (rank)
         {
             case 1:
-                mainImageBackView.setImageResource(R.drawable.ach_back_1);
+                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_gold
                 break;
 
             case 2:
-                mainImageBackView.setImageResource(R.drawable.ach_back_2);
+                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_silver
                 break;
 
             case 3:
-                mainImageBackView.setImageResource(R.drawable.ach_back_3);
+                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_bronze
                 break;
 
             default:
-                mainImageBackView.setImageResource(R.drawable.ach_back_default);
+                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_default
                 break;
         }
     }
 
     public void setAchievementImageFront()
     {
-        //achievement.getImageName();
-        //mainImageFrontView.setImageResource(R.drawable);
+        FileHandler fileHandler = FileHandler.getInstance();
+        mainImageFrontView.setImageResource(fileHandler.getResourceID(achievement.getImageName(), "drawable"));
     }
 
 
