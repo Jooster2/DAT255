@@ -1,5 +1,10 @@
 package com.soctec.soctec.achievements;
 
+import android.content.Context;
+import android.content.Intent;
+
+import com.soctec.soctec.core.AchievementShowerActivity;
+
 import java.util.LinkedList;
 /**
  * Stats contains information about game progress
@@ -17,15 +22,17 @@ public class Stats
     private LinkedList<Achievement> completedAchievements;
     private long lastScannedTime;
     private boolean talkDone = false;
+    Context mContext;
 
     /**
      * Constructs an empty Stats object
      */
-    public Stats()
+    public Stats(Context mContext)
     {
+        this.mContext = mContext;
         lastScannedTime = 0;
         lastScanned = "";
-        completedAchievements = new LinkedList<Achievement>();
+        completedAchievements = new LinkedList<>();
         //TODO read db
     }
 
@@ -156,6 +163,10 @@ public class Stats
     {
         completedAchievements.add(achievement);
         addPoints(achievement.getPoints());
+
+        Intent intent = new Intent(mContext, AchievementShowerActivity.class);
+        intent.putExtra("AchievementObject", achievement);
+        mContext.startActivity(intent);
     }
 
 }

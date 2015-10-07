@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="BSSID">
+        <item>04:f0:21:10:09:df</item>
+        <item>04:f0:21:10:09:b9</item>
+        <item>04:f0:21:10:09:e8</item>
+        <item>04:f0:21:10:09:b7</item>
+        <item>04:f0:21:10:09:53</item>
+        <item>06:f0:21:10:0c:87</item>
+        <item>06:f0:21:10:0c:ab</item>
+        <item>06:f0:21:11:5c:3d</item>
+        <item>04:f0:21:11:a9:f7</item>
+        <item>06:f0:21:11:59:70</item>
+        <item>06:f0:21:11:59:3d</item>
+        <item>04:f0:21:10:09:5b</item>
+    </string-array>
+</resources>

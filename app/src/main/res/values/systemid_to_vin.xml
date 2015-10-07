@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="SID2501069301">YV3U0V222FA100020</string>
+    <string name="SID2501069758">YV3U0V222FA100021</string>
+    <string name="SID2501131248">YV3U0V222FA100022</string>
+    <string name="SID2501142922">YV3T1U22XF1171164</string>
+    <string name="SID2501069303">YV3T1U225F1171234</string>
+    <string name="SID2500825764">YV3T1U227F1171235</string>
+    <string name="SID2501075606">YV3T1U221F1171327</string>
+    <string name="SID2501069756">YV3T1U223F1171328</string>
+    <string name="SID2501131250">YV3T1U225F1171329</string>
+    <string name="SID2501074720">YV3T1U223F1171330</string>
+    <!-- Have some more...
+    <string name="SID"></string>
+    <string name="SID"></string>
+    <string name="SID"></string>
+    <string name="SID"></string>
+    <string name="SID"></string>
+    <string name="SID"></string>
+    <string name="SID"></string>
+    <string name="SID"></string>
+    <string name="SID"></string>
+    -->
+</resources>

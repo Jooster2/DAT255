@@ -1,8 +1,6 @@
 package com.soctec.soctec.test;
 
 import android.test.AndroidTestCase;
-import android.test.InstrumentationTestCase;
-import android.util.Log;
 
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
@@ -15,7 +13,7 @@ public class AchievementTest extends AndroidTestCase
 {
     MainActivity main = new MainActivity();
     Stats stats = new Stats();
-    AchievementCreator creator = new AchievementCreator (main);
+    AchievementCreator creator = new AchievementCreator ();
     AchievementUnlocker unlocker = new AchievementUnlocker (stats, creator);
 
     /**
@@ -82,12 +80,27 @@ public class AchievementTest extends AndroidTestCase
 
         //TODO : Write more tests, what kind of tests?
     }
+
+    /**
+     * Tests the functionality of Infinite Achievements, both re-creation and increase in demand
+     * @throws Exception
+     */
     public void testCreateInfiniteAchievements () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, S3, INF, P_SCAN:0:2ec");
+        creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:2^c");
         unlocker.receiveEvent(1, "JOCKE");
-        assertEquals(stats.getAchievements().getFirst().getId(), "S3");
-        assertEquals(1,unlocker.getUnlockableAchievements().size());
+        assertEquals(stats.getAchievements().getFirst().getId(), "SI0");
+        assertEquals(1, unlocker.getUnlockableAchievements().size());
+        // Check that the new achievements goal is set correctly according to equation
+        // Should be 2 (current total of scans is 1)
+        assertEquals(2, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
+        unlocker.receiveEvent(1, "JOCKE");
+        // Should be 4 (current total of scans is 2)
+        assertEquals(4, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
+        unlocker.receiveEvent(1, "JOCKE");
+        unlocker.receiveEvent(1, "JOCKE");
+        // Should be 8 (current total of scans is 4)
+        assertEquals(8, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
     }
 }
