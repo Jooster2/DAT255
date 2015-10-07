@@ -36,6 +36,7 @@ import com.soctec.soctec.network.ConnectionChecker;
 import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 import com.soctec.soctec.profile.ProfileActivity;
+import com.soctec.soctec.profile.ProfileMatchActivity;
 
 /**
  * MainActivity is a tabbed activity, and sets up most of the other objects for the App
@@ -80,12 +81,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             account = "walla";
         //TODO crash and burn (handle this some way...)
 
+        //Initialize the FileHandler
+        FileHandler.getInstance().setContext(this);
+
+        //Initialize the Profile
         String userCode = new Encryptor().encrypt(account);
         Profile.setUserCode(userCode);
         Profile.initProfile();
-
-        //Initialize the FileHandler
-        FileHandler.getInstance().setContext(this);
 
         //Initialize the Achievement engine
         stats = new Stats(this);
@@ -182,6 +184,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 
+        //Match profile stuff
+        Bundle b = new Bundle();
+        b.putSerializable("list1", Profile.getProfile());
+        b.putSerializable("list2", profileFromPeer);
+        Intent intent = new Intent(this, ProfileMatchActivity.class);
+        intent.putExtras(b);
+        startActivity(intent);
+
+        //Achievement stuff
         unlocker.receiveEvent(1, idFromPeer);
         String achievement = stats.getlastScanned();
         Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
@@ -190,10 +201,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         for(Achievement achi : stats.getLastCompleted())
         {
-            Intent intent = new Intent(this, AchievementShowerActivity.class);
+            intent = new Intent(this, AchievementShowerActivity.class);
             intent.putExtra("AchievementObject", achi);
             startActivity(intent);
         }
+
     }
 
     /**
