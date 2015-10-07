@@ -64,8 +64,8 @@ public class ProfileMatchActivity extends Activity
         ArrayList <ArrayList <String>> allResults = new ArrayList <ArrayList <String>> ();
         allResults.add(nameResult);
         allResults.add(musicResult);
-        allResults.add(movieResult);
         allResults.add(sportsResult);
+        allResults.add(movieResult);
         allResults.add(miscResult);
         int indexOtherDevice = 0;
 
@@ -92,44 +92,57 @@ public class ProfileMatchActivity extends Activity
         ArrayList <String> showList = new ArrayList<>();
         StringBuilder temp = new StringBuilder();
 
-        temp.append("Namn: ,");
-        for (String item : nameResult)
+        if(nameResult.size() >= 1)
         {
-            temp.append (item);
+            temp.append("Namn: ,");
+            for(String item : nameResult)
+            {
+                temp.append(item);
+            }
+            showList.add(temp.toString());
         }
-        showList.add (temp.toString());
 
-        temp = new StringBuilder();
-        temp.append("Musik: ,");
-        for (String item : musicResult)
+        if(musicResult.size() >= 1)
         {
-            temp.append (item);
+            temp = new StringBuilder();
+            temp.append("Musik: ,");
+            for(String item : musicResult)
+            {
+                temp.append(item);
+            }
+            showList.add(temp.toString());
         }
-        showList.add (temp.toString());
 
-        temp = new StringBuilder();
-        temp.append("Sport: ,");
-        for (String item : movieResult)
+        if(movieResult.size() >= 1)
         {
-            temp.append (item);
+            temp = new StringBuilder();
+            temp.append("Film: ,");
+            for(String item : movieResult)
+            {
+                temp.append(item);
+            }
+            showList.add(temp.toString());
         }
-        showList.add (temp.toString());
-
-        temp = new StringBuilder();
-        temp.append("Film: ,");
-        for (String item : sportsResult)
+        if(sportsResult.size() >= 1)
         {
-            temp.append (item);
+            temp = new StringBuilder();
+            temp.append("Sport: ,");
+            for(String item : sportsResult)
+            {
+                temp.append(item);
+            }
+            showList.add(temp.toString());
         }
-        showList.add (temp.toString());
-
-        temp = new StringBuilder();
-        temp.append("Övrigt: ,");
-        for( String item : miscResult)
+        if(miscResult.size() >= 1)
         {
-            temp.append(item);
+            temp = new StringBuilder();
+            temp.append("Övrigt: ,");
+            for(String item : miscResult)
+            {
+                temp.append(item);
+            }
+            showList.add(temp.toString());
         }
-        showList.add (temp.toString());
 
         ProfileMatchAdapter matchAdapter = new ProfileMatchAdapter(this, showList);
         myListView.setAdapter(matchAdapter);

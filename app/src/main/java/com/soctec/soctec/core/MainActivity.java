@@ -1,5 +1,6 @@
 package com.soctec.soctec.core;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.accounts.Account;
@@ -178,11 +179,25 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * @param idFromPeer The unique ID of the peer
      * @param profileFromPeer The peer's profile data
      */
-    public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
+    public void receiveDataFromPeer(String idFromPeer, ArrayList<ArrayList<String>> profileFromPeer)
     {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 
+
+        //Achievement stuff
+        unlocker.receiveEvent(1, idFromPeer);
+        String achievement = stats.getlastScanned();
+        //Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
+        String time = String.valueOf(stats.getTimeTalked());
+        //Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
+
+        for(Achievement achi : stats.getLastCompleted())
+        {
+            Intent intent2 = new Intent(this, AchievementShowerActivity.class);
+            intent2.putExtra("AchievementObject", achi);
+            startActivity(intent2);
+        }
         //Match profile stuff
         Bundle b = new Bundle();
         b.putSerializable("list1", Profile.getProfile());
@@ -190,20 +205,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Intent intent = new Intent(this, ProfileMatchActivity.class);
         intent.putExtras(b);
         startActivity(intent);
-
-        //Achievement stuff
-        unlocker.receiveEvent(1, idFromPeer);
-        String achievement = stats.getlastScanned();
-        Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
-        String time = String.valueOf(stats.getTimeTalked());
-        Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
-
-        for(Achievement achi : stats.getLastCompleted())
-        {
-            intent = new Intent(this, AchievementShowerActivity.class);
-            intent.putExtra("AchievementObject", achi);
-            startActivity(intent);
-        }
 
     }
 

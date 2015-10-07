@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * This class takes care of all communication with the server and peers. Sends and receives data.
@@ -31,8 +32,10 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     private static final String SERVER_ADDRESS = "XXX.XXX.XXX.XXX";
 
     private int msgType;
-    private String dataToSend;
-    private String dataReceived;
+    //private String dataToSend;
+    //private String dataReceived;
+    private ArrayList<ArrayList<String>> dataToSend;
+    private ArrayList<ArrayList<String>> dataReceived;
     private MainActivity myActivity;
 
     private static NetworkHandler instance = null;
@@ -62,17 +65,31 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                     //Read data
                     ObjectInputStream dis = new ObjectInputStream(
                             clientSocket.getInputStream());
-                    dataReceived = (String)dis.readObject();
+                    //dataReceived = (String)dis.readObject();
+                    dataReceived = (ArrayList)dis.readObject();
 
                     //Write data
                     ObjectOutputStream dos = new ObjectOutputStream(
                             clientSocket.getOutputStream());
-                    dataToSend = Profile.getUserCode() + "&" + Profile.getProfileString();
+
+                    /*
+                    Retrieves the profile list, clones it and adds the
+                    usercode to the end of it
+                     */
+                    dataToSend = (ArrayList)Profile.getProfile().clone();
+                    ArrayList<String> temp = new ArrayList<>();
+                    temp.add(Profile.getUserCode());
+                    dataToSend.add(temp);
+
+
                     dos.writeObject(dataToSend);
 
                     //Send read data to MainActivity
-                    final String id = dataReceived.split("&")[0];
-                    final String profile = dataReceived.split("&")[1];
+
+                    //Retrieves the usercode from the end of the list and then removes that element
+                    final String id = dataReceived.get(dataReceived.size()-1).get(0);
+                    dataReceived.remove(dataReceived.size()-1);
+                    final ArrayList<ArrayList<String>> profile = dataReceived;
                     myActivity.runOnUiThread(new Runnable()
                     {
                         @Override
@@ -114,24 +131,24 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     /**
      * This method is used when data needs to be backed up to the server.
      */
-    public void backupData()
+    /*public void backupData()
     {
         msgType = BACKUP_MSG;
         //Put together data to send to server: ID + TYPE + DATA
         dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
         execute();
-    }
+    }*/
 
     /**
      * This method is used when the profile needs to be downloaded from the server to a new device.
      */
-    public void downloadData()
+    /*public void downloadData()
     {
         msgType = DOWNLOAD_MSG;
         //Put together data to send to server: ID + TYPE
         dataToSend = "<Insert my ID here>" + ":1";
         execute();
-    }
+    }*/
 
     /**
      * This method is called when a scan has taken place and we need to connect to a peer.
@@ -148,7 +165,14 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
         else
         {
             msgType = SCAN_MSG;
-            dataToSend = Profile.getUserCode() + "&" + Profile.getProfileString();
+            /*
+            Retrieves the profile list, clones it and adds the
+            usercode to the end of it
+             */
+            dataToSend = (ArrayList)Profile.getProfile().clone();
+            ArrayList<String> temp = new ArrayList<>();
+            temp.add(Profile.getUserCode());
+            dataToSend.add(temp);
             execute(scannedAddress);
         }
     }
@@ -188,7 +212,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             if(msgType == DOWNLOAD_MSG || msgType == BACKUP_MSG)
             {
                 //Send data to server
-                socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NR);
+                /*socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NR);
                 DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                 dos.writeBytes(dataToSend);
 
@@ -198,7 +222,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                 dis.readFully(tmpArray);
                 dataReceived = new String(tmpArray);
 
-                socket.close();
+                socket.close();*/
             }
             else if(msgType == SCAN_MSG)
             {
@@ -214,7 +238,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
 
                 //Receive data from peer
                 ObjectInputStream dis = new ObjectInputStream(socket.getInputStream());
-                dataReceived = (String)dis.readObject();
+                dataReceived = (ArrayList)dis.readObject();
 
                 socket.close();
             }
@@ -241,9 +265,10 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
             {
                 Log.i("PostExecute", "Received: " + dataReceived);
 
-                final String id = dataReceived.split("&")[0];
-                final String profile = dataReceived.split("&")[1];
-
+                // Retrieves the usercode from the end of the list and then removes that element
+                final String id = dataReceived.get(dataReceived.size()-1).get(0);
+                dataReceived.remove(dataReceived.size()-1);
+                final ArrayList<ArrayList<String>> profile = dataReceived;
                 myActivity.runOnUiThread(new Runnable()
                 {
                     @Override
@@ -262,7 +287,7 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
                     @Override
                     public void run()
                     {
-                        myActivity.receiveDataFromServer(dataReceived);
+                        //myActivity.receiveDataFromServer(dataReceived);
                     }
                 });
             }
