@@ -10,14 +10,14 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ViewSwitcher;
 
 import com.soctec.soctec.R;
 
 public class AchievementsFragment extends Fragment
 {
-    Button unlocked, locked;
+    ImageButton unlocked, locked;
     ViewSwitcher viewSwitcher;
 
     @Nullable
@@ -26,8 +26,8 @@ public class AchievementsFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_achievements, container, false);
 
-        unlocked = (Button) view.findViewById(R.id.unlocked);
-        locked = (Button) view.findViewById(R.id.locked);
+        unlocked = (ImageButton) view.findViewById(R.id.unlocked);
+        locked = (ImageButton) view.findViewById(R.id.locked);
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.viewSwitcher);
 
         unlocked.setOnClickListener(new View.OnClickListener()
@@ -35,7 +35,7 @@ public class AchievementsFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                viewSwitcher.showPrevious();
+                viewSwitcher.showNext();
             }
         });
 

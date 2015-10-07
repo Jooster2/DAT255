@@ -17,54 +17,57 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout">
-
-        <Button
-            android:id="@+id/unlocked"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Upplåsta"
-            android:background="#58A449"
-            android:layout_marginTop="65dp"/>
-
-        <Button
-            android:id="@+id/locked"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Låsta"
-            android:background="#58A449"
-            android:allowUndo="true"
-            android:layout_marginTop="65dp"/>
-    </LinearLayout>
-
     <ViewSwitcher
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/viewSwitcher"
-        android:layout_below="@+id/linearLayout"
-        android:layout_centerHorizontal="true" >
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true">
 
-        <fragment
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.soctec.soctec.core.AchievementsUnlockedList"
-            android:id="@+id/fragment"
-            android:layout_below="@+id/viewSwitcher"
-            android:layout_centerHorizontal="true"/>
+            android:gravity="center"
+            android:orientation="vertical" >
 
-        <fragment
-            android:layout_width="wrap_content"
+            <ImageButton
+                android:layout_width="39dp"
+                android:layout_height="45dp"
+                android:id="@+id/unlocked"
+                android:background="@drawable/achievements"
+                android:layout_below="@id/viewSwitcher"/>
+
+            <fragment
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:name="com.soctec.soctec.core.AchievementsUnlockedList"
+                android:id="@+id/frag_unlocked"
+                android:layout_below="@+id/unlocked"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:name="com.soctec.soctec.core.AchievementsLockedList"
-            android:id="@+id/fragment2"
-            android:layout_below="@+id/viewSwitcher"
-            android:layout_centerHorizontal="true"/>
-</ViewSwitcher>
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:layout_width="39dp"
+                android:layout_height="45dp"
+                android:id="@+id/locked"
+                android:background="@drawable/denied"
+                android:layout_below="@id/viewSwitcher"/>
+
+            <fragment
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:name="com.soctec.soctec.core.AchievementsLockedList"
+                android:id="@+id/frag_locked"
+                android:layout_below="@+id/locked"/>
+
+        </LinearLayout>
+
+    </ViewSwitcher>
 
 </RelativeLayout>
