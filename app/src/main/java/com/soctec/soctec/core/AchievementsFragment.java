@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ViewSwitcher;
-
 import com.soctec.soctec.R;
-import com.soctec.soctec.achievements.AchievementsAdapter;
+import com.soctec.soctec.achievements.Achievement;
+import com.soctec.soctec.core.AchievementsAdapter;
 
 import java.util.ArrayList;
 
@@ -23,32 +23,13 @@ public class AchievementsFragment extends Fragment
 {
     ImageButton unlocked, locked;
     ViewSwitcher viewSwitcher;
+    View view;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_achievements, container, false);
-
-        ArrayList<String> theList =  new ArrayList<String> ();
-        ListView unlockedAchievementListView;
-        theList.add("Hej, someimg,extratext");
-        theList.add("på");
-        theList.add("dig");
-        theList.add("jesper!");
-        unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
-        AchievementsAdapter unlockedadapter = new AchievementsAdapter(getActivity(), theList);
-        unlockedAchievementListView.setAdapter(unlockedadapter);
-
-        ArrayList<String> theOtherList =  new ArrayList<String> ();
-        ListView lockedAchievmentListView;
-        theOtherList.add("prutt, someimg,extratext");
-        theOtherList.add("på");
-        theOtherList.add("dig");
-        theOtherList.add("jesper!");
-        lockedAchievmentListView = (ListView)view.findViewById(R.id.listlocked);
-        AchievementsAdapter lockedadapter = new AchievementsAdapter(getActivity(), theOtherList);
-        lockedAchievmentListView.setAdapter(lockedadapter);
+        view = inflater.inflate(R.layout.fragment_achievements, container, false);
 
         unlocked = (ImageButton) view.findViewById(R.id.unlocked);
         locked = (ImageButton) view.findViewById(R.id.locked);
@@ -73,4 +54,38 @@ public class AchievementsFragment extends Fragment
         });
         return view;
     }
+
+    /*/public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
+    {
+
+        ArrayList<String> theList =  new ArrayList<String> ();
+        ListView unlockedAchievementListView;
+
+        for (Achievement achi : unlocked)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(achi.getName() + ",");
+            sb.append(achi.getImageName());
+            theList.add(sb.toString());
+        }
+
+        unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
+        AchievementsAdapter unlockedadapter = new AchievementsAdapter(getActivity(), theList);
+        unlockedAchievementListView.setAdapter(unlockedadapter);
+
+        ArrayList<String> theOtherList =  new ArrayList<String> ();
+        ListView lockedAchievmentListView;
+
+        for (Achievement achi : locked)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(achi.getName() + ",");
+            sb.append(achi.getImageName());
+            theOtherList.add(sb.toString());
+        }
+
+        lockedAchievmentListView = (ListView)view.findViewById(R.id.listlocked);
+        AchievementsAdapter lockedadapter = new AchievementsAdapter(getActivity(), theOtherList);
+        lockedAchievmentListView.setAdapter(lockedadapter);
+    }/*/
 }

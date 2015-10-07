@@ -1,4 +1,4 @@
-package com.soctec.soctec.achievements;
+package com.soctec.soctec.core;
 
 /**
  * Created by Jeppe on 2015-10-07.
@@ -37,13 +37,12 @@ public class AchievementsAdapter extends ArrayAdapter {
 
         String fullString = itemNames.get(position);
         String [] strings = fullString.split(",");
-        //strings[0];
+
         txtTitle.setText(strings[0]);
-        //FileHandler.getInstance();
-        /*imageView.setImageResource(imgid[position]);
-        extratxt.setText("Description "+itemname[position]);
-        return rowView;
-        */
+        FileHandler fh = FileHandler.getInstance();
+        imageView.setImageResource(fh.getResourceID(strings[1], "drawable"));
+
+        //extratxt.setText("Description "+itemname[position]);
         return rowView;
     };
 }

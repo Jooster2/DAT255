@@ -1,5 +1,6 @@
 package com.soctec.soctec.core;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.accounts.Account;
@@ -24,10 +25,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.achievements.Achievement;
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
 import com.soctec.soctec.achievements.Stats;
@@ -102,6 +105,40 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         setupActionBar();
     }
 
+    public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
+    {
+
+        ArrayList<String> theList =  new ArrayList<String> ();
+        ListView unlockedAchievementListView;
+
+        for (Achievement achi : unlocked)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(achi.getName() + ",");
+            sb.append(achi.getImageName());
+            theList.add(sb.toString());
+        }
+
+        unlockedAchievementListView = (ListView)findViewById(R.id.listunlocked);
+        AchievementsAdapter unlockedadapter = new AchievementsAdapter(this, theList);
+        unlockedAchievementListView.setAdapter(unlockedadapter);
+
+        ArrayList<String> theOtherList =  new ArrayList<String> ();
+        ListView lockedAchievmentListView;
+
+        for (Achievement achi : locked)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(achi.getName() + ",");
+            sb.append(achi.getImageName());
+            theOtherList.add(sb.toString());
+        }
+
+        lockedAchievmentListView = (ListView)findViewById(R.id.listlocked);
+        AchievementsAdapter lockedadapter = new AchievementsAdapter(this, theOtherList);
+        lockedAchievmentListView.setAdapter(lockedadapter);
+    }
+
     /**
      * Initiate the BroadcastReceiver and register it.
      */
@@ -123,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public void scanNow(View v)
     {
+        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
     }
