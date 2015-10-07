@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator.createFromFile();
 
         //Initialize networkHandler. Start server thread
-        NetworkHandler.getInstance(this);
+        NetworkHandler.getInstance(this).startThread();
 
 
         //Initialize the ActionBar
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onPause()
     {
         super.onPause();
-        NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
+        NetworkHandler.getInstance(this).stopThread();
         unregisterReceiver(connectionChecker);
     }
 
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onResume()
     {
         super.onResume();
-        NetworkHandler.getInstance(this).startConnectionListener();
+        NetworkHandler.getInstance(this).startThread();
 
         IntentFilter intentFilter =
                 new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);

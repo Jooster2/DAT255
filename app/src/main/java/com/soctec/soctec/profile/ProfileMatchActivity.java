@@ -77,18 +77,18 @@ public class ProfileMatchActivity extends Activity
                 {
                     for (String otherItem : otherDevice.get(indexOtherDevice))
                     {
-                        if (item.toLowerCase().equals(otherItem.toLowerCase()))
+                        if (!item.equals("") &&
+                                item.toLowerCase().trim().equals(otherItem.toLowerCase().trim()))
                         {
                             allResults.get(indexOtherDevice).add(item);
                         }
                     }
 
                 }
-
             }
             indexOtherDevice++;
-
         }
+
         ArrayList <String> showList = new ArrayList<>();
         StringBuilder temp = new StringBuilder();
 

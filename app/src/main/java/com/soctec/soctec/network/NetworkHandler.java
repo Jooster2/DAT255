@@ -1,13 +1,8 @@
 package com.soctec.soctec.network;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
 import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.profile.Profile;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,109 +11,28 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-/**
- * This class takes care of all communication with the server and peers. Sends and receives data.
- * @author David
- * @version Created on 2015-09-15
- */
 
-public class NetworkHandler extends AsyncTask<String, Void, Void>
+public class NetworkHandler
 {
-    private static final int BACKUP_MSG = 0;
-    private static final int DOWNLOAD_MSG = 1;
-    private static final int SCAN_MSG = 2;
-    private static final int SERVER_PORT_NR = 49999;
-    private static final int PEER_PORT_NR = 49997;
-    private static final String SERVER_ADDRESS = "XXX.XXX.XXX.XXX";
-
-    private int msgType;
-    //private String dataToSend;
-    //private String dataReceived;
-    private ArrayList<ArrayList<String>> dataToSend;
-    private ArrayList<ArrayList<String>> dataReceived;
+    private static final int PEER_PORT_NR = 49998;
     private MainActivity myActivity;
-
+    private PassiveThread listenerThread;
+    private boolean listenForConnections = true;
     private static NetworkHandler instance = null;
-    private Thread connectionListenerThread;
 
     /**
-     * Constructor. Initializes connection listener thread
-     * @param activity Main activity
+     * Constructor
+     * @param act MainActivity
      */
-    private NetworkHandler(MainActivity activity)
+    private NetworkHandler(MainActivity act)
     {
-        myActivity = activity;
-        connectionListenerThread =  new Thread()
-        {
-            @Override
-            public void run()
-            {
-                Log.i("connectionThread", "thread started!");
-                try
-                {
-                    //Accept connection
-                    ServerSocket serverSocket = new ServerSocket(PEER_PORT_NR);
-                    Socket clientSocket = serverSocket.accept();
-
-                    Log.i("Server thread", "Connection established!");
-
-                    //Read data
-                    ObjectInputStream dis = new ObjectInputStream(
-                            clientSocket.getInputStream());
-                    //dataReceived = (String)dis.readObject();
-                    dataReceived = (ArrayList)dis.readObject();
-
-                    //Write data
-                    ObjectOutputStream dos = new ObjectOutputStream(
-                            clientSocket.getOutputStream());
-
-                    /*
-                    Retrieves the profile list, clones it and adds the
-                    usercode to the end of it
-                     */
-                    dataToSend = (ArrayList)Profile.getProfile().clone();
-                    ArrayList<String> temp = new ArrayList<>();
-                    temp.add(Profile.getUserCode());
-                    dataToSend.add(temp);
-
-
-                    dos.writeObject(dataToSend);
-
-                    //Send read data to MainActivity
-
-                    //Retrieves the usercode from the end of the list and then removes that element
-                    final String id = dataReceived.get(dataReceived.size()-1).get(0);
-                    dataReceived.remove(dataReceived.size()-1);
-                    final ArrayList<ArrayList<String>> profile = dataReceived;
-                    myActivity.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            myActivity.receiveDataFromPeer(id, profile);
-                        }
-                    });
-
-                    serverSocket.close();
-                }
-                catch(IOException | ClassNotFoundException e)
-                {
-                    e.printStackTrace();
-                    Log.e("NetworkHandler", "ServerSocket exception", e);
-                }
-                instance = new NetworkHandler(myActivity);
-            }
-        };
-        connectionListenerThread.start();
-        Log.i("NetworkHandler", "Tried to start connectionListenerTread");
+        myActivity = act;
     }
 
     /**
-     * Singleton pattern. Whenever you want to call a method in this class, use:
-     * NetworkHandler.getInstance().aMethod();
-     * First time called, connectionListenerThread will start automatically.
-     * @param activity The main activity.
-     * @return The one instance of NetworkHandler.
+     * Returns the only instance
+     * @param activity MainActivity
+     * @return the instance
      */
     public static NetworkHandler getInstance(MainActivity activity)
     {
@@ -129,170 +43,193 @@ public class NetworkHandler extends AsyncTask<String, Void, Void>
     }
 
     /**
-     * This method is used when data needs to be backed up to the server.
-     */
-    /*public void backupData()
-    {
-        msgType = BACKUP_MSG;
-        //Put together data to send to server: ID + TYPE + DATA
-        dataToSend = "<Insert my ID here>" + ":0:" + "<insert data here>";
-        execute();
-    }*/
-
-    /**
-     * This method is used when the profile needs to be downloaded from the server to a new device.
-     */
-    /*public void downloadData()
-    {
-        msgType = DOWNLOAD_MSG;
-        //Put together data to send to server: ID + TYPE
-        dataToSend = "<Insert my ID here>" + ":1";
-        execute();
-    }*/
-
-    /**
-     * This method is called when a scan has taken place and we need to connect to a peer.
-     * This method will connect to the other device and exchange ID and profile data.
-     * MainActivity is called when this process in done.
-     * @param scannedAddress The peer's address, scanned from QR
+     * Starts thread that connects to peer and transfers data
+     * @param scannedAddress The address to connect to
      */
     public void sendScanInfoToPeer(String scannedAddress)
     {
-        if (!ConnectionChecker.isConnected(myActivity.getApplicationContext()))
+        if(ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
-            Log.i("NetworkHandler", "No WIFI access, aborting network task");
-        }
-        else
-        {
-            msgType = SCAN_MSG;
-            /*
-            Retrieves the profile list, clones it and adds the
-            usercode to the end of it
-             */
-            dataToSend = (ArrayList)Profile.getProfile().clone();
-            ArrayList<String> temp = new ArrayList<>();
-            temp.add(Profile.getUserCode());
-            dataToSend.add(temp);
-            execute(scannedAddress);
+            //Set up data to send and data to be received
+            ArrayList<ArrayList<String>> dataToSend;
+            dataToSend = (ArrayList) Profile.getProfile().clone();
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add(Profile.getUserCode());
+            dataToSend.add(tmp);
+
+            //Start networking thread
+            ActiveThread thread = new ActiveThread(scannedAddress, dataToSend);
+            thread.start();
         }
     }
 
     /**
-     * Start the connectionListener Thread
-     * This is done automatically in the constructor. Therefore, no need to call this function
-     * after class in initialized (initialization = calling .getInstance() the first time).
+     * Starts the thread that listens for incoming connections from peer
      */
-    public void startConnectionListener()
+    public void startThread()
     {
-        if(!connectionListenerThread.isAlive())
-            connectionListenerThread.start();
-    }
-
-    /**
-     * Interrupt the connectionListener Thread
-     */
-    public void stopConnectionListener()
-    {
-        if(connectionListenerThread.isAlive())
-            connectionListenerThread.interrupt();
-    }
-
-    /**
-     * Called internally in NetworkHandler to perform network tasks on another thread.
-     * @param params Nothing, just void
-     * @return Nothing, just null
-     */
-    @Override
-    protected Void doInBackground(String... params)
-    {
-        Log.i("doInBackground", "Got this far!");
-        try
+        if(listenerThread == null || !listenerThread.isAlive())
         {
-            Socket socket;
-            if(msgType == DOWNLOAD_MSG || msgType == BACKUP_MSG)
+            listenForConnections = true;
+            listenerThread = new PassiveThread();
+            listenerThread.start();
+        }
+    }
+
+    public void stopThread()
+    {
+        listenForConnections = false;
+        listenerThread.stopThread();
+    }
+
+    /**
+     * This thread can connect to a peer, transfers data, and sends it to MainActivity
+     */
+    private class ActiveThread extends Thread
+    {
+        String ip;
+        ArrayList<ArrayList<String>> dataToSend;
+
+        /**
+         * Constructor
+         * @param ip The ip address to connect to
+         * @param dataToSend The data to transfer
+         */
+        public ActiveThread(String ip, ArrayList dataToSend)
+        {
+            this.ip = ip;
+            this.dataToSend = dataToSend;
+        }
+
+        @Override
+        public void run()
+        {
+            try
             {
-                //Send data to server
-                /*socket = new Socket(SERVER_ADDRESS, SERVER_PORT_NR);
-                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                dos.writeBytes(dataToSend);
+                //Set up socket and streams
+                Socket socket = new Socket(ip, PEER_PORT_NR);
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
-                //Receive data from server
-                DataInputStream dis = new DataInputStream(socket.getInputStream());
-                byte[] tmpArray = new byte[1024];
-                dis.readFully(tmpArray);
-                dataReceived = new String(tmpArray);
+                //Send data, then receive data
+                oos.writeObject(dataToSend);
+                ArrayList<ArrayList<String>> dataReceived = (ArrayList)ois.readObject();
 
-                socket.close();*/
-            }
-            else if(msgType == SCAN_MSG)
-            {
-                Log.i("", params[0]);
-                //Send data to peer
-                socket = new Socket();
-                socket.connect(new InetSocketAddress(params[0], PEER_PORT_NR), 10000);
+                //Handle received data
+                final String userCode = dataReceived.get(dataReceived.size()-1).get(0);
+                dataReceived.remove(dataReceived.size() - 1);
+                final ArrayList<ArrayList<String>> userProfile = dataReceived;
 
-                Log.i("Client socket", "Socket created!");
+                myActivity.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        myActivity.receiveDataFromPeer(userCode, userProfile);
+                    }
+                });
 
-                ObjectOutputStream dos = new ObjectOutputStream(socket.getOutputStream());
-                dos.writeObject(dataToSend);
-
-                //Receive data from peer
-                ObjectInputStream dis = new ObjectInputStream(socket.getInputStream());
-                dataReceived = (ArrayList)dis.readObject();
-
+                //Clean up
+                ois.close();
+                oos.flush();
+                oos.close();
                 socket.close();
+
+            } catch(IOException | ClassNotFoundException e)
+            {
+                e.printStackTrace();
             }
         }
-        catch(IOException | ClassNotFoundException e)
-        {
-            Log.e("NetworkHandler", e.getMessage());
-            e.printStackTrace();
-            dataReceived = null;
-        }
-        return null;
     }
 
     /**
-     * Called internally in NetworkHandler when server or peer communication is done.
-     * @param v Nothing, just void
+     * This thread listens for a connection, transfers data, and sends it to MainActivity
      */
-    @Override
-    protected void onPostExecute(Void v)
+    private class PassiveThread extends Thread
     {
-        if (msgType == SCAN_MSG)
-        {
-            if (dataReceived != null)
-            {
-                Log.i("PostExecute", "Received: " + dataReceived);
+        ServerSocket serverSocket = null;
 
-                // Retrieves the usercode from the end of the list and then removes that element
-                final String id = dataReceived.get(dataReceived.size()-1).get(0);
-                dataReceived.remove(dataReceived.size()-1);
-                final ArrayList<ArrayList<String>> profile = dataReceived;
-                myActivity.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        myActivity.receiveDataFromPeer(id, profile);
-                    }
-                });
-            }
-        } else if (msgType == DOWNLOAD_MSG)
+        @Override
+        public void run()
         {
-            if (dataReceived != null)
+            while(listenForConnections)
             {
-                myActivity.runOnUiThread(new Runnable()
+                try
                 {
-                    @Override
-                    public void run()
+                    //Set up socket
+                    serverSocket = new ServerSocket();
+                    serverSocket.setReuseAddress(true);
+                    serverSocket.bind(new InetSocketAddress(PEER_PORT_NR));
+
+                    //Accept connection and set up streams
+                    Socket client = serverSocket.accept();
+                    ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+                    ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+
+                    //Receive data, then send data
+                    ArrayList<ArrayList<String>> dataReceived = (ArrayList) ois.readObject();
+                    oos.writeObject(getDataToSend());
+
+                    //Handle received data
+                    final String userCode = dataReceived.get(dataReceived.size() - 1).get(0);
+                    dataReceived.remove(dataReceived.size() - 1);
+                    final ArrayList<ArrayList<String>> userProfile = dataReceived;
+
+                    myActivity.runOnUiThread(new Runnable()
                     {
-                        //myActivity.receiveDataFromServer(dataReceived);
-                    }
-                });
+                        @Override
+                        public void run()
+                        {
+                            myActivity.receiveDataFromPeer(userCode, userProfile);
+                        }
+                    });
+
+                    //Clean up
+                    ois.close();
+                    oos.flush();
+                    oos.close();
+                    client.close();
+
+                } catch(IOException | ClassNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
-        instance = new NetworkHandler(myActivity);
+        /**
+         * This method returns the users profile & ID
+         * @return The user's profile & ID
+         */
+        private ArrayList<ArrayList<String>> getDataToSend()
+        {
+            ArrayList<ArrayList<String>> listToSend = (ArrayList)Profile.getProfile().clone();
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add(Profile.getUserCode());
+            listToSend.add(tmp);
+            return listToSend;
+        }
+
+        /**
+         * Stops the thread from listening for connections
+         */
+        public void stopThread()
+        {
+            try
+            {
+                if (serverSocket != null)
+                {
+                    serverSocket.close();
+                }
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                interrupt();
+            }
+        }
     }
 }
