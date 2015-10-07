@@ -1,4 +1,4 @@
-package com.soctec.soctec.core;
+package com.soctec.soctec.utils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

@@ -1,9 +1,7 @@
-package com.soctec.soctec.core;
+package com.soctec.soctec.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.media.Image;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -14,12 +12,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 /**

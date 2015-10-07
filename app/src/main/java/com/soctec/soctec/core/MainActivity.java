@@ -18,13 +18,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
@@ -37,6 +34,8 @@ import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 import com.soctec.soctec.profile.ProfileActivity;
 import com.soctec.soctec.profile.ProfileMatchActivity;
+import com.soctec.soctec.utils.Encryptor;
+import com.soctec.soctec.utils.FileHandler;
 
 /**
  * MainActivity is a tabbed activity, and sets up most of the other objects for the App
