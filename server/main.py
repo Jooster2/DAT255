@@ -14,12 +14,12 @@ def socketInputThread(clientSocket, address):
         userCode = userCode.strip()
         command = command.strip()
         # Makes a list of the data
-        data = data.strip().split(',')
     except ValueError as e:
         userCode, command = packet.decode().split(':')
         userCode = userCode.strip()
         command = command.strip()
     if(command == '0'):
+        data = data.strip().split(',')
         dbWrite(userCode, data)
     elif(command == '1'):
         scanAttempt(userCode, data)
@@ -82,11 +82,10 @@ def dbWrite(userCode, data):
 
 
 def scanAttempt(userCode, data):
-    pass
-
-
-
-
+    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientSocket.connect((userCode, 49999))
+    clientSocket.send(data.encode())
+    clientSocket.close()
 
 def dbRead(userCode):
     db = sqlite3.connect('soctec-db')
