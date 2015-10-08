@@ -2,7 +2,7 @@ package com.soctec.soctec.test;
 
 import android.test.AndroidTestCase;
 
-import com.soctec.soctec.core.APIHandler;
+import com.soctec.soctec.utils.APIHandler;
 
 import java.util.ArrayList;
 

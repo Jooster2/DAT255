@@ -1,5 +1,6 @@
 package com.soctec.soctec.core;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.accounts.Account;
@@ -18,16 +19,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
+import com.soctec.soctec.achievements.Achievement;
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
 import com.soctec.soctec.achievements.Stats;
@@ -35,6 +34,9 @@ import com.soctec.soctec.network.ConnectionChecker;
 import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 import com.soctec.soctec.profile.ProfileActivity;
+import com.soctec.soctec.profile.ProfileMatchActivity;
+import com.soctec.soctec.utils.Encryptor;
+import com.soctec.soctec.utils.FileHandler;
 
 /**
  * MainActivity is a tabbed activity, and sets up most of the other objects for the App
@@ -79,12 +81,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             account = "walla";
         //TODO crash and burn (handle this some way...)
 
+        //Initialize the FileHandler
+        FileHandler.getInstance().setContext(this);
+
+        //Initialize the Profile
         String userCode = new Encryptor().encrypt(account);
         Profile.setUserCode(userCode);
         Profile.initProfile();
-
-        //Initialize the FileHandler
-        FileHandler.getInstance().setContext(this);
 
         //Initialize the Achievement engine
         stats = new Stats(this);
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator.createFromFile();
 
         //Initialize networkHandler. Start server thread
-        NetworkHandler.getInstance(this);
+        NetworkHandler.getInstance(this).startThread();
 
 
         //Initialize the ActionBar
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onPause()
     {
         super.onPause();
-        NetworkHandler.getInstance(this).stopConnectionListener(); //TODO: Is this working??????
+        NetworkHandler.getInstance(this).stopThread();
         unregisterReceiver(connectionChecker);
     }
 
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onResume()
     {
         super.onResume();
-        NetworkHandler.getInstance(this).startConnectionListener();
+        NetworkHandler.getInstance(this).startThread();
 
         IntentFilter intentFilter =
                 new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -176,16 +179,33 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * @param idFromPeer The unique ID of the peer
      * @param profileFromPeer The peer's profile data
      */
-    public void receiveDataFromPeer(String idFromPeer, String profileFromPeer)
+    public void receiveDataFromPeer(String idFromPeer, ArrayList<ArrayList<String>> profileFromPeer)
     {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 
+
+        //Achievement stuff
         unlocker.receiveEvent(1, idFromPeer);
         String achievement = stats.getlastScanned();
-        Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
         String time = String.valueOf(stats.getTimeTalked());
-        Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
+
+        for(Achievement achi : stats.getLastCompleted())
+        {
+            Intent intent2 = new Intent(this, AchievementShowerActivity.class);
+            intent2.putExtra("AchievementObject", achi);
+            startActivity(intent2);
+        }
+        //Match profile stuff
+        Bundle b = new Bundle();
+        b.putSerializable("list1", Profile.getProfile());
+        b.putSerializable("list2", profileFromPeer);
+        Intent intent = new Intent(this, ProfileMatchActivity.class);
+        intent.putExtras(b);
+        startActivity(intent);
+
     }
 
     /**

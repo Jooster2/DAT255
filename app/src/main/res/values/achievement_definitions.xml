@@ -2,7 +2,7 @@
 <resources>
     <string-array name="Achievements">
         <!--Singular Achievements-->
-        <item>First Scan!, 50, ach_front_test, S1, SIN, P_SCAN:1</item>
+        <item>First Scan!, 50, ach_front_test:background, S1, SIN, P_SCAN:1</item>
         <item>Second Scan!, 50, ach_front_test, S2, SIN, P_SCAN:2</item>
 
 

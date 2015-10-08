@@ -1,5 +1,6 @@
 package com.soctec.soctec.achievements;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -8,8 +9,9 @@ import java.util.LinkedList;
  * @author Carl-Henrik Hult, Joakim Schmidt
  * @version 1.2
  */
-public class Demand
+public class Demand implements Serializable
 {
+    private static final long serialVersionUID = 2L;
     public String type;
     public int amount;
     public String equation;

@@ -12,6 +12,7 @@ public class AchievementUnlocker implements Observer
     public static final int SCAN_PERSON = 1;
 
     ArrayList<Achievement> unlockableAchievements;
+    ArrayList<Achievement> recentlyUnlocked;
     Stats currentStats;
     AchievementCreator creator;
 
@@ -24,6 +25,7 @@ public class AchievementUnlocker implements Observer
     public AchievementUnlocker(Stats newStats, AchievementCreator creator)
     {
         unlockableAchievements = new ArrayList<Achievement>();
+        recentlyUnlocked = new ArrayList<>();
         currentStats = newStats;
         this.creator = creator;
     }
@@ -64,12 +66,19 @@ public class AchievementUnlocker implements Observer
                 if (achievementUnlocked == true)
                 {
                     currentStats.addCompletedAchievement(element);
+                    recentlyUnlocked.add(element);
                     it.remove();
-                    if (element.getType().equals("INF"))
-                        creator.recreateAchievement(element);
+
+
 
                 }
             }
+            for(Achievement achi : recentlyUnlocked)
+            {
+                if (achi.getType().equals("INF"))
+                    creator.recreateAchievement(achi);
+            }
+            recentlyUnlocked.clear();
         }
     }
 

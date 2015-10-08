@@ -12,7 +12,7 @@ import com.soctec.soctec.achievements.Stats;
 public class AchievementTest extends AndroidTestCase
 {
     MainActivity main = new MainActivity();
-    Stats stats = new Stats();
+    Stats stats = new Stats(main);
     AchievementCreator creator = new AchievementCreator ();
     AchievementUnlocker unlocker = new AchievementUnlocker (stats, creator);
 

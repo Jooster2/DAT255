@@ -1,25 +1,14 @@
 package com.soctec.soctec.profile;
 
 import com.soctec.soctec.R;
-import com.soctec.soctec.core.FileHandler;
+import com.soctec.soctec.utils.FileHandler;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 

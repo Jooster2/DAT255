@@ -1,6 +1,6 @@
 package com.soctec.soctec.achievements;
 
-import com.soctec.soctec.core.FileHandler;
+import com.soctec.soctec.utils.FileHandler;
 
 import java.util.ArrayList;
 import java.util.Observable;

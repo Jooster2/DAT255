@@ -1,12 +1,7 @@
 package com.soctec.soctec.profile;
 
-import com.soctec.soctec.core.FileHandler;
+import com.soctec.soctec.utils.FileHandler;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -50,16 +45,26 @@ public class Profile
     /**
      * Initializes the profile with data from the saved file
      */
+    @SuppressWarnings("unchecked")
     public static void initProfile()
     {
         profileItems = new ArrayList<>();
-        ArrayList<String> tmpList = FileHandler.getInstance().readFile("profile");
+        ArrayList<String> tmpList = (ArrayList<String>)
+                FileHandler.getInstance().readObject("profile.prof");
         //Check if app is started for the first time
-        if(tmpList.size() == 0)
-            return;
-        for(int i = 1; i < NR_OF_CATEGORIES*2; i+=2)
+        if(tmpList == null)
         {
-            profileItems.add(new ArrayList<>(Arrays.asList(tmpList.get(i).split(","))));
+            for(int i = 0; i < NR_OF_CATEGORIES; i++)
+            {
+                profileItems.add(new ArrayList<String>());
+            }
+        }
+        else
+        {
+            for (int i = 0; i < NR_OF_CATEGORIES; i ++)
+            {
+                profileItems.add(new ArrayList<>(Arrays.asList(tmpList.get(i).split(","))));
+            }
         }
     }
 
