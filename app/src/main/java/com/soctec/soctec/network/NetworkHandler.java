@@ -52,15 +52,8 @@ public class NetworkHandler
     {
         if(ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
-            //Set up data to send and data to be received
-            ArrayList<ArrayList<String>> dataToSend;
-            dataToSend = (ArrayList) Profile.getProfile().clone();
-            ArrayList<String> tmp = new ArrayList<>();
-            tmp.add(Profile.getUserCode());
-            dataToSend.add(tmp);
-
             //Start networking thread
-            ActiveThread thread = new ActiveThread(scannedAddress, dataToSend);
+            ActiveThread thread = new ActiveThread(scannedAddress, getDataToSend());
             thread.start();
         }
     }
@@ -78,10 +71,26 @@ public class NetworkHandler
         }
     }
 
+    /**
+     * Stops the thread that listens for incoming connections from peer
+     */
     public void stopThread()
     {
         listenForConnections = false;
         listenerThread.stopThread();
+    }
+
+    /**
+     * This method returns the users profile & ID
+     * @return The user's profile & ID
+     */
+    private ArrayList<ArrayList<String>> getDataToSend()
+    {
+        ArrayList<ArrayList<String>> listToSend = (ArrayList)Profile.getProfile().clone();
+        ArrayList<String> tmp = new ArrayList<>();
+        tmp.add(Profile.getUserCode());
+        listToSend.add(tmp);
+        return listToSend;
     }
 
     /**
@@ -191,25 +200,13 @@ public class NetworkHandler
                     oos.flush();
                     oos.close();
                     client.close();
+                    serverSocket.close();
 
                 } catch(IOException | ClassNotFoundException e)
                 {
                     e.printStackTrace();
                 }
             }
-        }
-
-        /**
-         * This method returns the users profile & ID
-         * @return The user's profile & ID
-         */
-        private ArrayList<ArrayList<String>> getDataToSend()
-        {
-            ArrayList<ArrayList<String>> listToSend = (ArrayList)Profile.getProfile().clone();
-            ArrayList<String> tmp = new ArrayList<>();
-            tmp.add(Profile.getUserCode());
-            listToSend.add(tmp);
-            return listToSend;
         }
 
         /**
