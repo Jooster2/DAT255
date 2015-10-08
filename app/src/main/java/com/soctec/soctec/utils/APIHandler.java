@@ -1,15 +1,8 @@
 package com.soctec.soctec.utils;
 
-import android.content.Context;
 import android.util.JsonReader;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.Toast;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -21,8 +14,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  *  Handles all API-reading
@@ -116,6 +107,7 @@ public class APIHandler
         return message;
     }
 
+    //------------------------ ICOMERA STUFF BELOW ---------------------------
 
     /**
      * Reads the Icomera API and returns a list of parsed objects
@@ -129,66 +121,54 @@ public class APIHandler
         {
             public void run()
             {
-                Log.i("icomera", "entered method");
+                Log.i("readIcomera", "Thread start");
                 String url = "http://www.ombord.info/api/xml/" + resource;
 
                 try
                 {
                     URL requestURL = new URL(url);
-                    Log.i("icomera", "url created");
                     HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
-                    Log.i("icomera", "connection established");
+                    Log.i("readIcomera", "Connection established");
                     conn.setRequestMethod("GET");
                     conn.setConnectTimeout(2000);
                     conn.setReadTimeout(2000);
-                    Log.i("icomera", "timeout: " + conn.getConnectTimeout());
+                    Log.i("readIcomera", "ResponseCode: " + conn.getResponseCode());
 
-                    //Log.i("icomera", "GET set");
-                    //Log.i("icomera", String.valueOf(conn.getResponseCode()));
+                    InputStream in = conn.getInputStream();
 
-
-                    try
-                    {
-                        Log.i("icomera", String.valueOf(conn.getResponseCode()));
-
-                    }
-                    catch(IOException e)
-                    {
-                        Log.i("icomera", e.toString());
-                    }
-
-                    InputStream in;
-                    Log.i("icomera", "inputstream created");
-                    in = conn.getInputStream();
-                    Log.i("icomera", "inputstream accepted");
-                    Log.i("icomera", "Initializing XML-parser...");
+                    Log.i("readIcomera", "InputStream connected");
                     XmlPullParser parser = Xml.newPullParser();
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                    // Possible to set encoding here, such as UTF-8, but it should not be necessary
                     parser.setInput(in, null);
-                    parser.nextTag();
 
-                    Log.i("icomera", "Done");
-                    while (parser.next() != XmlPullParser.END_TAG)
+                    int eventType = parser.getEventType();
+                    while(eventType != XmlPullParser.END_DOCUMENT)
                     {
-                        if (parser.getEventType() != XmlPullParser.START_TAG)
-                            continue;
                         String name = parser.getName();
-                        Log.i("icomera", name);
                         switch(name)
                         {
-                            case "position": results.add(readPosition(parser)); break;
-                            case "system_id": results.add(readSystem(parser)); break;
-                            case "users": results.add(readUsers(parser)); break;
-                            case "user": results.add(readUser(parser)); break;
+                            case "position":
+                                results.add(readPosition(parser));
+                                break;
+                            case "system":
+                                results.add(readSystem(parser));
+                                break;
+                            case "users":
+                                results.add(readUsers(parser));
+                                break;
+                            case "user":
+                                results.add(readUser(parser));
+                                break;
                         }
+                        eventType = parser.next();
                     }
-
                     conn.disconnect();
-
                 }
                 catch(IOException | XmlPullParserException e)
                 {
                     e.printStackTrace();
+                    Log.i("readIcomera", e.toString());
                 }
 
 
@@ -197,27 +177,6 @@ public class APIHandler
         myThread.start();
         return results;
     }
-    /*DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                    Document doc = dBuilder.parse(in);
-                    doc.getDocumentElement().normalize();
-                    NodeList nList = doc.getElementsByTagName("system_id");
-
-                    for(int temp = 0; temp < nList.getLength(); temp++)
-                    {
-
-                        Node nNode = nList.item(temp);
-
-                        System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-                        if(nNode.getNodeType() == Node.ELEMENT_NODE)
-                        {
-
-                            Element eElement = (Element) nNode;
-                            Log.i("icomera", eElement.getTextContent());
-
-                        }
-                    }*/
 
 
     /**
@@ -225,16 +184,15 @@ public class APIHandler
      * @param parser parser to use
      * @return new Icomera object
      * @throws XmlPullParserException
-     * @throws IOException
+     * @throws IOException XmlPullParserException
      */
     private Icomera readPosition(XmlPullParser parser) throws XmlPullParserException, IOException
     {
         Icomera res = new Icomera();
         parser.require(XmlPullParser.START_TAG, null, "position");
-        while (parser.next() != XmlPullParser.END_TAG)
+        int eventType = parser.getEventType();
+        while (eventType != XmlPullParser.END_TAG)
         {
-            if (parser.getEventType() != XmlPullParser.START_TAG)
-                continue;
             String name = parser.getName();
             switch(name)
             {
@@ -246,6 +204,7 @@ public class APIHandler
                 case "cmg": res.pos_cmg = Double.parseDouble(parser.getText()); break;
                 case "satellites": res.pos_sat = Integer.parseInt(parser.getText()); break;
             }
+            eventType = parser.next();
         }
         return res;
     }
@@ -255,20 +214,19 @@ public class APIHandler
      * @param parser parser to use
      * @return new Icomera object
      * @throws XmlPullParserException
-     * @throws IOException
+     * @throws IOException XmlPullParserException
      */
     private Icomera readSystem(XmlPullParser parser) throws XmlPullParserException, IOException
     {
-        Log.i("icomera", "entering readSystem()");
         Icomera res = new Icomera();
         parser.require(XmlPullParser.START_TAG, null, "system");
-        while (parser.next() != XmlPullParser.END_TAG)
+        int eventType = parser.getEventType();
+        while (eventType != XmlPullParser.END_TAG)
         {
-            if (parser.getEventType() != XmlPullParser.START_TAG)
-                continue;
             String name = parser.getName();
             if(name.equals("system_id"))
                 res.system_id = Integer.parseInt(parser.getText());
+            eventType = parser.next();
         }
         return res;
     }
@@ -278,22 +236,22 @@ public class APIHandler
      * @param parser parser to use
      * @return new Icomera object
      * @throws XmlPullParserException
-     * @throws IOException
+     * @throws IOException XmlPullParserException
      */
     private Icomera readUsers(XmlPullParser parser) throws XmlPullParserException, IOException
     {
         Icomera res = new Icomera();
         parser.require(XmlPullParser.START_TAG, null, "users");
-        while (parser.next() != XmlPullParser.END_TAG)
+        int eventType = parser.getEventType();
+        while (eventType != XmlPullParser.END_TAG)
         {
-            if (parser.getEventType() != XmlPullParser.START_TAG)
-                continue;
             String name = parser.getName();
             switch(name)
             {
                 case "total": res.users_tot = Integer.parseInt(parser.getText()); break;
                 case "online": res.users_online = Integer.parseInt(parser.getText()); break;
             }
+            eventType = parser.next();
         }
         return res;
     }
@@ -303,16 +261,15 @@ public class APIHandler
      * @param parser parser to use
      * @return new Icomera object
      * @throws XmlPullParserException
-     * @throws IOException
+     * @throws IOException XmlPullParserException
      */
     private Icomera readUser(XmlPullParser parser) throws XmlPullParserException, IOException
     {
         Icomera res = new Icomera();
         parser.require(XmlPullParser.START_TAG, null, "user");
-        while (parser.next() != XmlPullParser.END_TAG)
+        int eventType = parser.getEventType();
+        while (eventType != XmlPullParser.END_TAG)
         {
-            if (parser.getEventType() != XmlPullParser.START_TAG)
-                continue;
             String name = parser.getName();
             switch(name)
             {
@@ -321,6 +278,7 @@ public class APIHandler
                 case "online": res.user_online = Integer.parseInt(parser.getText()); break;
                 case "class": res.user_class = Integer.parseInt(parser.getText()); break;
             }
+            eventType = parser.next();
         }
         return res;
     }
