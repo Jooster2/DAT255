@@ -7,9 +7,13 @@ dbLock = threading.Lock()
 
 def socketInputThread(clientSocket, address):
     # Temporary protocol, needs MUCH work
-    packet = clientSocket.recv(1024)
+    targetSize = clientSocket.recv(4)
+    targetIP = clientSocket.recv(int(targetSize))
+    int(command) = clientSocket.recv(4)
+    targetSize = clientSocket.recv(4)
+    targetData = clientSocket.recv(int(targetSize))
     # Data could be empty, so we do try and handle both cases
-    try:
+    """try:
         userCode, command, data = packet.decode().split(':')
         userCode = userCode.strip()
         command = command.strip()
@@ -17,13 +21,13 @@ def socketInputThread(clientSocket, address):
     except ValueError as e:
         userCode, command = packet.decode().split(':')
         userCode = userCode.strip()
-        command = command.strip()
-    if(command == '0'):
+        command = command.strip()"""
+    if(command == 0):
         data = data.strip().split(',')
         dbWrite(userCode, data)
-    elif(command == '1'):
-        scanAttempt(userCode, data)
-    elif(command == '2'):
+    elif(command == 1):
+        scanAttempt(targetIP, targetData, address)
+    elif(command == 2):
         """ We read the database and get a tuple back
             The tuple is made into a list for better manipulation-tools
             We take the first items from the list (the non-BLOB items)
@@ -81,10 +85,13 @@ def dbWrite(userCode, data):
 
 
 
-def scanAttempt(userCode, data):
+def scanAttempt(targetIP, targetData, address):
     clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientSocket.connect((userCode, 49999))
-    clientSocket.send(data.encode())
+    clientSocket.connect((targetIP.decode(), 49999))
+    clientSocket.send(int(len(address)))
+    clientSocket.send(address.encode())
+    clientSocket.send(int(len(targetData)))
+    clientSocket.send(targetData)
     clientSocket.close()
 
 def dbRead(userCode):
