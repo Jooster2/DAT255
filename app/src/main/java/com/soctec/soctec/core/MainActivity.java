@@ -35,6 +35,7 @@ import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 import com.soctec.soctec.profile.ProfileActivity;
 import com.soctec.soctec.profile.ProfileMatchActivity;
+import com.soctec.soctec.utils.APIHandler;
 import com.soctec.soctec.utils.Encryptor;
 import com.soctec.soctec.utils.FileHandler;
 
@@ -128,6 +129,21 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
+    }
+
+    public void icomeraTest(View v)
+    {
+        APIHandler aH = APIHandler.getInstance();
+        try
+        {
+            aH.readIcomera("system");
+
+        }
+        catch(Exception e)
+        {
+            Toast.makeText(getApplicationContext(), "walla", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     /**
