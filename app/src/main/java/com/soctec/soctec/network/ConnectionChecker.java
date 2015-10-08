@@ -95,7 +95,10 @@ public class ConnectionChecker extends BroadcastReceiver
         NetworkInfo ni = cm.getActiveNetworkInfo();
         WifiInfo wi = wm.getConnectionInfo();
         boolean connectedToElectricity = true;
-
+        if(ni == null || wi == null)
+        {
+            return false;
+        }
         if(ni.isConnected())
         {
             Log.i("ConnectionChecker", "Connected to: " + wi.getSSID());
