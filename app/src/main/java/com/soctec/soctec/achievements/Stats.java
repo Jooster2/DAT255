@@ -24,7 +24,6 @@ public class Stats
     private ArrayList<Achievement> completedAchievements;
     private long lastScannedTime;
     private boolean talkDone = false;
-    Context mContext;
 
     /**
      * Constructs an empty Stats object

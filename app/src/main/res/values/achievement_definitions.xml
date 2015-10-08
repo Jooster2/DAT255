@@ -2,15 +2,17 @@
 <resources>
     <string-array name="Achievements">
         <!--Singular Achievements-->
-        <item>First Scan!, 50, ach_front_test:background, S1, SIN, P_SCAN:1</item>
-        <item>Second Scan!, 50, ach_front_test, S2, SIN, P_SCAN:2</item>
+        <item>First Scan!, You scanned one person, 50, ach_front_test, S1, SIN, P_SCAN:1</item>
+        <item>Second Scan!, You have scanned two people, keep going, 50, ach_front_test, S2, SIN, P_SCAN:2</item>
 
 
         <!--Infinite Achievements-->
-        <item>GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:2^c</item>
+        <item>GOGO! Towards Infinity!, Infinity is actually quite far off, 25, someimg3, SI0, INF, P_SCAN:0:2^c</item>
 
         <!--Collection Achievements-->
-        <item>Gotta Catch em All!, 50, someimg, C1, COL, C_SCAN:BUS1/BUS2/BUS3</item>
+        <item>Pure Electric!, You have gone on all three electric buses, 30, someimg, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3</item>
+        <item>Best Of Two Worlds, You have managed to catch all seven of the hybrids, 50, someimg, C2, COL,
+            B_RIDE:H_BUS1/H_BUS2/H_BUS3/H_BUS4/H_BUS5/H_BUS6/H_BUS7</item>
     </string-array>
 
 </resources>

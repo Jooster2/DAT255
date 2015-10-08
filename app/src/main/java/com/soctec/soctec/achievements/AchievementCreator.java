@@ -21,21 +21,21 @@ public class AchievementCreator extends Observable
 
     public Achievement createAchievement(String[] def)
     {
-        // Arguments are: Name, Points, Image-name, ID, Type-name
-        Achievement achievement = new Achievement(def[0], Integer.parseInt(def[1]),
-                def[2], def[3], def[4]);
-        for(int i=5; i<def.length; i++)
+        // Arguments are: Name, FlavorText, Points, Image-name, ID, Type-name
+        Achievement achievement = new Achievement(def[0], def[1], Integer.parseInt(def[2]),
+                def[3], def[4], def[5]);
+        for(int i=6; i<def.length; i++)
         {
             String[] demand = def[i].split(":");
-            // def[4] is type (SIN/INF/COL)
-            switch(def[4])
+            // def[5] is type (SIN/INF/COL)
+            switch(def[5])
             {
                 case "SIN":
                     achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
                     break;
                 case "INF":
                     achievement.createDemand(demand[0], Integer.parseInt(demand[1]),
-                            demand[2], getIDNumber(def[3]));
+                            demand[2], getIDNumber(def[4]));
                     break;
                 case "COL":
                     FileHandler fH = FileHandler.getInstance();
@@ -52,45 +52,6 @@ public class AchievementCreator extends Observable
         }
         return achievement;
     }
-    /**
-     * Creates an Achievement object of type CounterAchievement
-     * @param data the data describing the Achievement
-     * @return the newly created Achievement
-     */
-    /*public CounterAchievement createCounterAchievement(String[] data)
-    {
-        //Arguments are (String Name, int points, String img, String id, String type)
-        CounterAchievement achievement = new CounterAchievement(data[0], Integer.parseInt(data[1]), data[2], data[3], data[4]);
-        if(data[4].equals("SIN"))
-            for(int i=5; i<data.length; i++)
-            {
-                String[] demand = data[i].split(":");
-                achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
-            }
-        else if(data[4].equals("INF"))
-        {
-            for(int i = 5; i < data.length; i++)
-            {
-                String[] demand = data[i].split(":");
-                achievement.createDemand(demand[0], Integer.parseInt(demand[1]), demand[2]);
-            }
-        }
-        return achievement;
-    }*/
-
-
-    /**
-     * Creates an Achievement object of type CollectionAchievement
-     * @param data the data describing the Achievement
-     * @return the newly created Achievement
-     */
-    /*public CollectionAchievement createCollectionAchievement(String[] data)
-    {
-        CollectionAchievement achievement = new CollectionAchievement(data[0],
-                Integer.parseInt(data[1]), data[2], data[3]);
-
-        return achievement;
-    }*/
 
     /**
      * Attempts to create multiple Achievements from file.
@@ -108,15 +69,6 @@ public class AchievementCreator extends Observable
             setChanged();
             notifyObservers(achievement);
         }
-
-        /*fromFile = fH.readFile(fH.getResourceID("collectionAchievements", "array"));
-        for(String item : fromFile)
-        {
-            String[] data = item.split(", ");
-            CollectionAchievement achievement = createCollectionAchievement(data);
-            setChanged();
-            notifyObservers(achievement);
-        }*/
     }
 
     /**
@@ -124,18 +76,10 @@ public class AchievementCreator extends Observable
      */
     public void createTestAch(String line)
     {
-
-
         String[] data = line.split(", ");
-
-
-        //CounterAchievement achievement = createCounterAchievement(data);
         Achievement achievement = createAchievement(data);
-
         setChanged();
         notifyObservers(achievement);
-
-
     }
 
     /**
@@ -146,16 +90,12 @@ public class AchievementCreator extends Observable
     public void recreateAchievement (Achievement achievement)
     {
         String[] data = achievement.getAllData();
+        // data[4] is ID
         if(achievement.getType().equals("INF"))
-            data[3] = incID(data[3]);
+            data[4] = incID(data[4]);
         Achievement achi = createAchievement(data);
-        /*if(achievement instanceof CounterAchievement)
-            achi = createCounterAchievement(data);
-        else //if(achievement instanceof CollectionAchievement)
-            achi = createCollectionAchievement(data);*/
         setChanged();
         notifyObservers(achi);
-
     }
 
     /**

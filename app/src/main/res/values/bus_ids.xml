@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="BUS1">someQRcode1</string>
-    <string name="BUS2">someQRcode2</string>
-    <string name="BUS3">someQRcode3</string>
+    <string name="E_BUS1">YV3U0V222FA100020</string>
+    <string name="E_BUS2">YV3U0V222FA100021</string>
+    <string name="E_BUS3">YV3U0V222FA100022</string>
+
+    <string name="H_BUS1">YV3T1U22XF1171164</string>
+    <string name="H_BUS2">YV3T1U225F1171234</string>
+    <string name="H_BUS3">YV3T1U227F1171235</string>
+    <string name="H_BUS4">YV3T1U221F1171327</string>
+    <string name="H_BUS5">YV3T1U223F1171328</string>
+    <string name="H_BUS6">YV3T1U225F1171329</string>
+    <string name="H_BUS7">YV3T1U223F1171330</string>
+
 </resources>
 
 <!--

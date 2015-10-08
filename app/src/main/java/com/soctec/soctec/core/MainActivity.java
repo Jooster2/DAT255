@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize the Achievement engine
         stats = new Stats();
         creator = new AchievementCreator();
-
         unlocker = new AchievementUnlocker(stats, creator);
         creator.addObserver(unlocker);
         creator.createFromFile();
@@ -197,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         vibrator.vibrate(100);
 
         unlocker.receiveEvent(1, idFromPeer);
-
         for(Achievement achi : stats.getLastCompleted())
         {
             Intent showerIntent = new Intent(this, AchievementShowerActivity.class);

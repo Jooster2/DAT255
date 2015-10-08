@@ -4,13 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 /**
- * Created by Carl-Henrik Hult on 2015-09-22.
- * An abstract superclass for all achievements.
+ * Class for creating Achievements with certain properties
+ * @author Carl-Henrik Hult, Joakim Schmidt
+ * @version 2.1
  */
 public class Achievement implements Serializable
 {
     private static final long serialVersionUID = 1L;
     private String name;
+    private String flavorText;
     private int points;
     private String imageName;
     private String id;
@@ -19,16 +21,16 @@ public class Achievement implements Serializable
 
 
     /**
-     *
      * @param name  The name of the achievement.
-     * @param points    The points that the achievement is worth.
+     * @param points The points that the achievement is worth.
      * @param imageName The filename/name of the image that goes with the achievement.
      * @param id    An internal ID
      * @param type the type of the achievement (SIN/INF)
      */
-    public Achievement(String name, int points, String imageName, String id, String type)
+    public Achievement(String name, String flavorText, int points, String imageName, String id, String type)
     {
         this.name = name;
+        this.flavorText = flavorText;
         this.points = points;
         this.imageName = imageName;
         this.id = id;
@@ -82,7 +84,7 @@ public class Achievement implements Serializable
 
     /**
      * Returns the name of the achievement.
-     * @return  name of the achievement.
+     * @return the name of the achievement.
      */
     public String getName()
     {
@@ -90,8 +92,17 @@ public class Achievement implements Serializable
     }
 
     /**
+     * Returns the flavortext of the achievement
+     * @return the flavortext of the achievement
+     */
+    public String getFlavorText()
+    {
+        return flavorText;
+    }
+
+    /**
      * Returns the points that the achievement is worth.
-     * @return  points that the achievement is worth.
+     * @return the points that the achievement is worth.
      */
     public int getPoints()
     {
@@ -124,28 +135,16 @@ public class Achievement implements Serializable
     {
         return type;
     }
-
-    /**
-     * Returns an Array containing basic information used to build this Achievement
-     * @return an Array containing basic information used to build this Achievement
-     */
-    /*public String[] getAllData()
-    {
-        String[] data = {name, String.valueOf(points), imageName, id, type};
-        return data;
-    }*/
     /**
      * Returns an Array containing all information used to build this Achievement
      * @return an Array containing all information used to build this Achievement
      */
     public String[] getAllData()
     {
-        //ArrayList<String> data = new ArrayList<>( Arrays.asList(super.getAllData()));
         ArrayList<String> data = new ArrayList<>();
-        Collections.addAll(data, name, String.valueOf(points), imageName, id, type);
+        Collections.addAll(data, name, flavorText, String.valueOf(points), imageName, id, type);
         for(Demand demand : demands)
         {
-            //data.add(demand.type + ":" + demand.amount + ":" + demand.equation);
             if(type.equals("SIN"))
                 data.add(demand.type + ":" + demand.amount);
             else if(type.equals("INF"))

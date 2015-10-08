@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Electric Buses -->
     <string name="SID2501069301">YV3U0V222FA100020</string>
     <string name="SID2501069758">YV3U0V222FA100021</string>
     <string name="SID2501131248">YV3U0V222FA100022</string>
+
+    <!-- Hybrid Buses -->
     <string name="SID2501142922">YV3T1U22XF1171164</string>
     <string name="SID2501069303">YV3T1U225F1171234</string>
     <string name="SID2500825764">YV3T1U227F1171235</string>
