@@ -134,14 +134,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public void icomeraTest(View v)
     {
         APIHandler aH = APIHandler.getInstance();
-        try
+        ArrayList<APIHandler.Icomera> results = aH.readIcomera("system");
+        int i=0;
+        for(APIHandler.Icomera item : results)
         {
-            aH.readIcomera("system");
-
-        }
-        catch(Exception e)
-        {
-            Toast.makeText(getApplicationContext(), "walla", Toast.LENGTH_LONG).show();
+            Log.i("icomera", "Cycle "+i+" "+item.system_id);
+            i++;
         }
 
     }

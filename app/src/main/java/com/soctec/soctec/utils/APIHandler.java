@@ -116,96 +116,109 @@ public class APIHandler
         return message;
     }
 
+
     /**
      * Reads the Icomera API and returns a list of parsed objects
      * @param resource Icomera resource to read
      * @return list containing Icomera objects
      */
-    public void readIcomera(String resource)
+    public ArrayList<Icomera> readIcomera(final String resource)
     {
-        Log.i("icomera", "entered method");
-        String url = "http://www.ombord.info/api/xml/system";
-
-        try
+        final ArrayList<Icomera> results = new ArrayList<>();
+        Thread myThread = new Thread()
         {
-            URL requestURL = new URL(url);
-            Log.i("icomera", "url created");
-            HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
-            Log.i("icomera", "connection established");
-            conn.setRequestMethod("GET");
-            //Log.i("icomera", "GET set");
-            //Log.i("icomera", String.valueOf(conn.getResponseCode()));
-
-            try
+            public void run()
             {
-                Log.i("icomera", String.valueOf(conn.getResponseCode()));
-                InputStream in;
-                Log.i("icomera", "inputstream created");
-                in = conn.getInputStream();
-                Log.i("icomera", "inputstream accepted");
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document doc = dBuilder.parse(in);
-                doc.getDocumentElement().normalize();
-                NodeList nList = doc.getElementsByTagName("system_id");
+                Log.i("icomera", "entered method");
+                String url = "http://www.ombord.info/api/xml/" + resource;
 
-                for (int temp = 0; temp < nList.getLength(); temp++) {
+                try
+                {
+                    URL requestURL = new URL(url);
+                    Log.i("icomera", "url created");
+                    HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
+                    Log.i("icomera", "connection established");
+                    conn.setRequestMethod("GET");
+                    conn.setConnectTimeout(2000);
+                    conn.setReadTimeout(2000);
+                    Log.i("icomera", "timeout: " + conn.getConnectTimeout());
 
-                    Node nNode = nList.item(temp);
+                    //Log.i("icomera", "GET set");
+                    //Log.i("icomera", String.valueOf(conn.getResponseCode()));
 
-                    System.out.println("\nCurrent Element :" + nNode.getNodeName());
 
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-                        Element eElement = (Element) nNode;
-                        Log.i("icomera", eElement.getTextContent());
+                    try
+                    {
+                        Log.i("icomera", String.valueOf(conn.getResponseCode()));
 
                     }
+                    catch(IOException e)
+                    {
+                        Log.i("icomera", e.toString());
+                    }
+
+                    InputStream in;
+                    Log.i("icomera", "inputstream created");
+                    in = conn.getInputStream();
+                    Log.i("icomera", "inputstream accepted");
+                    Log.i("icomera", "Initializing XML-parser...");
+                    XmlPullParser parser = Xml.newPullParser();
+                    parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                    parser.setInput(in, null);
+                    parser.nextTag();
+
+                    Log.i("icomera", "Done");
+                    while (parser.next() != XmlPullParser.END_TAG)
+                    {
+                        if (parser.getEventType() != XmlPullParser.START_TAG)
+                            continue;
+                        String name = parser.getName();
+                        Log.i("icomera", name);
+                        switch(name)
+                        {
+                            case "position": results.add(readPosition(parser)); break;
+                            case "system_id": results.add(readSystem(parser)); break;
+                            case "users": results.add(readUsers(parser)); break;
+                            case "user": results.add(readUser(parser)); break;
+                        }
+                    }
+
+                    conn.disconnect();
+
                 }
-
-            }
-            catch(IOException e)
-            {
-                Log.i("icomera", "exception thrown");
-                Log.i("icomera", e.getMessage());
-            }
-            //in = conn.getInputStream();
-            //Log.i("icomera", "inputstream accepted");
-
-            /*XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(in, null);
-            parser.nextTag();
-
-            while (parser.next() != XmlPullParser.END_TAG)
-            {
-                if (parser.getEventType() != XmlPullParser.START_TAG)
-                    continue;
-                String name = parser.getName();
-                Toast.makeText(context, "outname: "+name, Toast.LENGTH_SHORT).show();
-                switch(name)
+                catch(IOException | XmlPullParserException e)
                 {
-                    case "position": results.add(readPosition(parser)); break;
-                    case "system": results.add(readSystem(parser,context)); break;
-                    case "users": results.add(readUsers(parser)); break;
-                    case "user": results.add(readUser(parser)); break;
+                    e.printStackTrace();
                 }
-            }*/
-            conn.disconnect();
 
 
-
-        }
-        /*catch(IOException | XmlPullParserException e)
-        {
-            e.printStackTrace();
-        }*/
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        //return results;
+            }
+        };
+        myThread.start();
+        return results;
     }
+    /*DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(in);
+                    doc.getDocumentElement().normalize();
+                    NodeList nList = doc.getElementsByTagName("system_id");
+
+                    for(int temp = 0; temp < nList.getLength(); temp++)
+                    {
+
+                        Node nNode = nList.item(temp);
+
+                        System.out.println("\nCurrent Element :" + nNode.getNodeName());
+
+                        if(nNode.getNodeType() == Node.ELEMENT_NODE)
+                        {
+
+                            Element eElement = (Element) nNode;
+                            Log.i("icomera", eElement.getTextContent());
+
+                        }
+                    }*/
+
 
     /**
      * Used for parsing Icomera position
@@ -244,8 +257,9 @@ public class APIHandler
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private Icomera readSystem(XmlPullParser parser, Context context) throws XmlPullParserException, IOException
+    private Icomera readSystem(XmlPullParser parser) throws XmlPullParserException, IOException
     {
+        Log.i("icomera", "entering readSystem()");
         Icomera res = new Icomera();
         parser.require(XmlPullParser.START_TAG, null, "system");
         while (parser.next() != XmlPullParser.END_TAG)
@@ -253,11 +267,9 @@ public class APIHandler
             if (parser.getEventType() != XmlPullParser.START_TAG)
                 continue;
             String name = parser.getName();
-            Toast.makeText(context, "inname"+name, Toast.LENGTH_SHORT).show();
             if(name.equals("system_id"))
                 res.system_id = Integer.parseInt(parser.getText());
         }
-        Toast.makeText(context, "ico: "+res.system_id, Toast.LENGTH_SHORT).show();
         return res;
     }
 
