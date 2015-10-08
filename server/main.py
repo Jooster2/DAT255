@@ -9,7 +9,7 @@ def socketInputThread(clientSocket, address):
     # Temporary protocol, needs MUCH work
     targetSize = clientSocket.recv(4)
     targetIP = clientSocket.recv(int(targetSize))
-    int(command) = clientSocket.recv(4)
+    command = int(clientSocket.recv(4))
     targetSize = clientSocket.recv(4)
     targetData = clientSocket.recv(int(targetSize))
     # Data could be empty, so we do try and handle both cases
