@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import com.soctec.soctec.network.ConnectionChecker;
 
 public class MainFragment extends Fragment
 {
-
+    private GestureDetector gestureDetector;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -35,7 +36,7 @@ public class MainFragment extends Fragment
      * When the main UI has been created, start the BroadcastReceiver
      */
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState)
     {
         ((MainActivity)getActivity()).startReceiver();
     }

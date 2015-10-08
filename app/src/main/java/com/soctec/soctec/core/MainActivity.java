@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //Initialize the ActionBar
         setupActionBar();
+        mViewPager.addOnPageChangeListener(new PageChangeListener());
     }
 
     /**
@@ -115,19 +116,21 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(
                 connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
-
         Log.i("Main", "Receiver started!");
 
     }
+
+
 
     /**
      * Tells ScanActivity to start scanning
      * @param v
      */
-    public void scanNow(View v)
+    public void scanNow (View v)
     {
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
+        mViewPager.setCurrentItem(1);
     }
 
     /**
@@ -139,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Toast.makeText(getApplicationContext(),"Hej!!!!" , Toast.LENGTH_LONG).show();
+        mViewPager.setCurrentItem(1);
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
         {
             String scannedCode = data.getExtras().getString("result");
@@ -164,6 +169,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(connectionChecker, intentFilter);
+        mViewPager.setCurrentItem(1);
+    }
+    @Override
+    public void onBackPressed()
+    {
+        if (mViewPager.getCurrentItem()==1)
+            super.onBackPressed();
+        else
+            mViewPager.setCurrentItem(1);
     }
 
     /**
@@ -241,7 +255,33 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         }
         return accMail;
     }
+    public class PageChangeListener implements ViewPager.OnPageChangeListener
+    {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+        {
+            //if (position == 0)
+            // scanNow(null);
 
+        }
+
+        @Override
+        public void onPageSelected(int position)
+        {
+            if (position== 0)
+            {
+                scanNow(null);
+                mViewPager.setCurrentItem(1);
+            }
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state)
+        {
+
+        }
+    }
 
     //--------------- Below is all auto-generated code from ActionBar --------------------
 
@@ -358,8 +398,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             switch(position)
             {
                 case 0:
-                    return new MainFragment();
+                    return new ScanFragment();
                 case 1:
+                    return new MainFragment();
+                case 2:
                     return new AchievementsFragment();
             }
             return null;
@@ -369,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         public int getCount()
         {
             // Show 2 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
@@ -379,12 +421,16 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             switch(position)
             {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return getString(R.string.title_section3).toUpperCase(l);
                 case 1:
+                    return getString(R.string.title_section1).toUpperCase(l);
+                case 2:
                     return getString(R.string.title_section2).toUpperCase(l);
             }
             return null;
         }
     }
+
+
 
 }
