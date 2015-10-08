@@ -45,8 +45,14 @@ public class APIHandlerTest extends AndroidTestCase
         assertEquals("400", data.get(0).get(0));
     }
 
+    /**
+     * Tests that we get a response from Icomera server and that it is not null
+     * @throws Exception
+     */
     public void testIcomera() throws Exception
     {
-        aH.readIcomera("walla");
+        ArrayList<APIHandler.Icomera> data = aH.readIcomera("system");
+        assertEquals(1, data.size());
+        assertNotNull(data.get(0).system_id);
     }
 }
