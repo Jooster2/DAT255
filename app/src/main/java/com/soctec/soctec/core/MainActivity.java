@@ -8,6 +8,8 @@ import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.wifi.WifiManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            sb.append(achi.getFlavorText() + ",");
+            //sb.append(achi.getFlavorText() + ",");
             sb.append(achi.getImageName());
             unlockedList.add(sb.toString());
         }
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            sb.append(achi.getFlavorText() + ",");
+            //sb.append(achi.getFlavorText() + ",");
             sb.append(achi.getImageName());
             lockedList.add(sb.toString());
         }
@@ -167,8 +169,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
-        mViewPager.setCurrentItem(1);
-        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
+        //refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
     /**
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Toast.makeText(getApplicationContext(),"Hej!!!!" , Toast.LENGTH_LONG).show();
-        mViewPager.setCurrentItem(1);
+        //mViewPager.setCurrentItem(1);
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
         {
             String scannedCode = data.getExtras().getString("result");
@@ -305,8 +306,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             if (position== 0)
             {
+                mViewPager.setCurrentItem(0);
                 scanNow(null);
-                mViewPager.setCurrentItem(1);
+                //mViewPager.setCurrentItem(1);
             }
 
         }
@@ -358,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             // this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
+                            .setIcon(mSectionsPagerAdapter.getIcon(i))
                             .setTabListener(this));
 
         }
@@ -463,6 +465,22 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     return getString(R.string.title_section2).toUpperCase(l);
             }
             return null;
+        }
+
+        public int getIcon(int position)
+        {
+            Locale l = Locale.getDefault();
+            FileHandler fileHandler = FileHandler.getInstance();
+            switch(position)
+            {
+                case 0:
+                    return fileHandler.getResourceID("camera2", "drawable");
+                case 1:
+                    return fileHandler.getResourceID("qricon", "drawable");
+                case 2:
+                    return fileHandler.getResourceID("ribbon3", "drawable");
+            }
+            return 0;
         }
     }
 
