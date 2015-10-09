@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.soctec.soctec.R;
-import com.soctec.soctec.core.FileHandler;
+import com.soctec.soctec.utils.FileHandler;
 import java.util.ArrayList;
 
 public class AchievementsAdapter extends ArrayAdapter {

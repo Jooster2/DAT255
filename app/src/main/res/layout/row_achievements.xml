@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal"
-              android:background="#58A449">
+              android:background="#dbfaaa">
 
     <ImageView
         android:id="@+id/icon"
@@ -23,8 +23,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:padding="2dp"
-            android:textColor="#33CC33" />
+            android:padding="2dp"/>
         <TextView
             android:id="@+id/context"
             android:layout_width="wrap_content"
