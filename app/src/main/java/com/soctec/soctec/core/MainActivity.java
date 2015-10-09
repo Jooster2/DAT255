@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            //sb.append(achi.getFlavourText() + ",");
+            sb.append(achi.getFlavourText() + ",");
             sb.append(achi.getImageName());
             unlockedList.add(sb.toString());
         }
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            //sb.append(achi.getFlavourText() + ",");
+            sb.append(achi.getFlavourText() + ",");
             sb.append(achi.getImageName());
             lockedList.add(sb.toString());
         }
