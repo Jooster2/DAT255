@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-                android:background="#95ff68">
+                android:background="#dbfaaa">
 
     <TextView
         android:layout_width="wrap_content"
