@@ -23,8 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
@@ -41,33 +39,18 @@ import com.soctec.soctec.utils.FileHandler;
 
 /**
  * MainActivity is a tabbed activity, and sets up most of the other objects for the App
- * @author Jesper, Joakim, David
- * @version 1.1
+ * @author Jesper, Joakim, David, Carl-Henrik, Robin
+ * @version 1.3
  */
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     ViewPager mViewPager;
     ConnectionChecker connectionChecker = null;
 
     private Stats stats;
     private AchievementCreator creator;
     private AchievementUnlocker unlocker;
-
-
 
     private static int REQUEST_CODE = 0;
 
@@ -107,53 +90,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         mViewPager.addOnPageChangeListener(new PageChangeListener());
     }
 
-    public Stats getStats()
-    {
-        return stats;
-    }
-
-    public AchievementUnlocker getUnlocker()
-    {
-        return unlocker;
-    }
-
-
-    public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
-    {
-
-        ArrayList<String> unlockedList =  new ArrayList<String> ();
-        ListView unlockedView;
-
-        for (Achievement achi : unlocked)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.append(achi.getName() + ",");
-            sb.append(achi.getFlavorText() + ",");
-            sb.append(achi.getImageName());
-            unlockedList.add(sb.toString());
-        }
-
-        unlockedView = (ListView)findViewById(R.id.listunlocked);
-        AchievementsAdapter unlockedadapter = new AchievementsAdapter(this, unlockedList);
-        unlockedView.setAdapter(unlockedadapter);
-
-        ArrayList<String> lockedList =  new ArrayList<String> ();
-        ListView lockedView;
-
-        for (Achievement achi : locked)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.append(achi.getName() + ",");
-            //sb.append(achi.getFlavorText() + ",");
-            sb.append(achi.getImageName());
-            lockedList.add(sb.toString());
-        }
-
-        lockedView = (ListView)findViewById(R.id.listlocked);
-        AchievementsAdapter lockedadapter = new AchievementsAdapter(this, lockedList);
-        lockedView.setAdapter(lockedadapter);
-    }
-
     /**
      * Initiate the BroadcastReceiver and register it.
      */
@@ -170,14 +106,24 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     /**
      * Tells ScanActivity to start scanning
-     * @param v
+     * @param v currently unused
      */
     public void scanNow (View v)
     {
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
         mViewPager.setCurrentItem(1);
-        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
+        updateAchievementFragment();
+    }
+
+    /**
+     * Initiates refresh of AchievementFragment by retrieving the fragment from
+     * mSectionsPagerAdapter and calling the method
+     */
+    protected void updateAchievementFragment()
+    {
+        AchievementsFragment aF = (AchievementsFragment)mSectionsPagerAdapter.getFragment(2);
+        aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
     /**
@@ -189,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        Toast.makeText(getApplicationContext(),"Hej!!!!" , Toast.LENGTH_LONG).show();
         mViewPager.setCurrentItem(1);
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
         {
@@ -198,14 +143,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         }
     }
 
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        NetworkHandler.getInstance(this).stopThread();
-        unregisterReceiver(connectionChecker);
-    }
-
+    /**
+     * Starts NetworkHandler and registers connectionChecker as receiver
+     */
     @Override
     protected void onResume()
     {
@@ -218,6 +158,22 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         registerReceiver(connectionChecker, intentFilter);
         mViewPager.setCurrentItem(1);
     }
+
+    /**
+     * Stops NetworkHandler and unregisters connectionChecker as receiver
+     */
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        NetworkHandler.getInstance(this).stopThread();
+        unregisterReceiver(connectionChecker);
+    }
+
+    /**
+     * Makes sure the application only exits when in main fragment
+     * and back button is pressed. Otherwise switches to main fragment.
+     */
     @Override
     public void onBackPressed()
     {
@@ -225,14 +181,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             super.onBackPressed();
         else
             mViewPager.setCurrentItem(1);
-    }
-
-    /**
-     * Called by NetworkHandler when data has been received from the server.
-     * @param dataFromServer Contains user profile data
-     */
-    public void receiveDataFromServer(String dataFromServer)
-    {
     }
 
     /**
@@ -245,25 +193,23 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 
-
-        //Achievement stuff
         unlocker.receiveEvent(1, idFromPeer);
 
         for(Achievement achi : stats.getLastCompleted())
         {
-            Intent intent2 = new Intent(this, AchievementShowerActivity.class);
-            intent2.putExtra("AchievementObject", achi);
-            startActivity(intent2);
+            Intent showerIntent = new Intent(this, AchievementShowerActivity.class);
+            showerIntent.putExtra("AchievementObject", achi);
+            startActivity(showerIntent);
         }
         //Match profile stuff
         Bundle b = new Bundle();
         b.putSerializable("list1", Profile.getProfile());
         b.putSerializable("list2", profileFromPeer);
-        Intent intent = new Intent(this, ProfileMatchActivity.class);
-        intent.putExtras(b);
-        startActivity(intent);
+        Intent matchIntent = new Intent(this, ProfileMatchActivity.class);
+        matchIntent.putExtras(b);
+        startActivity(matchIntent);
 
-        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
+        updateAchievementFragment();
     }
 
     /**
@@ -289,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
         Account[] list = manager.getAccounts();
 
-        for(Account account: list)
+        for(Account account : list)
         {
             if(account.type.equalsIgnoreCase("com.google")) //TODO Felhatering vid avsaknad av gmail-konto
             {
@@ -299,20 +245,18 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         }
         return accMail;
     }
+
     public class PageChangeListener implements ViewPager.OnPageChangeListener
     {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
         {
-            //if (position == 0)
-            // scanNow(null);
-
         }
 
         @Override
         public void onPageSelected(int position)
         {
-            if (position== 0)
+            if (position == 0)
             {
                 scanNow(null);
                 mViewPager.setCurrentItem(1);
@@ -323,18 +267,16 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         @Override
         public void onPageScrollStateChanged(int state)
         {
-
         }
     }
 
-    //--------------- Below is all auto-generated code from ActionBar --------------------
+    //-------------------- Below is all auto-generated code from ActionBar --------------------//
 
     /**
      * Sets up the ActionBar
      */
     private void setupActionBar()
     {
-
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -369,7 +311,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     actionBar.newTab()
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
-
         }
     }
 
@@ -427,18 +368,23 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter
     {
+        FragmentManager fragmentManager;
 
         public SectionsPagerAdapter(FragmentManager fm)
         {
             super(fm);
+            fragmentManager = fm;
+        }
+
+        public Fragment getFragment(int position)
+        {
+            return fragmentManager.getFragments().get(position);
         }
 
         @Override
         public Fragment getItem(int position)
         {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            //return PlaceholderFragment.newInstance(position + 1);
             switch(position)
             {
                 case 0:
@@ -454,7 +400,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         @Override
         public int getCount()
         {
-            // Show 2 total pages.
             return 3;
         }
 
@@ -474,7 +419,4 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             return null;
         }
     }
-
-
-
 }

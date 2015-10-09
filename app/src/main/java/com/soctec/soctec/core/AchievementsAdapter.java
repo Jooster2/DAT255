@@ -14,35 +14,38 @@ import com.soctec.soctec.R;
 import com.soctec.soctec.utils.FileHandler;
 import java.util.ArrayList;
 
-public class AchievementsAdapter extends ArrayAdapter {
+public class AchievementsAdapter extends ArrayAdapter
+{
 
     private final Activity context;
     ArrayList<String> itemNames;
 
 
-    public AchievementsAdapter(Activity context, ArrayList<String> itemNames) {
+    public AchievementsAdapter(Activity context, ArrayList<String> itemNames)
+    {
         super(context, R.layout.row_achievements, itemNames);
-        // TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub (why is this TODO?)
         this.itemNames = itemNames;
         this.context=context;
     }
 
-    public View getView(int position,View view,ViewGroup parent) {
+    public View getView(int position,View view,ViewGroup parent)
+    {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.row_achievements, parent, false);
 
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
+        TextView titleText = (TextView) rowView.findViewById(R.id.item);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        TextView extratxt = (TextView) rowView.findViewById(R.id.context);
+        TextView flavorText = (TextView) rowView.findViewById(R.id.context);
 
         String fullString = itemNames.get(position);
         String [] strings = fullString.split(",");
 
-        txtTitle.setText(strings[0]);
-        extratxt.setText(strings[1]);
+        titleText.setText(strings[0]);
+        flavorText.setText(strings[1]);
         FileHandler fh = FileHandler.getInstance();
         imageView.setImageResource(fh.getResourceID(strings[2], "drawable"));
 
         return rowView;
-    };
+    }
 }
