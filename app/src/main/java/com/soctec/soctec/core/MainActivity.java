@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.soctec.soctec.R;
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Profile.initProfile();
 
         //Initialize the Achievement engine
-        stats = new Stats(this);
+        stats = new Stats();
         creator = new AchievementCreator();
 
         unlocker = new AchievementUnlocker(stats, creator);
@@ -104,6 +105,42 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize the ActionBar
         setupActionBar();
         mViewPager.addOnPageChangeListener(new PageChangeListener());
+    }
+
+    public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
+    {
+
+        ArrayList<String> unlockedList =  new ArrayList<String> ();
+        ListView unlockedView;
+
+        for (Achievement achi : unlocked)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(achi.getName() + ",");
+            sb.append(achi.getFlavorText() + ",");
+            sb.append(achi.getImageName());
+            unlockedList.add(sb.toString());
+        }
+
+        unlockedView = (ListView)findViewById(R.id.listunlocked);
+        AchievementsAdapter unlockedadapter = new AchievementsAdapter(this, unlockedList);
+        unlockedView.setAdapter(unlockedadapter);
+
+        ArrayList<String> lockedList =  new ArrayList<String> ();
+        ListView lockedView;
+
+        for (Achievement achi : locked)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(achi.getName() + ",");
+            sb.append(achi.getFlavorText() + ",");
+            sb.append(achi.getImageName());
+            lockedList.add(sb.toString());
+        }
+
+        lockedView = (ListView)findViewById(R.id.listlocked);
+        AchievementsAdapter lockedadapter = new AchievementsAdapter(this, lockedList);
+        lockedView.setAdapter(lockedadapter);
     }
 
     /**
@@ -131,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
         mViewPager.setCurrentItem(1);
+        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
     /**
@@ -201,10 +239,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //Achievement stuff
         unlocker.receiveEvent(1, idFromPeer);
-        String achievement = stats.getlastScanned();
-        //Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
-        String time = String.valueOf(stats.getTimeTalked());
-        //Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
 
         for(Achievement achi : stats.getLastCompleted())
         {
@@ -220,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         intent.putExtras(b);
         startActivity(intent);
 
+        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
     /**

@@ -32,7 +32,7 @@ public class QRGen
         {
             for (int y = 0; y < height; y++)
             {
-                bmp.setPixel(x, y, matrix.get(x, y) ? Color.BLACK : Color.rgb(88, 164, 73));
+                bmp.setPixel(x, y, matrix.get(x, y) ? Color.BLACK : Color.rgb(219, 250, 170));
             }
         }
         return bmp;
