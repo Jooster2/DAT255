@@ -55,6 +55,13 @@ public class AchievementsFragment extends Fragment
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        ((MainActivity)getActivity()).refreshAchievements(((MainActivity)getActivity()).getUnlocker().getUnlockableAchievements(),(((MainActivity) getActivity()).getStats().getAchievements()));
+    }
+
     /*/public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
     {
 

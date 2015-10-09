@@ -24,7 +24,7 @@
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -34,18 +34,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/listunlocked"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_above="@+id/unlocked"
+                android:layout_alignParentTop="true"/>
 
             <ImageButton
                 android:layout_width="39dp"
                 android:layout_height="45dp"
                 android:id="@+id/unlocked"
                 android:background="@drawable/achievements"
-                android:layout_marginBottom="40dp"/>
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -55,16 +58,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/listlocked"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_above="@+id/locked"
+                android:layout_alignParentTop="true"/>
 
             <ImageButton
                 android:layout_width="39dp"
                 android:layout_height="45dp"
                 android:id="@+id/locked"
                 android:background="@drawable/denied"
-                android:layout_marginBottom="10dp"/>
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </ViewSwitcher>
 

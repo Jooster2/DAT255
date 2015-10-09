@@ -107,6 +107,17 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         mViewPager.addOnPageChangeListener(new PageChangeListener());
     }
 
+    public Stats getStats()
+    {
+        return stats;
+    }
+
+    public AchievementUnlocker getUnlocker()
+    {
+        return unlocker;
+    }
+
+
     public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
     {
 
@@ -133,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            sb.append(achi.getFlavorText() + ",");
+            //sb.append(achi.getFlavorText() + ",");
             sb.append(achi.getImageName());
             lockedList.add(sb.toString());
         }
@@ -156,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Log.i("Main", "Receiver started!");
 
     }
-
-
 
     /**
      * Tells ScanActivity to start scanning
