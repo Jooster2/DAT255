@@ -7,15 +7,15 @@ import java.util.LinkedList;
 /**
  * Demand for Achievements, of the type "requires x of y to complete"
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 1.2
+ * @version 1.3
  */
 public class Demand implements Serializable
 {
     private static final long serialVersionUID = 2L;
-    public String type;
+    public String type = null;
     public int amount;
-    public String equation;
-    public String requirement;
+    public String equation = null;
+    public String requirement = null;
 
     /**
      * Constructor that sets class variables to received parameters.
@@ -26,6 +26,7 @@ public class Demand implements Serializable
     {
         this.type = type;
         this.amount = amount;
+        this.requirement = String.valueOf(amount);
     }
 
     /**
@@ -40,6 +41,7 @@ public class Demand implements Serializable
         this.type = type;
         this.amount = calculateDemand(amount, equation, cycle);
         this.equation = equation;
+        this.requirement = String.valueOf(this.amount);
     }
 
     /**
@@ -48,11 +50,6 @@ public class Demand implements Serializable
      */
     public Demand(String type, String requirement)
     {
-        //TODO determine if type is really necessary for this type of demand
-        /* It will help by allowing more complex achievements to be constructed, with
-        different types of demands. On the other hand, do we even want to construct such complex
-        achievements? On the third hand, it's already in the code, does anyone even care?
-         */
         this.type = type;
         this.requirement = requirement;
     }

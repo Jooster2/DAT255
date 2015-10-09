@@ -3,10 +3,11 @@ package com.soctec.soctec.achievements;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 /**
  * Class for creating Achievements with certain properties
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.1
+ * @version 2.2
  */
 public class Achievement implements Serializable
 {
@@ -79,8 +80,39 @@ public class Achievement implements Serializable
         return demands;
     }
 
+    /**
+     * Checks if the Achievements Demands are completed
+     * @return true if there are no more Demands
+     */
+    public boolean isCompleted()
+    {
+        if(demands.size() == 0)
+            return true;
+        else
+            return false;
+    }
 
-
+    /**
+     * Checks and removes Demands that meet the requirements specified in parameters
+     * @param demandType type of Demand
+     * @param demandContent requirement of Demand
+     * @return
+     */
+    public boolean checkDemands(String demandType, String demandContent)
+    {
+        Iterator<Demand> it = getDemands().iterator();
+        while(it.hasNext())
+        {
+            Demand element = it.next();
+            if(element.type.equals(demandType) &&
+                    element.requirement.equals(demandContent))
+            {
+                it.remove();
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns the name of the achievement.

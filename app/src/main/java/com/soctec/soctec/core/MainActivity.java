@@ -81,7 +81,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator = new AchievementCreator();
         unlocker = new AchievementUnlocker(stats, creator);
         creator.addObserver(unlocker);
-        creator.createFromFile();
+        unlocker.loadUnlockable();
+        if(unlocker.getUnlockableAchievements().size() == 0)
+            creator.createFromFile();
 
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this).startThread();
@@ -159,6 +161,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(connectionChecker, intentFilter);
         mViewPager.setCurrentItem(1);
+    }
+
+    protected void onStop()
+    {
+        super.onStop();
+        unlocker.saveUnlockable();
     }
 
     /**

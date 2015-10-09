@@ -1,15 +1,23 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Log;
+
+import com.soctec.soctec.utils.FileHandler;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 /**
- * Created by Carl-Henrik Hult on 2015-09-22.
+ * Handles created achievements that are not yet completed, checks for completion
+ * @author Carl-Henrik Hult, Joakim Schmidt
+ * @version 2.0
  */
 public class AchievementUnlocker implements Observer
 {
     public static final int SCAN_PERSON = 1;
+    public static final int BUS_RIDE = 2;
+    private static final String SAVE_FILE = "unlockableAchievements";
 
     ArrayList<Achievement> unlockableAchievements;
     ArrayList<Achievement> recentlyUnlocked;
@@ -31,59 +39,90 @@ public class AchievementUnlocker implements Observer
     }
 
     /**
-     * Method that receives an event and handles whether the event should unlock an achievement.
-     *
+     * Loads the current unlockableAchievements-list from file
+     */
+    public void loadUnlockable()
+    {
+        FileHandler fH = FileHandler.getInstance();
+        unlockableAchievements = (ArrayList<Achievement>)fH.readObject(SAVE_FILE);
+    }
+
+    /**
+     * Saves the current unlockableAchievements-list to file
+     */
+    public void saveUnlockable()
+    {
+        FileHandler fH = FileHandler.getInstance();
+        fH.writeObject(SAVE_FILE, unlockableAchievements);
+    }
+
+    /**
+     * Handles events based on type and causes checks of Demands to be triggered
      * @param type  What kind of event that was triggered.
      * @param content   The information that came with the event.
      */
     public void receiveEvent (int type, String content)
     {
-        if (type == SCAN_PERSON)
+        boolean didUnlock = false;
+        switch(type)
         {
-            currentStats.setLastScanned (content);
-            currentStats.incScanCount();
-            /**
-             * This while-loop goes through the list of unlockable achievement, and checks the
-             * demands for each. If the demands for an achievement is met, that achievement gets
-             * unlocked. It also gets removed from the list of unlockableAchievements
-             */
-            Iterator it = unlockableAchievements.iterator();
-            while (it.hasNext())
-            {
-                Achievement element =(Achievement) it.next();
-                boolean achievementUnlocked = true;
-                for(Demand demand : element.getDemands())
-                {
-                    if(demand.type.equals("P_SCAN"))
-                    {
-                        if(demand.amount > currentStats.getScanCount())
-                        {
-                            achievementUnlocked = false;
-                            break;
-                        }
-                    }
-                }
-                if (achievementUnlocked == true)
-                {
-                    currentStats.addCompletedAchievement(element);
-                    recentlyUnlocked.add(element);
-                    it.remove();
-
-
-
-                }
-            }
-            for(Achievement achi : recentlyUnlocked)
-            {
-                if (achi.getType().equals("INF"))
-                    creator.recreateAchievement(achi);
-            }
-            recentlyUnlocked.clear();
+            case SCAN_PERSON:
+                currentStats.setLastScanned(content);
+                currentStats.incScanCount();
+                didUnlock = checkDemands("P_SCAN", String.valueOf(currentStats.getScanCount()));
+                break;
+            case BUS_RIDE:
+                didUnlock = checkDemands("B_RIDE", content);
+                break;
         }
+        if(didUnlock)
+            doRecreate();
     }
 
     /**
-     *  Returns the unlockableAcievments list.
+     * Does a check of Demands of all Achievements in unlockableAchievements and removes
+     * the Demands that met the requirements specified in parameters. If a Demand is removed,
+     * does a check if that Achievement is completed.
+     * @param type the type of Demand
+     * @param content the requirement of the Demand
+     * @return true if an Achievement was unlocked
+     */
+    private boolean checkDemands(String type, String content)
+    {
+        boolean didUnlock = false;
+        Iterator<Achievement> it = unlockableAchievements.iterator();
+        while(it.hasNext())
+        {
+            Achievement achievement = it.next();
+            if(achievement.checkDemands(type, content))
+            {
+                if(achievement.isCompleted())
+                {
+                    it.remove();
+                    recentlyUnlocked.add(achievement);
+                    didUnlock = true;
+                }
+            }
+        }
+        return didUnlock;
+
+    }
+
+    /**
+     * Recreates Achievements found in recentlyUnlocked and then clears the list
+     */
+    private void doRecreate()
+    {
+        for(Achievement achi : recentlyUnlocked)
+        {
+            if(achi.getType().equals("INF"))
+                creator.recreateAchievement(achi);
+        }
+        recentlyUnlocked.clear();
+    }
+
+    /**
+     * Returns the unlockableAcievments list.
      * @return  unlockableAchievements
      */
     public ArrayList<Achievement> getUnlockableAchievements()
