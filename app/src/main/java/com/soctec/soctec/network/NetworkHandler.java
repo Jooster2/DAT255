@@ -5,11 +5,6 @@ import android.util.Log;
 import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.profile.Profile;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,15 +13,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-
+/**
+ * @author David
+ * @version 5.0
+ */
 public class NetworkHandler
 {
-    private static final int PORT_NR = 49999;
+    private static final int PEER_PORT_NR = 49998;
+    private static final int SERVER_PORT_NR = 49999;
     private static final String SERVER_IP = "jooster.no-ip.org";
     private MainActivity myActivity;
     private PassiveThread listenerThread;
     private boolean listenForConnections = true;
-    private boolean hasSent = false;
     private static NetworkHandler instance = null;
 
     /**
@@ -60,7 +58,7 @@ public class NetworkHandler
         if(ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
             //Start networking thread
-            ActiveThread thread = new ActiveThread(scannedAddress, getDataToSend());
+            ActiveThread thread = new ActiveThread(scannedAddress);
             thread.start();
         }
     }
@@ -91,6 +89,7 @@ public class NetworkHandler
      * This method returns the users profile & ID
      * @return The user's profile & ID
      */
+    @SuppressWarnings("unchecked")
     private ArrayList<ArrayList<String>> getDataToSend()
     {
         ArrayList<ArrayList<String>> listToSend = (ArrayList)Profile.getProfile().clone();
@@ -106,64 +105,42 @@ public class NetworkHandler
     private class ActiveThread extends Thread
     {
         String peerIp;
-        String dataToSend;
-        int ipSize, dataSize;
 
         /**
          * Constructor
          * @param ip The ip address to connect to
-         * @param list The data to transfer
          */
-        public ActiveThread(String ip, ArrayList list)
+        public ActiveThread(String ip)
         {
             peerIp = ip;
-            this.dataToSend = "data";
-            ipSize = ip.length();
-            dataSize = dataToSend.length();
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void run()
         {
             try
             {
                 //Set up socket and streams
-                Socket socket = new Socket(SERVER_IP, PORT_NR);
-                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                DataInputStream dis = new DataInputStream(socket.getInputStream());
+                Socket socket = new Socket(peerIp, PEER_PORT_NR);
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 
-                //Send data
-                dos.writeInt(ipSize);
-                dos.writeBytes(peerIp);
-                dos.writeInt(1);
-                dos.writeInt(dataSize);
-                dos.writeBytes(dataToSend);
+                //Send, and then receive data
+                Log.i("myTag", "Transmitting and receiving...");
+                oos.writeObject(getDataToSend());
+                ArrayList<ArrayList<String>> receivedData = (ArrayList)ois.readObject();
 
-                hasSent = true;
-                //Receive peer's ip. Useless!
-               /* int ipLength = dis.readInt();
-                byte[] peerIp;
-                peerIp = new byte[ipLength];
-                dis.readFully(peerIp, 0, ipLength);
-
-                //Read peer's data. Not useless!
-                int dataLength = dis.readInt();
-                byte[] data;
-                data = new byte[dataLength];
-                dis.readFully(data, 0, dataLength);
+                //Clean up
+                oos.flush();
+                oos.close();
+                ois.close();
+                socket.close();
 
                 //Handle received data
-                StringBuilder dataReceived = new StringBuilder();
-                for(byte b : data)
-                {
-                    dataReceived.append(b);
-                }
-
-                Log.i("myTag", dataReceived.toString());*/
-                /*
-                final String userCode = dataReceived.get(dataReceived.size()-1).get(0);
-                dataReceived.remove(dataReceived.size() - 1);
-                final ArrayList<ArrayList<String>> userProfile = dataReceived;
+                final String userCode = receivedData.get(receivedData.size() - 1).get(0);
+                receivedData.remove(receivedData.size() - 1);
+                final ArrayList<ArrayList<String>> userProfile = receivedData;
 
                 myActivity.runOnUiThread(new Runnable()
                 {
@@ -173,16 +150,10 @@ public class NetworkHandler
                         myActivity.receiveDataFromPeer(userCode, userProfile);
                     }
                 });
-                */
 
-                //Clean up
-                dis.close();
-                dos.flush();
-                dos.close();
-                socket.close();
-
-            } catch(IOException e)
+            } catch(IOException | ClassNotFoundException e)
             {
+                Log.i("myTag", e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -196,6 +167,7 @@ public class NetworkHandler
         ServerSocket serverSocket = null;
 
         @Override
+        @SuppressWarnings("unchecked")
         public void run()
         {
             while(listenForConnections)
@@ -205,50 +177,29 @@ public class NetworkHandler
                     //Set up socket
                     serverSocket = new ServerSocket();
                     serverSocket.setReuseAddress(true);
-                    serverSocket.bind(new InetSocketAddress(PORT_NR));
+                    serverSocket.bind(new InetSocketAddress(PEER_PORT_NR));
 
                     //Accept connection and set up streams
                     Socket client = serverSocket.accept();
-                    DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-                    DataInputStream dis = new DataInputStream(client.getInputStream());
+                    ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+                    ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
 
-                    //Receive peer's ip
-                    int ipLength = dis.readInt();
-                    byte[] peerIp;
-                    peerIp = new byte[ipLength];
-                    dis.readFully(peerIp, 0, ipLength);
+                    //Receive, and then send data
+                    Log.i("myTag", "Receiving and sending...");
+                    ArrayList<ArrayList<String>> receivedData = (ArrayList)ois.readObject();
+                    oos.writeObject(getDataToSend());
 
-                    //Read peer's data
-                    int dataLength = dis.readInt();
-                    byte[] data;
-                    data = new byte[dataLength];
-                    dis.readFully(data, 0, dataLength);
+                    //Clean up
+                    ois.close();
+                    oos.flush();
+                    oos.close();
+                    client.close();
+                    serverSocket.close();
 
-                    if(!hasSent)
-                    {
-                        //Send data
-                        dos.writeInt(ipLength);
-                        dos.write(peerIp);
-                        dos.writeInt(1);
-                        dos.writeInt("data 2".length());
-                        dos.writeBytes("data 2");
-
-                        StringBuilder dataReceived = new StringBuilder();
-                        for (byte b : data)
-                        {
-                            dataReceived.append(b);
-                        }
-
-                        //Send data
-                        dos.writeBytes(getDataToSend().toString() + "Insert ip here");
-
-                        Log.i("myTag", dataReceived.toString());
-                    }
-                    hasSent = false;
                     //Handle received data
-                    /*final String userCode = dataReceived.get(dataReceived.size() - 1).get(0);
-                    dataReceived.remove(dataReceived.size() - 1);
-                    final ArrayList<ArrayList<String>> userProfile = dataReceived;
+                    final String userCode = receivedData.get(receivedData.size() - 1).get(0);
+                    receivedData.remove(receivedData.size() - 1);
+                    final ArrayList<ArrayList<String>> userProfile = receivedData;
 
                     myActivity.runOnUiThread(new Runnable()
                     {
@@ -258,17 +209,10 @@ public class NetworkHandler
                             myActivity.receiveDataFromPeer(userCode, userProfile);
                         }
                     });
-                    */
-
-                    //Clean up
-                    dis.close();
-                    dos.flush();
-                    dos.close();
-                    client.close();
-                    serverSocket.close();
-
-                } catch(IOException e)
+                }
+                catch(IOException | ClassNotFoundException e)
                 {
+                    Log.i("myTag", e.getMessage());
                     e.printStackTrace();
                 }
             }
