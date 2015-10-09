@@ -12,7 +12,7 @@ import com.soctec.soctec.achievements.Stats;
 public class AchievementTest extends AndroidTestCase
 {
     MainActivity main = new MainActivity();
-    Stats stats = new Stats(main);
+    Stats stats = new Stats();
     AchievementCreator creator = new AchievementCreator ();
     AchievementUnlocker unlocker = new AchievementUnlocker (stats, creator);
 
@@ -90,7 +90,7 @@ public class AchievementTest extends AndroidTestCase
         creator.addObserver(unlocker);
         creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:2^c");
         unlocker.receiveEvent(1, "JOCKE");
-        assertEquals(stats.getAchievements().getFirst().getId(), "SI0");
+        assertEquals(stats.getAchievements().get(0).getId(), "SI0");
         assertEquals(1, unlocker.getUnlockableAchievements().size());
         // Check that the new achievements goal is set correctly according to equation
         // Should be 2 (current total of scans is 1)

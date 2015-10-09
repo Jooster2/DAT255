@@ -16,4 +16,56 @@
         android:layout_marginTop="20dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
+
+    <ViewSwitcher
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewSwitcher"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/listunlocked"
+                android:layout_gravity="center_horizontal"/>
+
+            <ImageButton
+                android:layout_width="39dp"
+                android:layout_height="45dp"
+                android:id="@+id/unlocked"
+                android:background="@drawable/achievements"
+                android:layout_marginBottom="40dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/listlocked"
+                android:layout_gravity="center_horizontal"/>
+
+            <ImageButton
+                android:layout_width="39dp"
+                android:layout_height="45dp"
+                android:id="@+id/locked"
+                android:background="@drawable/denied"
+                android:layout_marginBottom="10dp"/>
+
+        </LinearLayout>
+
+    </ViewSwitcher>
+
 </RelativeLayout>

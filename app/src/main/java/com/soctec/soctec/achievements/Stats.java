@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.soctec.soctec.core.AchievementShowerActivity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 /**
  * Stats contains information about game progress
@@ -19,8 +20,8 @@ public class Stats
     private int ratingNeg;
     private int timeTalked;
     private String lastScanned;
-    private LinkedList<Achievement> completedAchievements;
     private LinkedList<Achievement> lastCompletedAchievements;
+    private ArrayList<Achievement> completedAchievements;
     private long lastScannedTime;
     private boolean talkDone = false;
     Context mContext;
@@ -28,13 +29,12 @@ public class Stats
     /**
      * Constructs an empty Stats object
      */
-    public Stats(Context mContext)
+    public Stats()
     {
-        this.mContext = mContext;
         lastScannedTime = 0;
         lastScanned = "";
-        completedAchievements = new LinkedList<>();
         lastCompletedAchievements = new LinkedList<>();
+        completedAchievements = new ArrayList<>();
         //TODO read db
     }
 
@@ -81,7 +81,7 @@ public class Stats
      * Returns a list of the users completed Achievements
      * @return a list containing the users completed Achievements
      */
-    public LinkedList<Achievement> getAchievements()
+    public ArrayList<Achievement> getAchievements()
     {
         return completedAchievements;
     }
