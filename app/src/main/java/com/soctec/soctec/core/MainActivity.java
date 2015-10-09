@@ -108,35 +108,37 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
     {
 
-        ArrayList<String> theList =  new ArrayList<String> ();
-        ListView unlockedAchievementListView;
+        ArrayList<String> unlockedList =  new ArrayList<String> ();
+        ListView unlockedView;
 
         for (Achievement achi : unlocked)
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
+            //sb.append(achi.getFlavourText() + ",");
             sb.append(achi.getImageName());
-            theList.add(sb.toString());
+            unlockedList.add(sb.toString());
         }
 
-        unlockedAchievementListView = (ListView)findViewById(R.id.listunlocked);
-        AchievementsAdapter unlockedadapter = new AchievementsAdapter(this, theList);
-        unlockedAchievementListView.setAdapter(unlockedadapter);
+        unlockedView = (ListView)findViewById(R.id.listunlocked);
+        AchievementsAdapter unlockedadapter = new AchievementsAdapter(this, unlockedList);
+        unlockedView.setAdapter(unlockedadapter);
 
-        ArrayList<String> theOtherList =  new ArrayList<String> ();
-        ListView lockedAchievmentListView;
+        ArrayList<String> lockedList =  new ArrayList<String> ();
+        ListView lockedView;
 
         for (Achievement achi : locked)
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
+            //sb.append(achi.getFlavourText() + ",");
             sb.append(achi.getImageName());
-            theOtherList.add(sb.toString());
+            lockedList.add(sb.toString());
         }
 
-        lockedAchievmentListView = (ListView)findViewById(R.id.listlocked);
-        AchievementsAdapter lockedadapter = new AchievementsAdapter(this, theOtherList);
-        lockedAchievmentListView.setAdapter(lockedadapter);
+        lockedView = (ListView)findViewById(R.id.listlocked);
+        AchievementsAdapter lockedadapter = new AchievementsAdapter(this, lockedList);
+        lockedView.setAdapter(lockedadapter);
     }
 
     /**
@@ -160,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public void scanNow(View v)
     {
-        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
+                refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
     /**
@@ -224,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Toast.makeText(getApplicationContext(), achievement, Toast.LENGTH_LONG).show();
         String time = String.valueOf(stats.getTimeTalked());
         Toast.makeText(getApplicationContext(), time, Toast.LENGTH_LONG).show();
+        refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
     /**
