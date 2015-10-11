@@ -41,3 +41,8 @@ public class MainFragment extends Fragment
         ((MainActivity)getActivity()).startReceiver();
     }
 }
+
+//TODO Layout för progressbar
+//TODO Byta knappar
+//TODO Skicka rating
+//TODO lägga in skrivna metoder från eget rep.
