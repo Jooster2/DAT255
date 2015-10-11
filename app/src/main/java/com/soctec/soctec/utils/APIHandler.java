@@ -22,13 +22,25 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class APIHandler
 {
-    private static APIHandler ourInstance = new APIHandler();
+    private String key;
+
+    /**
+     * Magic thread-safety
+     */
+    private static class Loader
+    {
+        static APIHandler INSTANCE = new APIHandler();
+    }
+    //private static APIHandler ourInstance = new APIHandler();
+
+    /**
+     * Returns the instance of APIHandler
+     * @return the instance of APIHandler
+     */
     public static APIHandler getInstance()
     {
-        return ourInstance;
+        return Loader.INSTANCE;
     }
-
-    private String key;
 
     /**
      * Constructs an API Handler
@@ -36,6 +48,11 @@ public class APIHandler
     private APIHandler()
     {
     }
+
+    /**
+     * Sets the Electricity API access key
+     * @param key the key, encoded in Base64, to use
+     */
     public void setKey(String key)
     {
         this.key = key;

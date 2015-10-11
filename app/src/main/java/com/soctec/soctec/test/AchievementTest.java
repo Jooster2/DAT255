@@ -7,7 +7,9 @@ import com.soctec.soctec.achievements.AchievementUnlocker;
 import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.achievements.Stats;
 /**
- * Created by Carl-Henrik Hult on 2015-09-29.
+ * Tests for different types of Achievements
+ * @author Carl-Henrik Hult, Joakim Schmidt
+ * @version 1.4
  */
 public class AchievementTest extends AndroidTestCase
 {
@@ -24,7 +26,7 @@ public class AchievementTest extends AndroidTestCase
     public void testCreateAchievement () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         assertEquals( 1, unlocker.getUnlockableAchievements().size());
     }
 
@@ -35,7 +37,7 @@ public class AchievementTest extends AndroidTestCase
     public void testScanCountInc () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(stats.getScanCount(), 1);
 
@@ -48,7 +50,7 @@ public class AchievementTest extends AndroidTestCase
     public void testLastScanned () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals("JOCKE", stats.getlastScanned());
     }
@@ -59,7 +61,7 @@ public class AchievementTest extends AndroidTestCase
     public void testUnlockAchievement () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
@@ -72,10 +74,10 @@ public class AchievementTest extends AndroidTestCase
     public void testCreate4Achievements () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
-        creator.createTestAch("First Scan!, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         assertEquals(4, unlocker.getUnlockableAchievements().size());
 
         //TODO : Write more tests, what kind of tests?
@@ -88,19 +90,38 @@ public class AchievementTest extends AndroidTestCase
     public void testCreateInfiniteAchievements () throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:2^c");
+        creator.createTestAch("GOGO! Towards Infinity!, flavorText, 25, someimg3, SI0, INF, P_SCAN:0:2^c");
         unlocker.receiveEvent(1, "JOCKE");
-        assertEquals(stats.getAchievements().get(0).getId(), "SI0");
+        assertEquals("SI0", stats.getAchievements().get(0).getId());
         assertEquals(1, unlocker.getUnlockableAchievements().size());
         // Check that the new achievements goal is set correctly according to equation
         // Should be 2 (current total of scans is 1)
-        assertEquals(2, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
+        assertEquals("2", unlocker.getUnlockableAchievements().get(0).getDemands().get(0).requirement);
         unlocker.receiveEvent(1, "JOCKE");
         // Should be 4 (current total of scans is 2)
-        assertEquals(4, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
+        assertEquals("4", unlocker.getUnlockableAchievements().get(0).getDemands().get(0).requirement);
         unlocker.receiveEvent(1, "JOCKE");
         unlocker.receiveEvent(1, "JOCKE");
         // Should be 8 (current total of scans is 4)
-        assertEquals(8, unlocker.getUnlockableAchievements().get(0).getDemands().get(0).amount);
+        assertEquals("8", unlocker.getUnlockableAchievements().get(0).getDemands().get(0).requirement);
+    }
+
+    /**
+     * Tests the functionality of CollectionAchievements.
+     * Requires tweak in AchievementCreator.createAchievement to work, see comments in code there.
+     * @throws Exception
+     */
+    public void testCollectionAchievements() throws Exception
+    {
+        creator.addObserver(unlocker);
+        creator.createTestAch("Pure Electric!, You have gone on all three electric buses, "+
+                "30, someimg, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3");
+        assertEquals(3, unlocker.getUnlockableAchievements().get(0).getDemands().size());
+        unlocker.receiveEvent(2, "E_BUS1");
+        unlocker.receiveEvent(2, "E_BUS3");
+        assertEquals(1, unlocker.getUnlockableAchievements().get(0).getDemands().size());
+        unlocker.receiveEvent(2, "E_BUS2");
+        assertEquals(0, unlocker.getUnlockableAchievements().size());
+        assertEquals(1, stats.getAchievements().size());
     }
 }

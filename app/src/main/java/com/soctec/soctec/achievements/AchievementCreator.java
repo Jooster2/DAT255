@@ -19,11 +19,27 @@ public class AchievementCreator extends Observable
     {
     }
 
+    /**
+     * Converts a String type into the correct int type.
+     * @param type string to convert
+     * @return int with corresponding value
+     */
+    private int typeConvert(String type)
+    {
+        switch(type)
+        {
+            case "P_SCAN": return Demand.PERSON_SCAN;
+            case "B_RIDE": return Demand.BUS_RIDE;
+            case "API": return Demand.API;
+            default: return Integer.parseInt(type);
+        }
+    }
+
     public Achievement createAchievement(String[] def)
     {
         // Arguments are: Name, FlavorText, Points, Image-name, ID, Type-name
-        Achievement achievement = new Achievement(def[0], def[1], Integer.parseInt(def[2]),
-                def[3], def[4], def[5]);
+        Achievement achievement = new Achievement(
+                def[0], def[1], Integer.parseInt(def[2]), def[3], def[4], def[5]);
         for(int i=6; i<def.length; i++)
         {
             String[] demand = def[i].split(":");
@@ -31,11 +47,11 @@ public class AchievementCreator extends Observable
             switch(def[5])
             {
                 case "SIN":
-                    achievement.createDemand(demand[0], Integer.parseInt(demand[1]));
+                    achievement.createDemand(typeConvert(demand[0]), demand[1], null, 0);
                     break;
                 case "INF":
-                    achievement.createDemand(demand[0], Integer.parseInt(demand[1]),
-                            demand[2], getIDNumber(def[4]));
+                    achievement.createDemand(
+                            typeConvert(demand[0]), demand[1], demand[2], getIDNumber(def[4]));
                     break;
                 case "COL":
                     FileHandler fH = FileHandler.getInstance();
@@ -43,11 +59,16 @@ public class AchievementCreator extends Observable
                     String[] requirements = demand[1].split("/");
                     for(String req : requirements)
                     {
+                        // Comment out these three lines and...
                         int resID = fH.getResourceID(req, "string");
                         String ID = fH.readString(resID);
-                        achievement.createDemand(demand[0], ID);
+                        achievement.createDemand(typeConvert(demand[0]), ID, null, 0);
+                        // ...uncomment this one line, to run AchievementTest successfully
+                        //achievement.createDemand(typeConvert(demand[0]), req, null, 0);
                     }
                     break;
+                case "API":
+
             }
         }
         return achievement;
@@ -71,8 +92,11 @@ public class AchievementCreator extends Observable
         }
     }
 
+
+
     /**
-     * Creates a basic Achievement for testing purposes
+     * Use to manually create Achievements for testing purposes
+     * @param line string with comma-separated description of Achievement
      */
     public void createTestAch(String line)
     {

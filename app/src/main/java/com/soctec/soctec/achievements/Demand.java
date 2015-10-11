@@ -5,62 +5,47 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
- * Demand for Achievements, of the type "requires x of y to complete"
+ * Demand used by Achievements to determine if it is earned or not
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 1.3
+ * @version 1.4
  */
 public class Demand implements Serializable
 {
+    public static final int PERSON_SCAN = 1;
+    public static final int BUS_RIDE = 2;
+    public static final int API = 3;
+
     private static final long serialVersionUID = 2L;
-    public String type = null;
-    public int amount;
-    public String equation = null;
-    public String requirement = null;
+    public int type;
+    public String requirement;
+    public String extras = null;
+    public int detail;
 
     /**
      * Constructor that sets class variables to received parameters.
      * @param type type of demand
-     * @param amount the amount of times, for example "the number of scans before unlocked".
+     * @param requirement requirement for unlocking
+     * @param extras extra data for constructing demand
+     * @param detail comes from Achievement-ID, how many times it has been created (inclusive)
      */
-    public Demand(String type, int amount)
+    public Demand(int type, String requirement, String extras, int detail)
     {
         this.type = type;
-        this.amount = amount;
-        this.requirement = String.valueOf(amount);
-    }
-
-    /**
-     * Constructor that sets class variables to received parameters.
-     * @param type type of demand
-     * @param amount amount of type-events needed to unlock
-     * @param equation equation for infinite demands
-     * @param cycle comes from Achievement-ID, how many times it has been created (inclusive)
-     */
-    public Demand(String type, int amount, String equation, int cycle)
-    {
-        this.type = type;
-        this.amount = calculateDemand(amount, equation, cycle);
-        this.equation = equation;
-        this.requirement = String.valueOf(this.amount);
-    }
-
-    /**
-     * Constructor that sets class variables to received parameters.
-     * @param requirement Requirement for completion
-     */
-    public Demand(String type, String requirement)
-    {
-        this.type = type;
-        this.requirement = requirement;
+        if(type == PERSON_SCAN && extras != null)
+            this.requirement = calculateRequirement(requirement, extras, detail);
+        else
+            this.requirement = requirement;
+        this.extras = extras;
+        this.detail = detail;
     }
 
     /**
      * An extremely simple parser for calculating equations. Supports ^,*,/,+,- but not parenthesis
-     * @param amount the base of the equation
+     * @param requirement the base of the equation
      * @param equation the equation to be applied
-     * @return calculated amount
+     * @return calculated requirement
      */
-    private int calculateDemand(int amount, String equation, int cycle)
+    private String calculateRequirement(String requirement, String equation, int detail)
     {
         //TODO might want to migrate eq to LinkedList<Character> for optimization, but maybe not worth it
         LinkedList<String> eq = new LinkedList<>(Arrays.asList(equation.split("")));
@@ -69,10 +54,10 @@ public class Demand implements Serializable
             eq.remove(0);
         // Replace all instances of 'a' with amount
         while(eq.contains("a"))
-            eq.set(eq.indexOf("a"), String.valueOf(amount));
-        // Replace all instances of 'c' with cycle
+            eq.set(eq.indexOf("a"), requirement);
+        // Replace all instances of 'c' with detail
         while(eq.contains("c"))
-            eq.set(eq.indexOf("c"), String.valueOf(cycle));
+            eq.set(eq.indexOf("c"), String.valueOf(detail));
         while(eq.size() > 1)
         {
 
@@ -87,9 +72,14 @@ public class Demand implements Serializable
             else if(eq.contains("-"))
                 calc(eq, "-");
         }
-        return Integer.parseInt(eq.getFirst());
+        return eq.getFirst();
     }
 
+    /**
+     * Performs calculations and equation cleanup for calculateRequirement()
+     * @param eq equation to be calculated
+     * @param op operation to perform
+     */
     private void calc(LinkedList<String> eq, String op)
     {
         int i = eq.indexOf(op);

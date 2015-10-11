@@ -1,10 +1,9 @@
 package com.soctec.soctec.achievements;
 
-import android.util.Log;
-
 import com.soctec.soctec.utils.FileHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
@@ -15,14 +14,13 @@ import java.util.Observer;
  */
 public class AchievementUnlocker implements Observer
 {
-    public static final int SCAN_PERSON = 1;
-    public static final int BUS_RIDE = 2;
     private static final String SAVE_FILE = "unlockableAchievements";
 
     ArrayList<Achievement> unlockableAchievements;
     ArrayList<Achievement> recentlyUnlocked;
-    Stats currentStats;
+    Stats stats;
     AchievementCreator creator;
+    HashMap<Demand, Achievement> livingDemands;
 
     /**
      * Constructor that initiates the unlockableAchievements list, saves a reference to Stats and
@@ -32,10 +30,18 @@ public class AchievementUnlocker implements Observer
      */
     public AchievementUnlocker(Stats newStats, AchievementCreator creator)
     {
-        unlockableAchievements = new ArrayList<Achievement>();
+        unlockableAchievements = new ArrayList<>();
         recentlyUnlocked = new ArrayList<>();
-        currentStats = newStats;
+        stats = newStats;
         this.creator = creator;
+        livingDemands = new HashMap<>();
+    }
+
+    public void registerLivingDemand(Achievement owner, Demand demand)
+    {
+        livingDemands.put(demand, owner);
+        //TODO probably another HashMap to "bind" the Demand with the LivingDemand
+        LivingDemand livingDemand = new LivingDemand(demand);
     }
 
     /**
@@ -66,13 +72,13 @@ public class AchievementUnlocker implements Observer
         boolean didUnlock = false;
         switch(type)
         {
-            case SCAN_PERSON:
-                currentStats.setLastScanned(content);
-                currentStats.incScanCount();
-                didUnlock = checkDemands("P_SCAN", String.valueOf(currentStats.getScanCount()));
+            case Demand.PERSON_SCAN:
+                stats.setLastScanned(content);
+                stats.incScanCount();
+                didUnlock = checkDemands(Demand.PERSON_SCAN, String.valueOf(stats.getScanCount()));
                 break;
-            case BUS_RIDE:
-                didUnlock = checkDemands("B_RIDE", content);
+            case Demand.BUS_RIDE:
+                didUnlock = checkDemands(Demand.BUS_RIDE, content);
                 break;
         }
         if(didUnlock)
@@ -87,7 +93,7 @@ public class AchievementUnlocker implements Observer
      * @param content the requirement of the Demand
      * @return true if an Achievement was unlocked
      */
-    private boolean checkDemands(String type, String content)
+    private boolean checkDemands(int type, String content)
     {
         boolean didUnlock = false;
         Iterator<Achievement> it = unlockableAchievements.iterator();
@@ -99,13 +105,13 @@ public class AchievementUnlocker implements Observer
                 if(achievement.isCompleted())
                 {
                     it.remove();
+                    stats.addCompletedAchievement(achievement);
                     recentlyUnlocked.add(achievement);
                     didUnlock = true;
                 }
             }
         }
         return didUnlock;
-
     }
 
     /**
@@ -139,7 +145,7 @@ public class AchievementUnlocker implements Observer
     @Override
     public void update(Observable observable, Object data)
     {
-        if (data instanceof Achievement )
+        if(data instanceof Achievement)
         {
             unlockableAchievements.add((Achievement)data);
         }

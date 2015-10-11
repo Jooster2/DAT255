@@ -19,13 +19,14 @@ public class Achievement implements Serializable
     private String id;
     private String type;
     private ArrayList<Demand> demands;
+    private ArrayList<Demand> completedDemands;
 
 
     /**
-     * @param name  The name of the achievement.
+     * @param name The name of the achievement.
      * @param points The points that the achievement is worth.
      * @param imageName The filename/name of the image that goes with the achievement.
-     * @param id    An internal ID
+     * @param id An internal ID
      * @param type the type of the achievement (SIN/INF)
      */
     public Achievement(String name, String flavorText, int points, String imageName, String id, String type)
@@ -37,47 +38,40 @@ public class Achievement implements Serializable
         this.id = id;
         this.type = type;
         demands = new ArrayList<>();
-    }
-    /**
-     * Method used by {@link AchievementCreator createCounterAchievement(String[] data)} to create
-     * a demand for an achievement.
-     * @param type the type of the demand
-     * @param amount    the amount of counts before unlocked.
-     */
-    public void createDemand(String type, int amount)
-    {
-        demands.add(new Demand(type, amount));
+        completedDemands = new ArrayList<>();
     }
 
     /**
      * Method used by {@link AchievementCreator createCounterAchievement(String[] data)} to create
      * a demand for an achievement.
-     * @param type the type of the demand
-     * @param amount the amount of counts before unlocked
-     * @param equation equation used for to calculate next demand in infinite achievements
+     * @param type type of demand
+     * @param requirement requirement for unlocking
+     * @param extras extra data for constructing demand (equations, sensors etc)
+     * @param cycle comes from Achievement-ID, how many times it has been created (inclusive)
      */
-    public void createDemand(String type, int amount, String equation, int cycle)
+    public void createDemand(int type, String requirement, String extras, int cycle)
     {
-        demands.add(new Demand(type, amount, equation, cycle));
+        demands.add(new Demand(type, requirement, extras, cycle));
     }
 
-    /**
-     * Method used by {@link AchievementCreator createCounterAchievement(String[] data)} to create
-     * a demand for an achievement.
-     * @param req Requirement for completion
-     */
-    public void createDemand(String type, String req)
-    {
-        demands.add(new Demand(type, req));
-    }
+
 
     /**
-     * Returns a list of all Demands
-     * @return a list of all Demands
+     * Returns a list of all remaining Demands
+     * @return a list of all remaining Demands
      */
     public ArrayList<Demand> getDemands()
     {
         return demands;
+    }
+
+    /**
+     * Returns a list of all completed Demands
+     * @return a list of all completed Demands
+     */
+    public ArrayList<Demand> getCompletedDemands()
+    {
+        return completedDemands;
     }
 
     /**
@@ -86,28 +80,26 @@ public class Achievement implements Serializable
      */
     public boolean isCompleted()
     {
-        if(demands.size() == 0)
-            return true;
-        else
-            return false;
+        return demands.size() == 0;
     }
 
     /**
      * Checks and removes Demands that meet the requirements specified in parameters
      * @param demandType type of Demand
      * @param demandContent requirement of Demand
-     * @return
+     * @return true if Demand was found and completed
      */
-    public boolean checkDemands(String demandType, String demandContent)
+    public boolean checkDemands(int demandType, String demandContent)
     {
         Iterator<Demand> it = getDemands().iterator();
         while(it.hasNext())
         {
             Demand element = it.next();
-            if(element.type.equals(demandType) &&
+            if(element.type == demandType &&
                     element.requirement.equals(demandContent))
             {
                 it.remove();
+                completedDemands.add(element);
                 return true;
             }
         }
@@ -143,7 +135,7 @@ public class Achievement implements Serializable
 
     /**
      * Returns the filename/name of the image that goes with the achievement.
-     * @return filename/name of the image that goes with the achievement.
+     * @return the filename/name of the image that goes with the achievement.
      */
      public String getImageName()
     {
@@ -152,7 +144,7 @@ public class Achievement implements Serializable
 
     /**
      * Returns the internal ID for the achievement.
-     * @return  internal ID for the achievement.
+     * @return the internal ID for the achievement.
      */
     public String getId()
     {
@@ -160,8 +152,8 @@ public class Achievement implements Serializable
     }
 
     /**
-     * Returns the type of the Achievement (SIN/INF)
-     * @return the type of the Achievement (SIN/INF)
+     * Returns the type of the Achievement (SIN/INF/COL)
+     * @return the type of the Achievement (SIN/INF/COL)
      */
     public String getType()
     {
@@ -175,12 +167,23 @@ public class Achievement implements Serializable
     {
         ArrayList<String> data = new ArrayList<>();
         Collections.addAll(data, name, flavorText, String.valueOf(points), imageName, id, type);
+        // Add any remaining Demands
         for(Demand demand : demands)
         {
             if(type.equals("SIN"))
-                data.add(demand.type + ":" + demand.amount);
+                data.add(demand.type + ":" + demand.requirement);
             else if(type.equals("INF"))
-                data.add(demand.type + ":" + demand.amount + ":" + demand.equation);
+                data.add(demand.type + ":" + demand.requirement + ":" + demand.extras);
+            else
+                data.add(demand.type + ":" + demand.requirement);
+        }
+        // Add any completed Demands
+        for(Demand demand : completedDemands)
+        {
+            if(type.equals("SIN"))
+                data.add(demand.type + ":" + demand.requirement);
+            else if(type.equals("INF"))
+                data.add(demand.type + ":" + demand.requirement + ":" + demand.extras);
             else
                 data.add(demand.type + ":" + demand.requirement);
         }
