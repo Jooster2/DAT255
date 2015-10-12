@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
         if (settings.getBoolean("first_time", true)) {
             //Do this only the first startup
-                
+            Toast.makeText(getApplicationContext(), "first time", Toast.LENGTH_SHORT).show();
 
 
             settings.edit().putBoolean("my_first_time", false).apply();
