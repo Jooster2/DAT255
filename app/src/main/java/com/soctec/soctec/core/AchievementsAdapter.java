@@ -39,9 +39,9 @@ public class AchievementsAdapter extends ArrayAdapter {
         String [] strings = fullString.split(",");
 
         txtTitle.setText(strings[0]);
-        extratxt.setText(strings[1]);
+        //extratxt.setText(strings[1]);
         FileHandler fh = FileHandler.getInstance();
-        imageView.setImageResource(fh.getResourceID(strings[2], "drawable"));
+        imageView.setImageResource(fh.getResourceID(strings[1], "drawable"));
 
         return rowView;
     };

@@ -18,7 +18,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".core.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,18 +28,22 @@
         </activity>
         <activity
             android:name=".core.ScanActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">>
         </activity>
         <activity
             android:name=".core.AchievementShowerActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">>
         </activity>
         <activity android:name=".profile.ProfileActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait">>
 
         </activity>
         <activity android:name=".profile.ProfileMatchActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait">>
 
         </activity>
     </application>
