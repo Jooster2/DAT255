@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         setupActionBar();
         mViewPager.addOnPageChangeListener(new PageChangeListener());
 
-        //Display help to user. Only on the very first startup
+        //Display help to user. Only on the very first startup TODO: test if this works
         SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
         if (settings.getBoolean("first_time", true)) {
             //Do this only the first startup
