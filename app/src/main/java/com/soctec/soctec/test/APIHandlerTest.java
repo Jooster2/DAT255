@@ -22,7 +22,7 @@ public class APIHandlerTest extends AndroidTestCase
      * Tests that we get exactly one element in the response list
      * @throws Exception
      */
-    public void testReadElecAPI() throws Exception
+    public void testReadElecAPISimulatedBus() throws Exception
     {
         aH.setKey(key);
         ArrayList<ArrayList<String>> data = aH.readElectricity("Vin_Num_001", "Total_Vehicle_Distance", 5);
@@ -43,5 +43,16 @@ public class APIHandlerTest extends AndroidTestCase
         assertEquals(1, data.size());
         assertEquals(1, data.get(0).size());
         assertEquals("400", data.get(0).get(0));
+    }
+
+    /**
+     * Tests that we get a response from Icomera server and that it is not null
+     * @throws Exception
+     */
+    public void testIcomera() throws Exception
+    {
+        ArrayList<APIHandler.Icomera> data = aH.readIcomera("system");
+        assertEquals(1, data.size());
+        assertNotNull(data.get(0).system_id);
     }
 }

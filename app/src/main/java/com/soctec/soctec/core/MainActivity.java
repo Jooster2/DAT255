@@ -36,6 +36,7 @@ import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 import com.soctec.soctec.profile.ProfileActivity;
 import com.soctec.soctec.profile.ProfileMatchActivity;
+import com.soctec.soctec.utils.APIHandler;
 import com.soctec.soctec.utils.Encryptor;
 import com.soctec.soctec.utils.FileHandler;
 
@@ -126,6 +127,19 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         AchievementsFragment aF = (AchievementsFragment)mSectionsPagerAdapter.getFragment(2);
         aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
+    }
+
+    public void icomeraTest(View v)
+    {
+        APIHandler aH = APIHandler.getInstance();
+        ArrayList<APIHandler.Icomera> results = aH.readIcomera("system");
+        int i=0;
+        for(APIHandler.Icomera item : results)
+        {
+            Log.i("icomera", "Cycle "+i+" "+item.system_id);
+            i++;
+        }
+
     }
 
     /**
