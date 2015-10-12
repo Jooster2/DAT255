@@ -59,40 +59,45 @@ public class AchievementsFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ((MainActivity)getActivity()).refreshAchievements(((MainActivity)getActivity()).getUnlocker().getUnlockableAchievements(),(((MainActivity) getActivity()).getStats().getAchievements()));
+        MainActivity main = (MainActivity)getActivity();
+        main.updateAchievementFragment();
     }
 
-    /*/public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked  )
+    public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked)
     {
 
-        ArrayList<String> theList =  new ArrayList<String> ();
+        ArrayList<String> unlockedList =  new ArrayList<>();
         ListView unlockedAchievementListView;
 
         for (Achievement achi : unlocked)
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
+            //sb.append(achi.getFlavorText() + ",");
+            sb.append("walla,");
             sb.append(achi.getImageName());
-            theList.add(sb.toString());
+            unlockedList.add(sb.toString());
         }
 
         unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
-        AchievementsAdapter unlockedadapter = new AchievementsAdapter(getActivity(), theList);
-        unlockedAchievementListView.setAdapter(unlockedadapter);
+        AchievementsAdapter unlockedAdapter = new AchievementsAdapter(getActivity(), unlockedList);
+        unlockedAchievementListView.setAdapter(unlockedAdapter);
 
-        ArrayList<String> theOtherList =  new ArrayList<String> ();
-        ListView lockedAchievmentListView;
+        ArrayList<String> lockedList =  new ArrayList<>();
+        ListView lockedAchievementListView;
 
         for (Achievement achi : locked)
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
+            //sb.append(achi.getFlavorText() + ",");
+            sb.append("walla,");
             sb.append(achi.getImageName());
-            theOtherList.add(sb.toString());
+            lockedList.add(sb.toString());
         }
 
-        lockedAchievmentListView = (ListView)view.findViewById(R.id.listlocked);
-        AchievementsAdapter lockedadapter = new AchievementsAdapter(getActivity(), theOtherList);
-        lockedAchievmentListView.setAdapter(lockedadapter);
-    }/*/
+        lockedAchievementListView = (ListView)view.findViewById(R.id.listlocked);
+        AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList);
+        lockedAchievementListView.setAdapter(lockedAdapter);
+    }
 }
