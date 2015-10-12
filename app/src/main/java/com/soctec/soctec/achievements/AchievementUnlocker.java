@@ -1,5 +1,7 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Pair;
+
 import com.soctec.soctec.utils.FileHandler;
 
 import java.util.ArrayList;
@@ -40,8 +42,10 @@ public class AchievementUnlocker implements Observer
     public void registerLivingDemand(Achievement owner, Demand demand)
     {
         livingDemands.put(demand, owner);
-        //TODO probably another HashMap to "bind" the Demand with the LivingDemand
-        LivingDemand livingDemand = new LivingDemand(demand);
+        //To do: probably another HashMap to "bind" the Demand with the LivingDemand
+        //LivingDemand livingDemand = new LivingDemand(demand);
+        demand.addObserver(this);
+        demand.run();
     }
 
     /**
@@ -148,6 +152,10 @@ public class AchievementUnlocker implements Observer
         if(data instanceof Achievement)
         {
             unlockableAchievements.add((Achievement)data);
+        }
+        else if(observable instanceof Demand && data instanceof Pair)
+        {
+
         }
     }
 }

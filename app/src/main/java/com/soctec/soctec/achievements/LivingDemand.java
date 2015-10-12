@@ -26,15 +26,9 @@ public class LivingDemand extends Observable implements Runnable
     {
         this.demand = demand;
         sensor = demand.requirement;
-        vinNumber = demand.extras;
+        vinNumber = demand.extraPrimary;
         time = demand.detail;
     }
-
-
-    //TODO This method needs lots of work, can be made much better with some tweaks to APIHandler.
-    //Tweaks include such things as returning a single String, and handle specific resources
-    //not just sensors
-    //TODO Must add another extrasString to Demands, requirement is NOT sensor.
 
     @Override
     public void run()

@@ -46,12 +46,14 @@ public class Achievement implements Serializable
      * a demand for an achievement.
      * @param type type of demand
      * @param requirement requirement for unlocking
-     * @param extras extra data for constructing demand (equations, sensors etc)
-     * @param cycle comes from Achievement-ID, how many times it has been created (inclusive)
+     * @param extraPrimary extra data for constructing demand (equations, sensors etc)
+     * @param extraSecondary extra data for constructing demand (mostly Vin Number)
+     * @param detail numerical extra, mostly used for equations and API type demands
      */
-    public void createDemand(int type, String requirement, String extras, int cycle)
+    public void createDemand(int type, String requirement, String extraPrimary,
+                             String extraSecondary, int detail)
     {
-        demands.add(new Demand(type, requirement, extras, cycle));
+        demands.add(new Demand(type, requirement, extraPrimary, extraSecondary, detail));
     }
 
 
@@ -173,7 +175,7 @@ public class Achievement implements Serializable
             if(type.equals("SIN"))
                 data.add(demand.type + ":" + demand.requirement);
             else if(type.equals("INF"))
-                data.add(demand.type + ":" + demand.requirement + ":" + demand.extras);
+                data.add(demand.type + ":" + demand.requirement + ":" + demand.extraPrimary);
             else
                 data.add(demand.type + ":" + demand.requirement);
         }
@@ -183,7 +185,7 @@ public class Achievement implements Serializable
             if(type.equals("SIN"))
                 data.add(demand.type + ":" + demand.requirement);
             else if(type.equals("INF"))
-                data.add(demand.type + ":" + demand.requirement + ":" + demand.extras);
+                data.add(demand.type + ":" + demand.requirement + ":" + demand.extraPrimary);
             else
                 data.add(demand.type + ":" + demand.requirement);
         }

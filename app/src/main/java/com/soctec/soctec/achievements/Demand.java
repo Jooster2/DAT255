@@ -1,41 +1,57 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Pair;
+
+import com.soctec.soctec.utils.APIHandler;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Observable;
 
 /**
  * Demand used by Achievements to determine if it is earned or not
  * @author Carl-Henrik Hult, Joakim Schmidt
  * @version 1.4
  */
-public class Demand implements Serializable
+public class Demand extends Observable implements Runnable, Serializable
 {
     public static final int PERSON_SCAN = 1;
     public static final int BUS_RIDE = 2;
     public static final int API = 3;
 
     private static final long serialVersionUID = 2L;
+    private boolean running;
+    //Type of requirement
     public int type;
+    //The actual requirement
     public String requirement;
-    public String extras = null;
+    //Some extra data for doing different things
+    public String extraPrimary = null;
+    //Some more extra data, mostly used for API type Demands
+    public String extraSecondary = null;
+    //Numerical extra, for equations and API type Demands
     public int detail;
 
     /**
      * Constructor that sets class variables to received parameters.
      * @param type type of demand
      * @param requirement requirement for unlocking
-     * @param extras extra data for constructing demand
+     * @param extraPrimary extra data for constructing demand
      * @param detail comes from Achievement-ID, how many times it has been created (inclusive)
      */
-    public Demand(int type, String requirement, String extras, int detail)
+    public Demand(int type, String requirement,
+                  String extraPrimary, String extraSecondary, int detail)
     {
+        running = false;
         this.type = type;
-        if(type == PERSON_SCAN && extras != null)
-            this.requirement = calculateRequirement(requirement, extras, detail);
+        if(type == PERSON_SCAN && extraPrimary != null)
+            this.requirement = calculateRequirement(requirement, extraPrimary, detail);
         else
             this.requirement = requirement;
-        this.extras = extras;
+        this.extraPrimary = extraPrimary;
+        this.extraSecondary = extraSecondary;
         this.detail = detail;
     }
 
@@ -95,5 +111,54 @@ public class Demand implements Serializable
         }
         eq.remove(i+1);
         eq.remove(i-1);
+    }
+
+    public void running(boolean running)
+    {
+        this.running = running;
+    }
+
+    public boolean isRunning()
+    {
+        return running;
+    }
+
+    //TODO This method needs lots of work, can be made much better with some tweaks to APIHandler.
+    //Tweaks include such things as returning a single String, and handle specific resources
+    //not just sensors
+    @Override
+    public void run()
+    {
+        ArrayList<ArrayList<String>> fromAPI;
+        while(running)
+        {
+            APIHandler aH = APIHandler.getInstance();
+            fromAPI = aH.readElectricity(extraPrimary, extraSecondary, detail);
+            for(ArrayList<String> line : fromAPI)
+            {
+                for(String data : line)
+                {
+                    if(data.contains("resourceSpec"))
+                    {
+                        String value = data.substring(data.indexOf(":")+1);
+                        //TODO decide if this really belongs here, or if unlocker should handle it
+                        if(value.equals(requirement))
+                        {
+                            setChanged();
+                            notifyObservers(new Pair<>(this, value));
+                            running = false;
+                        }
+                    }
+                }
+            }
+            try
+            {
+                Thread.sleep(10000);
+            }
+            catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }

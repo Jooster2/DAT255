@@ -47,11 +47,11 @@ public class AchievementCreator extends Observable
             switch(def[5])
             {
                 case "SIN":
-                    achievement.createDemand(typeConvert(demand[0]), demand[1], null, 0);
+                    achievement.createDemand(typeConvert(demand[0]), demand[1], null, null, 0);
                     break;
                 case "INF":
                     achievement.createDemand(
-                            typeConvert(demand[0]), demand[1], demand[2], getIDNumber(def[4]));
+                            typeConvert(demand[0]), demand[1], demand[2], null, getIDNumber(def[4]));
                     break;
                 case "COL":
                     FileHandler fH = FileHandler.getInstance();
@@ -62,9 +62,9 @@ public class AchievementCreator extends Observable
                         // Comment out these three lines and...
                         int resID = fH.getResourceID(req, "string");
                         String ID = fH.readString(resID);
-                        achievement.createDemand(typeConvert(demand[0]), ID, null, 0);
+                        achievement.createDemand(typeConvert(demand[0]), ID, null, null, 0);
                         // ...uncomment this one line, to run AchievementTest successfully
-                        //achievement.createDemand(typeConvert(demand[0]), req, null, 0);
+                        //achievement.createDemand(typeConvert(demand[0]), req, null, null, 0);
                     }
                     break;
                 case "API":
