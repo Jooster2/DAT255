@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
@@ -73,6 +74,8 @@ public class AchievementsFragment extends Fragment
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
+            //if (achi.getType().equals("INF");
+                //sb.append(achi.getFlavorText() + " "+ stats.getScans() + " av "+achi.getDemands+ ",");
             //sb.append(achi.getFlavorText() + ",");
             sb.append("walla,");
             sb.append(achi.getImageName());
@@ -99,5 +102,9 @@ public class AchievementsFragment extends Fragment
         lockedAchievementListView = (ListView)view.findViewById(R.id.listlocked);
         AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList);
         lockedAchievementListView.setAdapter(lockedAdapter);
+    }
+    public void setPoints (int points){
+        TextView textView = (TextView)view.findViewById(R.id.pointsAchi);
+        textView.setText("Dina poäng: "+ points);
     }
 }

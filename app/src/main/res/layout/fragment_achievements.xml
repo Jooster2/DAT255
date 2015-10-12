@@ -9,19 +9,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Achievements"
-        android:id="@+id/textView3"
+        android:text="Utmärkelser"
+        android:id="@+id/achiTitle"
         android:textStyle="bold"
-        android:textSize="40dp"
-        android:layout_marginTop="20dp"
+        android:textSize="30dp"
+        android:layout_marginTop="10dp"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Poäng"
+        android:id="@+id/pointsAchi"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_marginTop="3dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
 
     <ViewSwitcher
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/viewSwitcher"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@id/achiTitle"
+        android:layout_above="@id/pointsAchi"
         android:layout_centerHorizontal="true">
 
         <RelativeLayout
@@ -30,21 +43,36 @@
             android:gravity="center"
             android:orientation="vertical" >
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Upplåsta:"
+                android:id="@+id/unlockedAchievementsTitle"
+
+                android:textSize="25dp"
+                android:layout_marginTop="4dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"/>
+
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/listunlocked"
                 android:layout_gravity="center_horizontal"
                 android:layout_above="@+id/unlocked"
-                android:layout_alignParentTop="true"/>
+                android:layout_below="@id/unlockedAchievementsTitle"/>
+
 
             <ImageButton
                 android:layout_width="39dp"
                 android:layout_height="45dp"
                 android:id="@+id/unlocked"
-                android:background="@drawable/achievements"
+                android:background="@drawable/ic_lock_black_48dp"
+
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true"
+                />
 
         </RelativeLayout>
 
@@ -53,6 +81,16 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Ej upplåsta:"
+                android:id="@+id/lockedAchievementsTitle"
+                android:textSize="25dp"
+                android:layout_marginTop="4dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"/>
 
             <ListView
                 android:layout_width="wrap_content"
@@ -60,18 +98,23 @@
                 android:id="@+id/listlocked"
                 android:layout_gravity="center_horizontal"
                 android:layout_above="@+id/locked"
-                android:layout_alignParentTop="true"/>
+                android:layout_below="@id/lockedAchievementsTitle"/>
+
 
             <ImageButton
                 android:layout_width="39dp"
                 android:layout_height="45dp"
                 android:id="@+id/locked"
-                android:background="@drawable/denied"
+                android:background="@drawable/ic_lock_open_black_48dp"
+
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
 
     </ViewSwitcher>
+
+
+
 
 </RelativeLayout>

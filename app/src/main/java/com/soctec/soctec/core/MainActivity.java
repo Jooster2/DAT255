@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         startActivityForResult(
                 new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
-        mViewPager.setCurrentItem(1);
         updateAchievementFragment();
     }
 
@@ -126,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         AchievementsFragment aF = (AchievementsFragment)mSectionsPagerAdapter.getFragment(2);
         aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
+        aF.setPoints(stats.getPoints());
     }
 
     /**
@@ -137,12 +137,17 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        mViewPager.setCurrentItem(1);
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
         {
             String scannedCode = data.getExtras().getString("result");
             NetworkHandler.getInstance(this).sendScanInfoToPeer(scannedCode);
         }
+    }
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        mViewPager.setCurrentItem(1);
     }
 
     /**
@@ -158,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(connectionChecker, intentFilter);
-        mViewPager.setCurrentItem(1);
+        //mViewPager.setCurrentItem(1);
     }
 
     /**
