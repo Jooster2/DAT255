@@ -7,6 +7,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -86,10 +87,19 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this).startThread();
 
-
         //Initialize the ActionBar
         setupActionBar();
         mViewPager.addOnPageChangeListener(new PageChangeListener());
+
+        //Display help to user. Only on the very first startup
+        SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
+        if (settings.getBoolean("first_time", true)) {
+            //Do this only the first startup
+                
+
+
+            settings.edit().putBoolean("my_first_time", false).apply();
+        }
     }
 
     /**
@@ -429,11 +439,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             switch(position)
             {
                 case 0:
-                    return fileHandler.getResourceID("camera2", "drawable");
+                    return fileHandler.getResourceID("camera6", "drawable");
                 case 1:
                     return fileHandler.getResourceID("qricon", "drawable");
                 case 2:
-                    return fileHandler.getResourceID("ribbon3", "drawable");
+                    return fileHandler.getResourceID("trophy", "drawable");
             }
             return 0;
         }

@@ -40,7 +40,8 @@
                 android:id="@+id/text_field1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="Ex: Anders, Andersson"/>
 
             <TextView
                 android:id="@+id/label2"
@@ -51,7 +52,8 @@
                 android:id="@+id/text_field2"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="Ex: Techno, Mozart"/>
 
             <TextView
                 android:id="@+id/label3"
@@ -62,7 +64,8 @@
                 android:id="@+id/text_field3"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="Ex: Fotboll, IFK"/>
 
             <TextView
                 android:id="@+id/label4"
@@ -73,7 +76,8 @@
                 android:id="@+id/text_field4"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="Ex: Sci-Fi, Titanic"/>
 
             <TextView
                 android:id="@+id/label5"
@@ -84,7 +88,8 @@
                 android:id="@+id/text_field5"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="Ex: kläder, bilar"/>
 
             <!-- Insert more TextViews & EditTexts here -->
 
