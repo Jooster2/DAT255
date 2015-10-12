@@ -3,6 +3,7 @@ package com.soctec.soctec.achievements;
 import android.util.Pair;
 
 import com.soctec.soctec.utils.APIHandler;
+import com.soctec.soctec.utils.FileHandler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Observable;
 /**
  * Demand used by Achievements to determine if it is earned or not
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 1.4
+ * @version 2.0
  */
 public class Demand extends Observable implements Runnable, Serializable
 {
@@ -22,7 +23,7 @@ public class Demand extends Observable implements Runnable, Serializable
     public static final int API = 3;
 
     private static final long serialVersionUID = 2L;
-    private boolean running;
+    public volatile boolean running;
     //Type of requirement
     public int type;
     //The actual requirement
@@ -123,34 +124,36 @@ public class Demand extends Observable implements Runnable, Serializable
         return running;
     }
 
-    //TODO This method needs lots of work, can be made much better with some tweaks to APIHandler.
-    //Tweaks include such things as returning a single String, and handle specific resources
-    //not just sensors
+
     @Override
     public void run()
     {
-        ArrayList<ArrayList<String>> fromAPI;
+        running = true;
         while(running)
         {
             APIHandler aH = APIHandler.getInstance();
-            fromAPI = aH.readElectricity(extraPrimary, extraSecondary, detail);
-            for(ArrayList<String> line : fromAPI)
+            FileHandler fH = FileHandler.getInstance();
+            String vinNumber = extraPrimary;
+            if(extraPrimary.equals("CURRENT_BUS"))
             {
-                for(String data : line)
-                {
-                    if(data.contains("resourceSpec"))
-                    {
-                        String value = data.substring(data.indexOf(":")+1);
-                        //TODO decide if this really belongs here, or if unlocker should handle it
-                        if(value.equals(requirement))
-                        {
-                            setChanged();
-                            notifyObservers(new Pair<>(this, value));
-                            running = false;
-                        }
-                    }
-                }
+                /*
+                Retreive the Icomera bus-id from APIHandler, then retreive the
+                resource-id from FileHandler for that particular string, then read the string,
+                which is the vinNumber that is inserted into APIHandler.readSingle.
+                 */
+                int icomeraID = aH.readIcomera("system").get(0).system_id;
+                int resourceID = fH.getResourceID("SID" + String.valueOf(icomeraID), "string");
+                vinNumber = fH.readString(resourceID);
             }
+
+            String fromAPI = aH.readSingle("resource", vinNumber, extraSecondary, detail);
+           //TODO decide if this really belongs here, or if unlocker should handle it
+            if(fromAPI != null)
+            {
+                setChanged();
+                notifyObservers(new Pair<>(this, fromAPI));
+            }
+
             try
             {
                 Thread.sleep(10000);

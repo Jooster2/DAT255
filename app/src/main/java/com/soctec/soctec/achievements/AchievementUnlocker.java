@@ -39,13 +39,32 @@ public class AchievementUnlocker implements Observer
         livingDemands = new HashMap<>();
     }
 
+    /**
+     * Registers a new Demand as running, and starts it in a thread
+     * @param owner the Achievement the Demand belongs to
+     * @param demand the Demand
+     */
     public void registerLivingDemand(Achievement owner, Demand demand)
     {
         livingDemands.put(demand, owner);
-        //To do: probably another HashMap to "bind" the Demand with the LivingDemand
-        //LivingDemand livingDemand = new LivingDemand(demand);
         demand.addObserver(this);
-        demand.run();
+        Thread demandThread = new Thread(demand);
+        demandThread.start();
+    }
+
+    public void checkLivingDemand(Demand demand, String value)
+    {
+        Achievement achievement = livingDemands.get(demand);
+        if(achievement.checkDemands(demand.type, value))
+        {
+            demand.running(false);
+            livingDemands.remove(demand);
+            if(achievement.isCompleted())
+            {
+                unlockableAchievements.remove(achievement);
+                stats.addCompletedAchievement(achievement);
+            }
+        }
     }
 
     /**
@@ -71,7 +90,7 @@ public class AchievementUnlocker implements Observer
      * @param type  What kind of event that was triggered.
      * @param content   The information that came with the event.
      */
-    public void receiveEvent (int type, String content)
+    public void receiveEvent(int type, String content)
     {
         boolean didUnlock = false;
         switch(type)
@@ -79,10 +98,11 @@ public class AchievementUnlocker implements Observer
             case Demand.PERSON_SCAN:
                 stats.setLastScanned(content);
                 stats.incScanCount();
-                didUnlock = checkDemands(Demand.PERSON_SCAN, String.valueOf(stats.getScanCount()));
+                didUnlock = checkUnlockables(Demand.PERSON_SCAN,
+                        String.valueOf(stats.getScanCount()));
                 break;
             case Demand.BUS_RIDE:
-                didUnlock = checkDemands(Demand.BUS_RIDE, content);
+                didUnlock = checkUnlockables(Demand.BUS_RIDE, content);
                 break;
         }
         if(didUnlock)
@@ -97,7 +117,7 @@ public class AchievementUnlocker implements Observer
      * @param content the requirement of the Demand
      * @return true if an Achievement was unlocked
      */
-    private boolean checkDemands(int type, String content)
+    private boolean checkUnlockables(int type, String content)
     {
         boolean didUnlock = false;
         Iterator<Achievement> it = unlockableAchievements.iterator();
@@ -151,11 +171,22 @@ public class AchievementUnlocker implements Observer
     {
         if(data instanceof Achievement)
         {
-            unlockableAchievements.add((Achievement)data);
+            Achievement achievement = (Achievement)data;
+            unlockableAchievements.add(achievement);
+            if(achievement.getType().equals("API"))
+            {
+                for(Demand demand : achievement.getDemands())
+                {
+                    if(demand.type == Demand.API)
+                        registerLivingDemand(achievement, demand);
+                }
+            }
         }
         else if(observable instanceof Demand && data instanceof Pair)
         {
-
+            Demand demand = (Demand)((Pair)data).first;
+            String value = (String)((Pair)data).second;
+            checkLivingDemand(demand, value);
         }
     }
 }

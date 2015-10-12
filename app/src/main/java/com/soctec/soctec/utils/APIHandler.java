@@ -23,6 +23,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class APIHandler
 {
     private String key;
+    private ArrayList<ArrayList<String>> lastReadList;
 
     /**
      * Magic thread-safety
@@ -31,7 +32,6 @@ public class APIHandler
     {
         static APIHandler INSTANCE = new APIHandler();
     }
-    //private static APIHandler ourInstance = new APIHandler();
 
     /**
      * Returns the instance of APIHandler
@@ -56,6 +56,42 @@ public class APIHandler
     public void setKey(String key)
     {
         this.key = key;
+    }
+
+    /**
+     * Reads the API if there is no local data present, then returns a single String according
+     * to parameters
+     * @param lookingFor resource wanted
+     * @param vinNumber VIN-number to read from
+     * @param sensor sensor to read
+     * @param readTime how long to listen
+     * @return null or String containing the value wanted
+     */
+    public String readSingle(String lookingFor, String vinNumber, String sensor, int readTime)
+    {
+        String valueFound = null;
+        if(lastReadList.size() == 0)
+        {
+            lastReadList = readElectricity(vinNumber, sensor, readTime);
+        }
+        ArrayList<String> lastReadValue = lastReadList.get(0);
+        for(String item : lastReadValue)
+        {
+            if(item.contains(lookingFor))
+            {
+                valueFound = lookingFor.substring(lookingFor.indexOf(":")+1);
+                lastReadList.remove(0);
+                break;
+            }
+        }
+        return valueFound;
+    }
+
+    public int clearLastRead()
+    {
+        int size = lastReadList.size();
+        lastReadList.clear();
+        return size;
     }
 
     /**

@@ -11,7 +11,6 @@ import java.util.Observable;
  */
 public class AchievementCreator extends Observable
 {
-
     /**
      * Constructs an AchievementCreator
      */
@@ -68,6 +67,9 @@ public class AchievementCreator extends Observable
                     }
                     break;
                 case "API":
+                    requirements = demand[1].split("/");
+                    achievement.createDemand(typeConvert(demand[0]), requirements[0],
+                            requirements[1], requirements[2], Integer.parseInt(requirements[3]));
 
             }
         }

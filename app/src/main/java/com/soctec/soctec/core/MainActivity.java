@@ -1,5 +1,6 @@
 package com.soctec.soctec.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -219,6 +220,18 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         startActivity(matchIntent);
 
         updateAchievementFragment();
+    }
+
+    public void checkIcomera()
+    {
+        APIHandler aH = APIHandler.getInstance();
+        FileHandler fH = FileHandler.getInstance();
+        int icomeraID = aH.readIcomera("system").get(0).system_id;
+        int resourceID = fH.getResourceID("SID" + String.valueOf(icomeraID), "string");
+        String vinNumber = fH.readString(resourceID);
+        resourceID = fH.getResourceID(vinNumber, "string");
+        String busID = fH.readString(resourceID);
+        unlocker.receiveEvent(2, busID);
     }
 
     /**
