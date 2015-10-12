@@ -129,19 +129,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
-    public void icomeraTest(View v)
-    {
-        APIHandler aH = APIHandler.getInstance();
-        ArrayList<APIHandler.Icomera> results = aH.readIcomera("system");
-        int i=0;
-        for(APIHandler.Icomera item : results)
-        {
-            Log.i("icomera", "Cycle "+i+" "+item.system_id);
-            i++;
-        }
-
-    }
-
     /**
      * Called when an activity started with "startActivityForResult()" has finished.
      * @param requestCode Indicates which request this method call is a response to
