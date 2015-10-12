@@ -1,6 +1,6 @@
 package com.soctec.soctec.network;
 
-import android.widget.Toast;
+import android.util.Log;
 
 import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.profile.Profile;
@@ -13,10 +13,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-
+/**
+ * @author David
+ * @version 5.0
+ */
 public class NetworkHandler
 {
     private static final int PEER_PORT_NR = 49998;
+    private static final int SERVER_PORT_NR = 49999;
+    private static final String SERVER_IP = "jooster.no-ip.org";
     private MainActivity myActivity;
     private PassiveThread listenerThread;
     private boolean listenForConnections = true;
@@ -53,7 +58,7 @@ public class NetworkHandler
         if(ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
             //Start networking thread
-            ActiveThread thread = new ActiveThread(scannedAddress, getDataToSend());
+            ActiveThread thread = new ActiveThread(scannedAddress);
             thread.start();
         }
     }
@@ -84,6 +89,7 @@ public class NetworkHandler
      * This method returns the users profile & ID
      * @return The user's profile & ID
      */
+    @SuppressWarnings("unchecked")
     private ArrayList<ArrayList<String>> getDataToSend()
     {
         ArrayList<ArrayList<String>> listToSend = (ArrayList)Profile.getProfile().clone();
@@ -98,38 +104,43 @@ public class NetworkHandler
      */
     private class ActiveThread extends Thread
     {
-        String ip;
-        ArrayList<ArrayList<String>> dataToSend;
+        String peerIp;
 
         /**
          * Constructor
          * @param ip The ip address to connect to
-         * @param dataToSend The data to transfer
          */
-        public ActiveThread(String ip, ArrayList dataToSend)
+        public ActiveThread(String ip)
         {
-            this.ip = ip;
-            this.dataToSend = dataToSend;
+            peerIp = ip;
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void run()
         {
             try
             {
                 //Set up socket and streams
-                Socket socket = new Socket(ip, PEER_PORT_NR);
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                Socket socket = new Socket(peerIp, PEER_PORT_NR);
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 
-                //Send data, then receive data
-                oos.writeObject(dataToSend);
-                ArrayList<ArrayList<String>> dataReceived = (ArrayList)ois.readObject();
+                //Send, and then receive data
+                Log.i("myTag", "Transmitting and receiving...");
+                oos.writeObject(getDataToSend());
+                ArrayList<ArrayList<String>> receivedData = (ArrayList)ois.readObject();
+
+                //Clean up
+                oos.flush();
+                oos.close();
+                ois.close();
+                socket.close();
 
                 //Handle received data
-                final String userCode = dataReceived.get(dataReceived.size()-1).get(0);
-                dataReceived.remove(dataReceived.size() - 1);
-                final ArrayList<ArrayList<String>> userProfile = dataReceived;
+                final String userCode = receivedData.get(receivedData.size() - 1).get(0);
+                receivedData.remove(receivedData.size() - 1);
+                final ArrayList<ArrayList<String>> userProfile = receivedData;
 
                 myActivity.runOnUiThread(new Runnable()
                 {
@@ -140,14 +151,9 @@ public class NetworkHandler
                     }
                 });
 
-                //Clean up
-                ois.close();
-                oos.flush();
-                oos.close();
-                socket.close();
-
             } catch(IOException | ClassNotFoundException e)
             {
+                Log.i("myTag", e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -161,6 +167,7 @@ public class NetworkHandler
         ServerSocket serverSocket = null;
 
         @Override
+        @SuppressWarnings("unchecked")
         public void run()
         {
             while(listenForConnections)
@@ -174,17 +181,25 @@ public class NetworkHandler
 
                     //Accept connection and set up streams
                     Socket client = serverSocket.accept();
-                    ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
                     ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+                    ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
 
-                    //Receive data, then send data
-                    ArrayList<ArrayList<String>> dataReceived = (ArrayList) ois.readObject();
+                    //Receive, and then send data
+                    Log.i("myTag", "Receiving and sending...");
+                    ArrayList<ArrayList<String>> receivedData = (ArrayList)ois.readObject();
                     oos.writeObject(getDataToSend());
 
+                    //Clean up
+                    ois.close();
+                    oos.flush();
+                    oos.close();
+                    client.close();
+                    serverSocket.close();
+
                     //Handle received data
-                    final String userCode = dataReceived.get(dataReceived.size() - 1).get(0);
-                    dataReceived.remove(dataReceived.size() - 1);
-                    final ArrayList<ArrayList<String>> userProfile = dataReceived;
+                    final String userCode = receivedData.get(receivedData.size() - 1).get(0);
+                    receivedData.remove(receivedData.size() - 1);
+                    final ArrayList<ArrayList<String>> userProfile = receivedData;
 
                     myActivity.runOnUiThread(new Runnable()
                     {
@@ -194,16 +209,10 @@ public class NetworkHandler
                             myActivity.receiveDataFromPeer(userCode, userProfile);
                         }
                     });
-
-                    //Clean up
-                    ois.close();
-                    oos.flush();
-                    oos.close();
-                    client.close();
-                    serverSocket.close();
-
-                } catch(IOException | ClassNotFoundException e)
+                }
+                catch(IOException | ClassNotFoundException e)
                 {
+                    Log.i("myTag", e.getMessage());
                     e.printStackTrace();
                 }
             }

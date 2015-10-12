@@ -132,7 +132,10 @@ public class ConnectionChecker extends BroadcastReceiver
      */
     private Bitmap getNewQR(Context context)
     {
-        return (new QRGen()).getQR(getUserIP(context));
+        String ip = getUserIP(context);
+        if(ip != null)
+            return (new QRGen()).getQR(ip);
+        return null;
     }
 
     /**
