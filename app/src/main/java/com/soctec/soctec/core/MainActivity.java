@@ -36,6 +36,7 @@ import com.soctec.soctec.network.NetworkHandler;
 import com.soctec.soctec.profile.Profile;
 import com.soctec.soctec.profile.ProfileActivity;
 import com.soctec.soctec.profile.ProfileMatchActivity;
+import com.soctec.soctec.utils.APIHandler;
 import com.soctec.soctec.utils.Encryptor;
 import com.soctec.soctec.utils.FileHandler;
 
@@ -340,6 +341,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        InfoFragment iFragment = new InfoFragment();
+        HelpFragment hFragment = new HelpFragment();
+
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_settings)
         {
@@ -349,6 +353,16 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
+        }
+
+        else if(id == R.id.about)
+        {
+           iFragment.show(getFragmentManager(), "Om");
+        }
+
+        else if (id == R.id.help)
+        {
+            hFragment.show(getFragmentManager(), "Hjälp");
         }
 
         return super.onOptionsItemSelected(item);
