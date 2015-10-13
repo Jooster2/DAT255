@@ -15,8 +15,8 @@ public class AchievementTest extends AndroidTestCase
 {
     MainActivity main = new MainActivity();
     Stats stats = new Stats();
-    AchievementCreator creator = new AchievementCreator ();
-    AchievementUnlocker unlocker = new AchievementUnlocker (stats, creator);
+    AchievementCreator creator = new AchievementCreator();
+    AchievementUnlocker unlocker = new AchievementUnlocker(main, stats, creator);
 
     /**
      * Tests if its possible to create an Achievement by checking the unlockedAchievements-list after

@@ -146,9 +146,11 @@ public class Demand extends Observable implements Runnable, Serializable
                 resource-id from FileHandler for that particular string, then read the string,
                 which is the vinNumber that is inserted into APIHandler.readSingle.
                  */
-                String icomeraID = aH.readIcomera();
+                /*String icomeraID = aH.readIcomera();
                 int resourceID = fH.getResourceID("SID" + icomeraID, "string");
                 vinNumber = fH.readString(resourceID);
+                */
+                vinNumber = "Vin_Num_001";
             }
 
             String fromAPI = aH.readSingle("resource", vinNumber, extraSecondary, detail);

@@ -2,6 +2,7 @@ package com.soctec.soctec.core;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import android.accounts.Account;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize the Achievement engine
         stats = new Stats();
         creator = new AchievementCreator();
-        unlocker = new AchievementUnlocker(stats, creator);
+        unlocker = new AchievementUnlocker(this, stats, creator);
         creator.addObserver(unlocker);
         //int loaded = unlocker.loadUnlockable();
         //if(loaded > 0)
@@ -205,13 +206,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 
+        //Achievement stuff
         unlocker.receiveEvent(1, idFromPeer);
-        for(Achievement achi : stats.getLastCompleted())
-        {
-            Intent showerIntent = new Intent(this, AchievementShowerActivity.class);
-            showerIntent.putExtra("AchievementObject", achi);
-            startActivity(showerIntent);
-        }
+        checkAchievementChanges();
+
         //Match profile stuff
         Bundle b = new Bundle();
         b.putSerializable("list1", Profile.getProfile());
@@ -220,7 +218,19 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         matchIntent.putExtras(b);
         startActivity(matchIntent);
 
-        updateAchievementFragment();
+    }
+
+    public void checkAchievementChanges()
+    {
+        LinkedList<Achievement> newAchievements = stats.getLastCompleted();
+        for(Achievement achievement : newAchievements)
+        {
+            Intent showerIntent = new Intent(this, AchievementShowerActivity.class);
+            showerIntent.putExtra("AchievementObject", achievement);
+            startActivity(showerIntent);
+        }
+        if(newAchievements.size() != 0)
+            updateAchievementFragment();
     }
 
     /**
@@ -230,13 +240,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public void checkIcomera(View v)
     {
-        APIHandler aH = APIHandler.getInstance();
+        /*APIHandler aH = APIHandler.getInstance();
         FileHandler fH = FileHandler.getInstance();
-        Log.i("icomera", "checkIcomera");
         try
         {
             String icomeraID = aH.readIcomera();
-            Log.i("icomera", icomeraID);
             int resourceID = fH.getResourceID("SID" + icomeraID, "string");
             if(resourceID != 0)
             {
@@ -245,8 +253,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 if(resourceID != 0)
                 {
                     String busID = fH.readString(resourceID);
-                    Log.i("icomera", busID);
                     unlocker.receiveEvent(2, busID);
+                    checkAchievementChanges();
+
                 }
                 unlocker.startLivingDemands();
             }
@@ -258,7 +267,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         catch(Exception e)
         {
             e.printStackTrace();
-        }
+        }*/
+        unlocker.startLivingDemands();
 
     }
 

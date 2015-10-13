@@ -99,6 +99,7 @@ public class Achievement implements Serializable
         while(it.hasNext())
         {
             Demand element = it.next();
+            Log.i("icomera", "Requirement: " + element.requirement);
             if(element.type == demandType &&
                     element.requirement.equals(demandContent))
             {

@@ -3,6 +3,7 @@ package com.soctec.soctec.achievements;
 import android.util.Log;
 import android.util.Pair;
 
+import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.utils.FileHandler;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class AchievementUnlocker implements Observer
 
     ArrayList<Achievement> unlockableAchievements;
     ArrayList<Achievement> recentlyUnlocked;
+    MainActivity main;
     Stats stats;
     AchievementCreator creator;
     HashMap<Demand, Achievement> livingDemands;
@@ -28,14 +30,15 @@ public class AchievementUnlocker implements Observer
     /**
      * Constructor that initiates the unlockableAchievements list, saves a reference to Stats and
      * AchievementCreator.
-     * @param newStats
+     * @param stats
      * @param creator
      */
-    public AchievementUnlocker(Stats newStats, AchievementCreator creator)
+    public AchievementUnlocker(MainActivity main, Stats stats, AchievementCreator creator)
     {
         unlockableAchievements = new ArrayList<>();
         recentlyUnlocked = new ArrayList<>();
-        stats = newStats;
+        this.main = main;
+        this.stats = stats;
         this.creator = creator;
         livingDemands = new HashMap<>();
     }
@@ -69,6 +72,7 @@ public class AchievementUnlocker implements Observer
 
     public void checkLivingDemand(Demand demand, String value)
     {
+        boolean didUnlock = false;
         Achievement achievement = livingDemands.get(demand);
         if(achievement.checkDemands(demand.type, value))
         {
@@ -78,8 +82,11 @@ public class AchievementUnlocker implements Observer
             {
                 unlockableAchievements.remove(achievement);
                 stats.addCompletedAchievement(achievement);
+                didUnlock = true;
             }
         }
+        if(didUnlock)
+            main.checkAchievementChanges();
     }
 
     /**
@@ -118,12 +125,15 @@ public class AchievementUnlocker implements Observer
                         String.valueOf(stats.getScanCount()));
                 break;
             case Demand.BUS_RIDE:
-                Log.i("icomera", "walla");
+                Log.i("icomera", "case bus_ride");
                 didUnlock = checkUnlockables(Demand.BUS_RIDE, content);
                 break;
         }
         if(didUnlock)
+        {
             doRecreate();
+
+        }
     }
 
     /**
@@ -140,11 +150,10 @@ public class AchievementUnlocker implements Observer
         Iterator<Achievement> it = unlockableAchievements.iterator();
         while(it.hasNext())
         {
-            Log.i("icomera", "walla2");
             Achievement achievement = it.next();
+            Log.i("icomera", "Checking: " + achievement.getName());
             if(achievement.checkDemands(type, content))
             {
-
                 if(achievement.isCompleted())
                 {
                     Log.i("icomera", "unlocking");
