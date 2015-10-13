@@ -7,9 +7,8 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.net.wifi.WifiManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -20,11 +19,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
@@ -88,11 +89,20 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this).startThread();
 
-
         //Initialize the ActionBar
         setupActionBar();
         mViewPager.addOnPageChangeListener(new PageChangeListener());
         mViewPager.setCurrentItem(1);
+
+        //Display help to user. Only on the very first startup
+        SharedPreferences preferences = getSharedPreferences("com.soctec.soctec", MODE_PRIVATE);
+        if (preferences.getBoolean("first_time", true)) {
+            //Do this only the first startup
+            Toast.makeText(getApplicationContext(), "First time ever!", Toast.LENGTH_SHORT).show();
+
+
+            preferences.edit().putBoolean("first_time", false).apply();
+        }
     }
 
     /**
@@ -319,10 +329,21 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             // the adapter. Also specify this Activity object, which implements
             // the TabListener interface, as the callback (listener) for when
             // this tab is selected.
+
             actionBar.addTab(
                     actionBar.newTab()
-                            .setIcon(mSectionsPagerAdapter.getIcon(i))
+                            .setCustomView(i == 0 ? R.layout.camera_tab_icon :
+                                                   i == 1 ? R.layout.main_tab_icon :
+                                                           R.layout.achievement_tab_icon)
                             .setTabListener(this));
+
+            //Set tab icon's width
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            int screenWidth = displaymetrics.widthPixels;
+            actionBar.getTabAt(i).getCustomView().getLayoutParams().width =
+                    (screenWidth/3) -
+                    (2*Math.round(16 * (displaymetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
         }
     }
 
@@ -451,11 +472,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             switch(position)
             {
                 case 0:
-                    return fileHandler.getResourceID("camera2", "drawable");
+                    return fileHandler.getResourceID("camera6", "drawable");
                 case 1:
                     return fileHandler.getResourceID("qricon", "drawable");
                 case 2:
-                    return fileHandler.getResourceID("ribbon3", "drawable");
+                    return fileHandler.getResourceID("trophy", "drawable");
             }
             return 0;
         }

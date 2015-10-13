@@ -40,7 +40,8 @@
                 android:id="@+id/text_field1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="@string/profile_category1_hint"/>
 
             <TextView
                 android:id="@+id/label2"
@@ -51,7 +52,8 @@
                 android:id="@+id/text_field2"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="@string/profile_category2_hint"/>
 
             <TextView
                 android:id="@+id/label3"
@@ -62,7 +64,8 @@
                 android:id="@+id/text_field3"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="@string/profile_category3_hint"/>
 
             <TextView
                 android:id="@+id/label4"
@@ -73,7 +76,8 @@
                 android:id="@+id/text_field4"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="@string/profile_category4_hint"/>
 
             <TextView
                 android:id="@+id/label5"
@@ -84,7 +88,8 @@
                 android:id="@+id/text_field5"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:hint="@string/profile_category5_hint"/>
 
             <!-- Insert more TextViews & EditTexts here -->
 

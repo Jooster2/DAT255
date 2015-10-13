@@ -11,4 +11,10 @@
 
     <string name="profile_activity_name">Profile</string>
 
+    <string name="profile_category1_hint">Exempel: <i>Anders, Andersson</i></string>
+    <string name="profile_category2_hint">Exempel: <i>Techno, Mozart</i></string>
+    <string name="profile_category3_hint">Exempel: <i>Fotboll, IFK</i></string>
+    <string name="profile_category4_hint">Exempel: <i>Sci-Fi, Titanic</i></string>
+    <string name="profile_category5_hint">Exempel: <i>kläder, bilar<i/></i></string>
+
 </resources>

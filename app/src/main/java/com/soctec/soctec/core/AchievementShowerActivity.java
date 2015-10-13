@@ -78,15 +78,15 @@ public class AchievementShowerActivity extends Activity
         switch (rank)
         {
             case 1:
-                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_gold
+                mainImageBackView.setImageResource(R.drawable.gold_wreath); //ach_back_gold
                 break;
 
             case 2:
-                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_silver
+                mainImageBackView.setImageResource(R.drawable.silver_wreath); //ach_back_silver
                 break;
 
             case 3:
-                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_bronze
+                mainImageBackView.setImageResource(R.drawable.bronze_wreath); //ach_back_bronze
                 break;
 
             default:
