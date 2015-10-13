@@ -77,13 +77,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Profile.initProfile();
 
         //Initialize the Achievement engine
-        stats = new Stats();
+        stats = (Stats)FileHandler.getInstance().readObject("stats.sav");
+        if (stats == null)
+            stats = new Stats();
         creator = new AchievementCreator();
 
         unlocker = new AchievementUnlocker(stats, creator);
         creator.addObserver(unlocker);
         creator.createFromFile();
-
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this).startThread();
 
