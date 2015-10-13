@@ -171,6 +171,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
     }
 
+    public Stats getStats()
+    {
+        return stats;
+    }
+
     /**
      * Called when an activity started with "startActivityForResult()" has finished.
      * @param requestCode Indicates which request this method call is a response to

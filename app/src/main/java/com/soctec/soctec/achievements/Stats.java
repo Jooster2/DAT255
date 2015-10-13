@@ -69,6 +69,15 @@ public class Stats
     }
 
     /**
+     * Returns the users number of times rated
+     * @return the users number of times rated
+     */
+    public int getTimesRated()
+    {
+        return ratingNeg+ratingPos;
+    }
+
+    /**
      * Returns the users calculated rating
      * @return the users calculated rating
      */

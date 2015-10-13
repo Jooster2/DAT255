@@ -43,24 +43,30 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="50">
+            android:layout_weight="50"
+            android:id="@+id/userRatingLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Ditt betyg:"
-                android:id="@+id/textView4" />
+                android:text="Ditt betyg"
+                android:id="@+id/textView4"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
 
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/custom_progressbar"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="10dp"
                 android:id="@+id/rating_progress_bar"
                 android:max="100"
                 android:progress="50"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
                 android:indeterminate="false" />
         </LinearLayout>
 
@@ -68,13 +74,14 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="50">
+            android:layout_weight="50"
+            android:id="@+id/givenRatingLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Betygsätt senaste mötet:"
+                android:text="Hur var senaste mötet?"
                 android:id="@+id/textView" />
 
             <LinearLayout
@@ -83,17 +90,27 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal">
 
-                <Button
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="(Y)"
-                    android:id="@+id/pos_button" />
+                    android:id="@+id/pos_button"
+                    android:background=""
+                    android:src="@drawable/thumb_up_black_36dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
 
-                <Button
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="(N)"
-                    android:id="@+id/neg_button" />
+                    android:id="@+id/neg_button"
+                    android:background=""
+                    android:src="@drawable/thumb_down_black_36dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
+
+
+
+
             </LinearLayout>
         </LinearLayout>
 

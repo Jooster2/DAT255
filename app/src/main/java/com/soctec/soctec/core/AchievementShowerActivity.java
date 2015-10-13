@@ -2,6 +2,8 @@ package com.soctec.soctec.core;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,8 +44,19 @@ public class AchievementShowerActivity extends Activity
         TextView pointsView = (TextView)findViewById(R.id.showerPointsText);
         pointsView.setText("Detta ger "+ achievement.getPoints() +" poäng!");
 
-        ImageView closeButtonImg = (ImageView)findViewById(R.id.showerCloseButtonImg);
-        closeButtonImg.setImageResource(R.drawable.shower_close_button);
+        TextView flavorText = (TextView)findViewById(R.id.flavorTextView);
+        flavorText.setText(achievement.getFlavorText());
+
+        Button closeButton = (Button)findViewById(R.id.showerCloseButton);
+        closeButton.setOnClickListener(
+                new Button.OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        finish();
+                    }
+                }
+        );
     }
 
     public int getAchievementRank()
