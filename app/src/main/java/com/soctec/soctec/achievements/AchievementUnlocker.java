@@ -86,7 +86,17 @@ public class AchievementUnlocker implements Observer
             }
         }
         if(didUnlock)
-            main.checkAchievementChanges();
+        {
+            main.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    main.checkAchievementChanges();
+                }
+            });
+        }
+
     }
 
     /**
@@ -125,7 +135,6 @@ public class AchievementUnlocker implements Observer
                         String.valueOf(stats.getScanCount()));
                 break;
             case Demand.BUS_RIDE:
-                Log.i("icomera", "case bus_ride");
                 didUnlock = checkUnlockables(Demand.BUS_RIDE, content);
                 break;
         }

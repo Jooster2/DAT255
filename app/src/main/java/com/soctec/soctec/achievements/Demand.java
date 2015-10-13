@@ -1,5 +1,6 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.soctec.soctec.utils.APIHandler;
@@ -152,9 +153,9 @@ public class Demand extends Observable implements Runnable, Serializable
                 */
                 vinNumber = "Vin_Num_001";
             }
-
-            String fromAPI = aH.readSingle("resource", vinNumber, extraSecondary, detail);
-           //TODO decide if this really belongs here, or if unlocker should handle it
+            aH.clearLastRead();
+            String fromAPI = aH.readSingle("value", vinNumber, extraSecondary, detail);
+            Log.i("APIHandler", "Read from API: " + fromAPI);
             if(fromAPI != null)
             {
                 setChanged();

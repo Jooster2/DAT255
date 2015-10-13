@@ -31,7 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class APIHandler
 {
-    private String key;
+    private String key = "Basic Z3JwMjQ6UVg0Tk5WZkJ3Zg==";
     private ArrayList<ArrayList<String>> lastReadList;
 
     /**
@@ -78,29 +78,32 @@ public class APIHandler
      */
     public String readSingle(String lookingFor, String vinNumber, String sensor, int readTime)
     {
+        Log.i("APIHandler", "Entered readSingle");
         String valueFound = null;
-        if(lastReadList.size() == 0)
+        if(lastReadList == null || lastReadList.size() == 0)
         {
+            Log.i("APIHandler", "No list found or list was empty");
             lastReadList = readElectricity(vinNumber, sensor, readTime);
+            Log.i("APIHandler", "Has read new values, list is now size: " + lastReadList.size());
         }
         ArrayList<String> lastReadValue = lastReadList.get(0);
+        Log.i("APIHandler", "List is: " + lastReadValue.toString());
         for(String item : lastReadValue)
         {
             if(item.contains(lookingFor))
             {
-                valueFound = lookingFor.substring(lookingFor.indexOf(":")+1);
+                valueFound = item.substring(item.indexOf(":")+1);
                 lastReadList.remove(0);
                 break;
             }
         }
+        Log.i("APIHandler", "Returning " + valueFound);
         return valueFound;
     }
 
-    public int clearLastRead()
+    public void clearLastRead()
     {
-        int size = lastReadList.size();
-        lastReadList.clear();
-        return size;
+        lastReadList = null;
     }
 
     /**
@@ -129,9 +132,14 @@ public class APIHandler
 
             JsonReader reader = new JsonReader(new InputStreamReader(conn.getInputStream()));
 
+
             reader.beginArray();
+            Log.i("APIHandler", reader.toString());
             while(reader.hasNext())
+            {
+                Log.i("APIHandler", "parsing messages");
                 responseData.add(getMessages(reader));
+            }
             reader.endArray();
 
             reader.close();
@@ -165,20 +173,18 @@ public class APIHandler
             message.add(reader.nextName() + ":" + reader.nextString());
         }
         reader.endObject();
-
+        Log.i("APIHandler", "Message read: " + message.toString());
         return message;
     }
 
     //------------------------ ICOMERA STUFF BELOW ---------------------------
 
     /**
-     * Reads the Icomera API and returns a list of parsed objects
-     * @return list containing Icomera objects
+     * Reads the Icomera API and returns a string with the SystemID
+     * @return string containing SystemID
      */
-    //public ArrayList<Icomera> readIcomera(final String resource)
     public String readIcomera()
     {
-        //final ArrayList<Icomera> results = new ArrayList<>();
         final StringBuilder results = new StringBuilder();
         Thread myThread = new Thread()
         {
@@ -198,54 +204,21 @@ public class APIHandler
                     Log.i("readIcomera", "ResponseCode: " + conn.getResponseCode());
 
                     InputStream in = conn.getInputStream();
-
                     Log.i("readIcomera", "InputStream connected");
-                    /*XmlPullParser parser = Xml.newPullParser();
-                    parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-                    // Possible to set encoding here, such as UTF-8, but it should not be necessary
-                    parser.setInput(in, null);
 
-                    int eventType = parser.getEventType();
-                    while(eventType != XmlPullParser.END_DOCUMENT)
-                    {
-                        eventType = parser.next();
-                        String name = parser.getName();
-                        switch(name)
-                        {
-                            case "position":
-                                results.add(readPosition(parser));
-                                break;
-                            case "system":
-                                results.add(readSystem(parser));
-                                break;
-                            case "users":
-                                results.add(readUsers(parser));
-                                break;
-                            case "user":
-                                results.add(readUser(parser));
-                                break;
-                        }
-
-                    }*/
                     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                     Document doc = dBuilder.parse(in);
                     doc.getDocumentElement().normalize();
                     
                     NodeList nList = doc.getElementsByTagName("system_id");
-
                     for (int i = 0; i < nList.getLength(); i++)
                     {
-                        Node nNode = nList.item(i);
-
-                        if (nNode.getNodeType() == Node.ELEMENT_NODE)
+                        Node node = nList.item(i);
+                        if (node.getNodeType() == Node.ELEMENT_NODE)
                         {
-
-                            Element eElement = (Element) nNode;
-
-                            results.append(eElement.getTextContent());
-
-
+                            Element element = (Element) node;
+                            results.append(element.getTextContent());
                         }
                     }
 
@@ -269,143 +242,7 @@ public class APIHandler
         {
             e.printStackTrace();
         }
+
         return results.toString();
-    }
-
-
-    /**
-     * Used for parsing Icomera position
-     * @param parser parser to use
-     * @return new Icomera object
-     * @throws XmlPullParserException
-     * @throws IOException XmlPullParserException
-     */
-    private Icomera readPosition(XmlPullParser parser) throws XmlPullParserException, IOException
-    {
-        Icomera res = new Icomera();
-        parser.require(XmlPullParser.START_TAG, null, "position");
-        int eventType = parser.getEventType();
-        while (eventType != XmlPullParser.END_TAG)
-        {
-            String name = parser.getName();
-            switch(name)
-            {
-                case "time": res.pos_time = Double.parseDouble(parser.getText()); break;
-                case "latitude": res.pos_lat = Double.parseDouble(parser.getText()); break;
-                case "longitude":res.pos_lon = Double.parseDouble(parser.getText()); break;
-                case "altitude": res.pos_alt = Double.parseDouble(parser.getText()); break;
-                case "speed": res.pos_speed = Double.parseDouble(parser.getText()); break;
-                case "cmg": res.pos_cmg = Double.parseDouble(parser.getText()); break;
-                case "satellites": res.pos_sat = Integer.parseInt(parser.getText()); break;
-            }
-            eventType = parser.next();
-        }
-        return res;
-    }
-
-    /**
-     * Used for parsing Icomera system
-     * @param parser parser to use
-     * @return new Icomera object
-     * @throws XmlPullParserException
-     * @throws IOException XmlPullParserException
-     */
-    private Icomera readSystem(XmlPullParser parser) throws XmlPullParserException, IOException
-    {
-        Icomera res = new Icomera();
-        parser.require(XmlPullParser.START_TAG, null, "system");
-        int eventType = parser.getEventType();
-        while (eventType != XmlPullParser.END_TAG)
-        {
-            String name = parser.getName();
-            if(name.equals("system"))
-                res.system_id = Integer.parseInt(parser.getText());
-            eventType = parser.next();
-        }
-        return res;
-    }
-
-    /**
-     * Used for parsing Icomera users
-     * @param parser parser to use
-     * @return new Icomera object
-     * @throws XmlPullParserException
-     * @throws IOException XmlPullParserException
-     */
-    private Icomera readUsers(XmlPullParser parser) throws XmlPullParserException, IOException
-    {
-        Icomera res = new Icomera();
-        parser.require(XmlPullParser.START_TAG, null, "users");
-        int eventType = parser.getEventType();
-        while (eventType != XmlPullParser.END_TAG)
-        {
-            String name = parser.getName();
-            switch(name)
-            {
-                case "total": res.users_tot = Integer.parseInt(parser.getText()); break;
-                case "online": res.users_online = Integer.parseInt(parser.getText()); break;
-            }
-            eventType = parser.next();
-        }
-        return res;
-    }
-
-    /**
-     * Used for parsing Icomera user
-     * @param parser parser to use
-     * @return new Icomera object
-     * @throws XmlPullParserException
-     * @throws IOException XmlPullParserException
-     */
-    private Icomera readUser(XmlPullParser parser) throws XmlPullParserException, IOException
-    {
-        Icomera res = new Icomera();
-        parser.require(XmlPullParser.START_TAG, null, "user");
-        int eventType = parser.getEventType();
-        while (eventType != XmlPullParser.END_TAG)
-        {
-            String name = parser.getName();
-            switch(name)
-            {
-                case "ip": res.user_ip = parser.getText(); break;
-                case "mac": res.user_mac = parser.getText(); break;
-                case "online": res.user_online = Integer.parseInt(parser.getText()); break;
-                case "class": res.user_class = Integer.parseInt(parser.getText()); break;
-            }
-            eventType = parser.next();
-        }
-        return res;
-    }
-
-    /**
-     * Class containing public variables for all data that can be read from Icomera
-     */
-    public class Icomera
-    {
-        public int system_id;
-
-        public double pos_time;
-        public double pos_lat;
-        public double pos_lon;
-        public double pos_alt;
-        public double pos_speed;
-        public double pos_cmg;
-        public int pos_sat;
-
-        public int users_tot;
-        public int users_online;
-
-        public String user_ip;
-        public String user_mac;
-        public int user_online;
-        public int user_class;
-
-        /**
-         * Constructs an empty Icomera object
-         */
-        public Icomera()
-        {
-
-        }
     }
 }

@@ -14,7 +14,7 @@
         <!--<item>Best Of Two Worlds, You have managed to catch all seven of the hybrids, 50, someimg, C2, COL,
             B_RIDE:H_BUS1/H_BUS2/H_BUS3/H_BUS4/H_BUS5/H_BUS6/H_BUS7</item>
         <item>Off Road!, Your bus went off route, 30, ach_front_test, S3, API, API:true/CURRENT_BUS/Offroute/5</item>-->
-        <item>walla, walla, 30, someimg, S4, API, API:true/CURRENT_BUS/Stop_Pressed/5</item>
+        <item>walla, walla, 30, someimg, S4, API, API:true/CURRENT_BUS/Stop_Pressed/30</item>
     </string-array>
 
 </resources>
