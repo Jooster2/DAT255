@@ -93,13 +93,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         mViewPager.addOnPageChangeListener(new PageChangeListener());
 
         //Display help to user. Only on the very first startup TODO: test if this works
-        SharedPreferences settings = getSharedPreferences("MyPrefsFile", 0);
-        if (settings.getBoolean("first_time", true)) {
+        SharedPreferences preferences = getSharedPreferences("com.soctec.soctec", MODE_PRIVATE);
+        if (preferences.getBoolean("first_time", true)) {
             //Do this only the first startup
-            Toast.makeText(getApplicationContext(), "first time", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "First time ever!", Toast.LENGTH_SHORT).show();
 
 
-            settings.edit().putBoolean("my_first_time", false).apply();
+            preferences.edit().putBoolean("first_time", false).apply();
         }
     }
 
