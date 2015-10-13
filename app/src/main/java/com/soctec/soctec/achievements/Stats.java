@@ -72,6 +72,15 @@ public class Stats implements Serializable
     }
 
     /**
+     * Returns the users number of times rated
+     * @return the users number of times rated
+     */
+    public int getTimesRated()
+    {
+        return ratingNeg+ratingPos;
+    }
+
+    /**
      * Returns the users calculated rating
      * @return the users calculated rating
      */
@@ -141,19 +150,21 @@ public class Stats implements Serializable
     }
 
     /**
-     * Increases positive rating by one
+     * Sets the positive rating to rating
+     * @param rating The new rating
      */
-    public void incRatingPos()
+    public void setRatingPos(int rating)
     {
-        ratingPos++;
+        ratingPos = rating;
     }
 
     /**
-     * Increases negative rating by one
+     * Sets the negative rating to rating
+     * @param rating The new rating
      */
-    public void incRatingNew()
+    public void setRatingNeg(int rating)
     {
-        ratingNeg++;
+        ratingNeg = rating;
     }
 
     /**
