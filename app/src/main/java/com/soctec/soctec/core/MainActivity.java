@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.net.wifi.WifiManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +19,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         setupActionBar();
         mViewPager.addOnPageChangeListener(new PageChangeListener());
 
-        //Display help to user. Only on the very first startup TODO: test if this works
+        //Display help to user. Only on the very first startup
         SharedPreferences preferences = getSharedPreferences("com.soctec.soctec", MODE_PRIVATE);
         if (preferences.getBoolean("first_time", true)) {
             //Do this only the first startup
@@ -321,10 +320,21 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             // the adapter. Also specify this Activity object, which implements
             // the TabListener interface, as the callback (listener) for when
             // this tab is selected.
+
             actionBar.addTab(
                     actionBar.newTab()
-                            .setIcon(mSectionsPagerAdapter.getIcon(i))
+                            .setCustomView(i == 0 ? R.layout.camera_tab_icon :
+                                                   i == 1 ? R.layout.main_tab_icon :
+                                                           R.layout.achievement_tab_icon)
                             .setTabListener(this));
+
+            //Set tab icon's width
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            int screenWidth = displaymetrics.widthPixels;
+            actionBar.getTabAt(i).getCustomView().getLayoutParams().width =
+                    (screenWidth/3) -
+                    (2*Math.round(16 * (displaymetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
         }
     }
 

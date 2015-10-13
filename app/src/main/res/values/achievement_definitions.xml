@@ -2,15 +2,15 @@
 <resources>
     <string-array name="Achievements">
         <!--Singular Achievements-->
-        <item>First Scan!, 50, ach_front_test:background, S1, SIN, P_SCAN:1</item>
-        <item>Second Scan!, 50, ach_front_test, S2, SIN, P_SCAN:2</item>
+        <item>First Scan!, 50, gold_ribbon:background, S1, SIN, P_SCAN:1</item>
+        <item>Second Scan!, 50, gold_trophy, S2, SIN, P_SCAN:2</item>
 
 
         <!--Infinite Achievements-->
-        <item>GOGO! Towards Infinity!, 25, someimg3, SI0, INF, P_SCAN:0:2^c</item>
+        <item>GOGO! Towards Infinity!, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c</item>
 
         <!--Collection Achievements-->
-        <item>Gotta Catch em All!, 50, someimg, C1, COL, C_SCAN:BUS1/BUS2/BUS3</item>
+        <item>Gotta Catch em All!, 50, gold_bus, C1, COL, C_SCAN:BUS1/BUS2/BUS3</item>
     </string-array>
 
 </resources>
