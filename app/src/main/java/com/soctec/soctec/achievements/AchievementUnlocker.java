@@ -54,6 +54,9 @@ public class AchievementUnlocker implements Observer
         demand.addObserver(this);
     }
 
+    /**
+     * Starts all Living Demands in their own Threads
+     */
     public void startLivingDemands()
     {
         for(Demand demand : livingDemands.keySet())
@@ -64,12 +67,21 @@ public class AchievementUnlocker implements Observer
         }
     }
 
+    /**
+     * Stops all Living Demand-threads
+     */
     public void stopLivingDemands()
     {
         for(Demand demand : livingDemands.keySet())
             demand.shutdown();
     }
 
+    /**
+     * Checks Living Demands for completion. This method always runs on
+     * MainActivity's UI Thread.
+     * @param demand
+     * @param value
+     */
     public void checkLivingDemand(Demand demand, String value)
     {
         boolean didUnlock = false;
@@ -86,16 +98,8 @@ public class AchievementUnlocker implements Observer
             }
         }
         if(didUnlock)
-        {
-            main.runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    main.checkAchievementChanges();
-                }
-            });
-        }
+            main.checkAchievementChanges();
+
 
     }
 
@@ -222,9 +226,18 @@ public class AchievementUnlocker implements Observer
         }
         else if(observable instanceof Demand && data instanceof Pair)
         {
-            Demand demand = (Demand)((Pair)data).first;
-            String value = (String)((Pair)data).second;
-            checkLivingDemand(demand, value);
+            // Must be final due to passing to another Thread
+            final Pair pair = (Pair)data;
+            main.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Demand demand = (Demand)pair.first;
+                    String value = (String)pair.second;
+                    checkLivingDemand(demand, value);
+                }
+            });
         }
     }
 }

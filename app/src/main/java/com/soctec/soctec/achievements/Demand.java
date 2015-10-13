@@ -7,7 +7,6 @@ import com.soctec.soctec.utils.APIHandler;
 import com.soctec.soctec.utils.FileHandler;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Observable;
@@ -15,7 +14,7 @@ import java.util.Observable;
 /**
  * Demand used by Achievements to determine if it is earned or not
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.0
+ * @version 2.1
  */
 public class Demand extends Observable implements Runnable, Serializable
 {
@@ -115,22 +114,35 @@ public class Demand extends Observable implements Runnable, Serializable
         eq.remove(i-1);
     }
 
+    /**
+     * Causes the run method to stop on it's next cycle
+     */
     public void shutdown()
     {
         running = false;
     }
 
+    /**
+     * Sets the running variable to true. Call before attempting to run
+     * the Demand in a Thread
+     */
     public void start()
     {
         running = true;
     }
 
-    public boolean isRunning()
+    /**
+     * Check whether the Demand is capable of being run in a Thread right now
+     * @return true if runnable
+     */
+    public boolean isRunnable()
     {
         return running;
     }
 
-
+    /**
+     * For running Demands in their own Threads
+     */
     @Override
     public void run()
     {
@@ -147,6 +159,7 @@ public class Demand extends Observable implements Runnable, Serializable
                 resource-id from FileHandler for that particular string, then read the string,
                 which is the vinNumber that is inserted into APIHandler.readSingle.
                  */
+                //TODO clean up a bit, and restore functionality outcommented below
                 /*String icomeraID = aH.readIcomera();
                 int resourceID = fH.getResourceID("SID" + icomeraID, "string");
                 vinNumber = fH.readString(resourceID);
