@@ -15,7 +15,8 @@
         android:id="@+id/showerHeadView"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false" />
+        android:layout_alignParentEnd="false"
+        android:src="@drawable/shower_head_text" />
 
     <ImageView
         android:layout_width="250dp"
@@ -31,13 +32,6 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/showerCloseButtonImg"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,15 +41,51 @@
         android:layout_below="@+id/showerHeadView"
         android:layout_centerHorizontal="true"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Detta ger x poäng!"
-        android:id="@+id/showerPointsText"
+    <Button
+        android:id="@+id/showerCloseButton"
+
+        android:text="OKEJ"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="4"
+        android:shadowRadius="4"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/showerCloseButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"/>
+        android:layout_below="@+id/showerAchBack"
+        android:id="@+id/flavor">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Detta ger x poäng!"
+            android:id="@+id/showerPointsText"
+            android:layout_below="@+id/flavorTextView"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="&quot;Flavour text&quot;"
+            android:id="@+id/flavorTextView"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="3dp"/>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

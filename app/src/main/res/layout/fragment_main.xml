@@ -7,19 +7,6 @@
     android:background="#dbfaaa"
     android:nestedScrollingEnabled="false">
 
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Din DigIt!"
-        android:id="@+id/mainFragmentTitle"
-        android:textStyle="bold"
-        android:textIsSelectable="true"
-        android:textSize="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +15,7 @@
         android:id="@+id/underMainTitle"
         android:textIsSelectable="true"
         android:textSize="15dp"
-        android:layout_below="@id/mainFragmentTitle"
+        android:layout_below="@id/main_head_img_view"
         android:layout_centerHorizontal="true"/>
     <ImageView
         android:layout_width="150dp"
@@ -39,33 +26,104 @@
         android:layout_marginTop="40dp"
         android:layout_below="@id/underMainTitle"
         android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Rating"
-        android:id="@+id/textView2"
-        android:singleLine="false"
-        android:textStyle="bold"
-        android:textSize="30dp"
-        android:layout_marginTop="49dp"
-        android:layout_below="@+id/qr_image"
-        android:layout_centerHorizontal="true"/>
-
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"/>
-
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_centerVertical="true"
+        android:id="@+id/main_head_img_view"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/main_head_text" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/qr_image"
+        android:id="@+id/main_rating_container"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/custum_border"
+        android:layout_alignParentBottom="true"
+        android:weightSum="100">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="50"
+            android:id="@+id/userRatingLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Ditt betyg"
+                android:id="@+id/textView4"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/custom_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:id="@+id/rating_progress_bar"
+                android:max="100"
+                android:progress="50"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:indeterminate="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="50"
+            android:id="@+id/givenRatingLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Hur var senaste mötet?"
+                android:id="@+id/textView" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/pos_button"
+                    android:background=""
+                    android:src="@drawable/thumb_up_black_36dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/neg_button"
+                    android:background=""
+                    android:src="@drawable/thumb_down_black_36dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
+
+
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

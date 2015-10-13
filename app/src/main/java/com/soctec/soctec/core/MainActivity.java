@@ -140,6 +140,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         aF.setPoints(stats.getPoints());
     }
 
+    public Stats getStats()
+    {
+        return stats;
+    }
+
     /**
      * Called when an activity started with "startActivityForResult()" has finished.
      * @param requestCode Indicates which request this method call is a response to
