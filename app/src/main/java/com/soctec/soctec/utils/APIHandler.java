@@ -173,11 +173,10 @@ public class APIHandler
 
     /**
      * Reads the Icomera API and returns a list of parsed objects
-     * @param resource Icomera resource to read
      * @return list containing Icomera objects
      */
     //public ArrayList<Icomera> readIcomera(final String resource)
-    public String readIcomera(final String resource)
+    public String readIcomera()
     {
         //final ArrayList<Icomera> results = new ArrayList<>();
         final StringBuilder results = new StringBuilder();
@@ -186,7 +185,7 @@ public class APIHandler
             public void run()
             {
                 Log.i("readIcomera", "Thread start");
-                String url = "http://www.ombord.info/api/xml/" + resource;
+                String url = "http://www.ombord.info/api/xml/system";
 
                 try
                 {

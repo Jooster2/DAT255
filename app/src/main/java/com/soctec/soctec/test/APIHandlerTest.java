@@ -51,8 +51,10 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testIcomera() throws Exception
     {
-        ArrayList<APIHandler.Icomera> data = aH.readIcomera("system");
+        /*ArrayList<APIHandler.Icomera> data = aH.readIcomera("system");
         assertEquals(1, data.size());
-        assertNotNull(data.get(0).system_id);
+        assertNotNull(data.get(0).system_id);*/
+        String data = aH.readIcomera();
+        assertNotNull(data);
     }
 }

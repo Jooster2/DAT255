@@ -232,11 +232,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         APIHandler aH = APIHandler.getInstance();
         FileHandler fH = FileHandler.getInstance();
-        ArrayList<APIHandler.Icomera> fromAPI = aH.readIcomera("system");
+        //ArrayList<APIHandler.Icomera> fromAPI = aH.readIcomera("system");
         try
         {
             //int icomeraID = aH.readIcomera("system").get(0).system_id;
-            int icomeraID = fromAPI.get(0).system_id;
+            int icomeraID = Integer.parseInt(aH.readIcomera());
             Toast.makeText(this, String.valueOf(icomeraID), Toast.LENGTH_SHORT).show();
             /*int resourceID = fH.getResourceID("SID" + String.valueOf(icomeraID), "string");
             if(resourceID != 0)
