@@ -1,5 +1,6 @@
 package com.soctec.soctec.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -166,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     @Override
     protected void onDestroy()
     {
+        new File(getFilesDir(),"stats.sav").delete();
         super.onDestroy();
     }
 

@@ -1,7 +1,6 @@
 package com.soctec.soctec.achievements;
 
 import android.content.Context;
-import android.util.Pair;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -120,23 +119,25 @@ public class Stats implements Serializable
      */
     public void setLastScanned(String newScan)
     {
-        if (isScannedRecently(newScan))
+        removeOldScans();
+
+        if(lastScanned.equals(newScan) && talkDone == false && lastScannedTime != 0)
         {
-            if(lastScanned.equals(newScan) && talkDone == false && lastScannedTime != 0)
-            {
-                timeTalked += (System.currentTimeMillis() - lastScannedTime) / 1000;
-                talkDone = true;
-            }
-            else if(!lastScanned.equals(newScan) && talkDone == false)
-            {
-                lastScannedTime = System.currentTimeMillis();
-                lastScanned = newScan;
-            }
-            else //(lastScanned.equals(newScan) && talkDone == true)
-            {
-                //TODO what happens here? nothing?
-            }
+            timeTalked += (System.currentTimeMillis() - lastScannedTime) / 1000;
+            talkDone = true;
+            lastScannedTime = System.currentTimeMillis();
         }
+        else if(!lastScanned.equals(newScan))
+        {
+            lastScannedTime = System.currentTimeMillis();
+            lastScanned = newScan;
+            talkDone = false;
+        }
+        else if (lastScanned.equals(newScan) && talkDone == true)
+        {
+            timeTalked+= (System.currentTimeMillis() - lastScannedTime) / 1000;
+        }
+        addRecentScan(System.currentTimeMillis(), newScan);
     }
 
     /**
@@ -190,7 +191,8 @@ public class Stats implements Serializable
         while (it.hasNext())
         {
             UserPair element = (UserPair) it.next();
-            if((System.currentTimeMillis() - element.getScanTime()) > 7200000)
+            //two hours :7200000
+            if((System.currentTimeMillis() - element.getScanTime()) >60000)
                 it.remove();
             else
                 break;
@@ -206,9 +208,10 @@ public class Stats implements Serializable
         return false;
     }
 
-    public void addToList (int lastScannedTime, String lastScanned)
+    public void addRecentScan(long lastScannedTime, String lastScanned)
     {
-        listRecentScans.addLast (new UserPair(lastScannedTime, lastScanned));
+        if (!isScannedRecently(lastScanned))
+            listRecentScans.addLast (new UserPair(lastScannedTime, lastScanned));
     }
 
 
@@ -216,15 +219,15 @@ public class Stats implements Serializable
     public class UserPair implements Serializable
     {
         private static final long serialVersionUID = 7L;
-        int scanTime;
+        long scanTime;
         String scannedUser;
-        public UserPair (int scanTime, String scannedUser)
+        public UserPair (long scanTime, String scannedUser)
         {
             this.scanTime = scanTime;
             this.scannedUser = scannedUser;
         }
 
-        public int getScanTime()
+        public long getScanTime()
         {
             return scanTime;
         }
