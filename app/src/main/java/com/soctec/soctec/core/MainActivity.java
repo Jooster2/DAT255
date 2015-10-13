@@ -179,6 +179,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(connectionChecker, intentFilter);
 
+        //Fetch latest rating statistics from server
+        NetworkHandler.getInstance(this).fetchRatingFromServer();
+
         //Set current tab
         if (mViewPager.getCurrentItem()== 0)
             mViewPager.setCurrentItem(1);
