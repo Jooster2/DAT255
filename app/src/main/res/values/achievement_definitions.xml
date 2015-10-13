@@ -2,15 +2,15 @@
 <resources>
     <string-array name="Achievements">
         <!--Singular Achievements-->
-        <item>Du diggar någon!, flavor, 50, gold_ribbon, S1, SIN, P_SCAN:1</item>
-        <item>En till?!, flavor, 50, gold_trophy, S2, SIN, P_SCAN:2</item>
+        <item>Du diggar någon!, 50, gold_ribbon, S1, SIN, P_SCAN:1</item>
+        <item>En till?!, 50, gold_trophy, S2, SIN, P_SCAN:2</item>
 
 
         <!--Infinite Achievements-->
-        <item>Wow! fortsätt kämpa!, flavor, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c</item>
+        <item>Wow! fortsätt kämpa!, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c</item>
 
         <!--Collection Achievements-->
-        <item>Miljövän!, flavor, 50, gold_bus, C1, COL, B_RIDE:BUS1/BUS2/BUS3</item>
+        <item>Miljövän!, 50, gold_bus, C1, COL, B_RIDE:BUS1/BUS2/BUS3</item>
     </string-array>
 
 </resources>
