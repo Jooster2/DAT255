@@ -133,19 +133,21 @@ public class Stats
     }
 
     /**
-     * Increases positive rating by one
+     * Sets the positive rating to rating
+     * @param rating The new rating
      */
-    public void incRatingPos()
+    public void setRatingPos(int rating)
     {
-        ratingPos++;
+        ratingPos = rating;
     }
 
     /**
-     * Increases negative rating by one
+     * Sets the negative rating to rating
+     * @param rating The new rating
      */
-    public void incRatingNew()
+    public void setRatingNeg(int rating)
     {
-        ratingNeg++;
+        ratingNeg = rating;
     }
 
     /**

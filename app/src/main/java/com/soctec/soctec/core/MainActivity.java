@@ -169,12 +169,17 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onResume()
     {
         super.onResume();
+
+        //Start thread that listens for peer connections
         NetworkHandler.getInstance(this).startThread();
 
+        //Register broadcast receiver that listens for wifi changes
         IntentFilter intentFilter =
                 new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(connectionChecker, intentFilter);
+
+        //Set current tab
         if (mViewPager.getCurrentItem()== 0)
             mViewPager.setCurrentItem(1);
     }

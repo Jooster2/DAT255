@@ -64,6 +64,26 @@ public class NetworkHandler
     }
 
     /**
+     * Opens a connection to the server and pushes the latest rating
+     * @param userID The ID of the user that was just given a new rating
+     * @param positiveRating true, if the user was given a posivite rating, o/w false
+     */
+    public void pushRatingToServer(String userID, boolean positiveRating)
+    {
+        ServerThread serverThread = new ServerThread(userID, positiveRating);
+        serverThread.start();
+    }
+
+    /**
+     * Opens a connection to the server and fetches the latest rating
+     */
+    public void fetchRatingFromServer()
+    {
+        ServerThread serverThread = new ServerThread();
+        serverThread.start();
+    }
+
+    /**
      * Starts the thread that listens for incoming connections from peer
      */
     public void startThread()
@@ -237,6 +257,67 @@ public class NetworkHandler
             finally
             {
                 interrupt();
+            }
+        }
+    }
+
+    private class ServerThread extends Thread
+    {
+        private final boolean PUSH_TYPE = true;
+        private final boolean FETCH_TYPE = false;
+        private boolean msgType;
+        private String userID;
+        private boolean rating;
+
+        /**
+         * Thread that pushes rating to server
+         * @param ID The ID of the user that was just given a new rating
+         * @param positiveRating true, if the user was given a posivite rating, o/w false
+         */
+        public ServerThread(String ID, boolean positiveRating)
+        {
+            msgType = PUSH_TYPE;
+            userID = ID;
+            rating = positiveRating;
+        }
+
+        /**
+         * Thread that fetches rating from server
+         */
+        public ServerThread()
+        {
+            msgType = FETCH_TYPE;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                Socket socket = new Socket(SERVER_IP, SERVER_PORT_NR);
+
+                if(msgType == FETCH_TYPE)
+                {
+                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                    int ratingPos = ois.readInt();
+                    int ratingNeg = ois.readInt();
+                    ((MainActivity)myActivity).getStats().setRatingPos(ratingPos);
+                    ((MainActivity)myActivity).getStats().setRatingNeg(ratingNeg);
+                    ois.close();
+                }
+                else //msg == PUSH_TYPE
+                {
+                    ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                    oos.writeObject(userID);
+                    oos.writeBoolean(rating);
+                    oos.close();
+                }
+                socket.close();
+            }
+            catch(IOException e)
+            {
+                Log.i("myTag", e.getMessage());
+                e.printStackTrace();
             }
         }
     }
