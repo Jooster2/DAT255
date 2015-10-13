@@ -348,12 +348,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             startActivity(intent);
         }
 
-        else if(id == R.id.om)
+        else if(id == R.id.about)
         {
            iFragment.show(getFragmentManager(), "Om");
         }
 
-        else if (id == R.id.hjälp)
+        else if (id == R.id.help)
         {
             hFragment.show(getFragmentManager(), "Hjälp");
         }
