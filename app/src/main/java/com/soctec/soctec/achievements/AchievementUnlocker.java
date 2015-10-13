@@ -84,10 +84,11 @@ public class AchievementUnlocker implements Observer
     /**
      * Loads the current unlockableAchievements-list from file
      */
-    public void loadUnlockable()
+    public int loadUnlockable()
     {
         FileHandler fH = FileHandler.getInstance();
         unlockableAchievements = (ArrayList<Achievement>)fH.readObject(SAVE_FILE);
+        return unlockableAchievements.size();
     }
 
     /**

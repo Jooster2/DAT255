@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
@@ -82,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator = new AchievementCreator();
         unlocker = new AchievementUnlocker(stats, creator);
         creator.addObserver(unlocker);
-        unlocker.loadUnlockable();
-        if(unlocker.getUnlockableAchievements().size() == 0)
-            creator.createFromFile();
+        //int loaded = unlocker.loadUnlockable();
+        //if(loaded > 0)
+        creator.createFromFile();
 
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance(this).startThread();
@@ -222,26 +223,41 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         updateAchievementFragment();
     }
 
-    public void checkIcomera()
+    /**
+     * Run whenever the WiFi state changes in ConnectionChecker.
+     * Reads the Icomera API, and determines if we are on a bus. If so, we start all
+     * LivingDemands, and then sends an event to unlocker, to check Achievements.
+     */
+    public void checkIcomera(View v)
     {
         APIHandler aH = APIHandler.getInstance();
         FileHandler fH = FileHandler.getInstance();
-        int icomeraID = aH.readIcomera("system").get(0).system_id;
-        int resourceID = fH.getResourceID("SID" + String.valueOf(icomeraID), "string");
-        if(resourceID != 0)
+        ArrayList<APIHandler.Icomera> fromAPI = aH.readIcomera("system");
+        try
         {
-            String vinNumber = fH.readString(resourceID);
-            resourceID = fH.getResourceID(vinNumber, "string");
+            //int icomeraID = aH.readIcomera("system").get(0).system_id;
+            int icomeraID = fromAPI.get(0).system_id;
+            Toast.makeText(this, String.valueOf(icomeraID), Toast.LENGTH_SHORT).show();
+            /*int resourceID = fH.getResourceID("SID" + String.valueOf(icomeraID), "string");
             if(resourceID != 0)
             {
-                String busID = fH.readString(resourceID);
-                unlocker.receiveEvent(2, busID);
+                String vinNumber = fH.readString(resourceID);
+                resourceID = fH.getResourceID(vinNumber, "string");
+                if(resourceID != 0)
+                {
+                    String busID = fH.readString(resourceID);
+                    unlocker.receiveEvent(2, busID);
+                }
+                unlocker.startLivingDemands();
             }
-            unlocker.startLivingDemands();
+            else
+            {
+                unlocker.stopLivingDemands();
+            }*/
         }
-        else
+        catch(Exception e)
         {
-            unlocker.stopLivingDemands();
+            e.printStackTrace();
         }
 
     }

@@ -9,10 +9,10 @@
         <item>GOGO! Towards Infinity!, Infinity is actually quite far off, 25, someimg3, SI0, INF, P_SCAN:0:2^c</item>
 
         <!--Collection Achievements-->
-        <item>Pure Electric!, You have gone on all three electric buses, 30, someimg, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3</item>
+        <!--<item>Pure Electric!, You have gone on all three electric buses, 30, someimg, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3</item>
         <item>Best Of Two Worlds, You have managed to catch all seven of the hybrids, 50, someimg, C2, COL,
             B_RIDE:H_BUS1/H_BUS2/H_BUS3/H_BUS4/H_BUS5/H_BUS6/H_BUS7</item>
-        <item>Off Road!, Your bus went off route, 30, ach_front_test, S3, API, API:true/CURRENT_BUS/Offroute/5</item>
+        <item>Off Road!, Your bus went off route, 30, ach_front_test, S3, API, API:true/CURRENT_BUS/Offroute/5</item>-->
     </string-array>
 
 </resources>

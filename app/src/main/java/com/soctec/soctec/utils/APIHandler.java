@@ -3,6 +3,12 @@ package com.soctec.soctec.utils;
 import android.util.JsonReader;
 import android.util.Log;
 import android.util.Xml;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -14,6 +20,9 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  *  Handles all API-reading
@@ -167,9 +176,11 @@ public class APIHandler
      * @param resource Icomera resource to read
      * @return list containing Icomera objects
      */
-    public ArrayList<Icomera> readIcomera(final String resource)
+    //public ArrayList<Icomera> readIcomera(final String resource)
+    public String readIcomera(final String resource)
     {
-        final ArrayList<Icomera> results = new ArrayList<>();
+        //final ArrayList<Icomera> results = new ArrayList<>();
+        final StringBuilder results = new StringBuilder();
         Thread myThread = new Thread()
         {
             public void run()
@@ -190,7 +201,7 @@ public class APIHandler
                     InputStream in = conn.getInputStream();
 
                     Log.i("readIcomera", "InputStream connected");
-                    XmlPullParser parser = Xml.newPullParser();
+                    /*XmlPullParser parser = Xml.newPullParser();
                     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     // Possible to set encoding here, such as UTF-8, but it should not be necessary
                     parser.setInput(in, null);
@@ -198,6 +209,7 @@ public class APIHandler
                     int eventType = parser.getEventType();
                     while(eventType != XmlPullParser.END_DOCUMENT)
                     {
+                        eventType = parser.next();
                         String name = parser.getName();
                         switch(name)
                         {
@@ -214,11 +226,33 @@ public class APIHandler
                                 results.add(readUser(parser));
                                 break;
                         }
-                        eventType = parser.next();
+
+                    }*/
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(in);
+                    doc.getDocumentElement().normalize();
+                    
+                    NodeList nList = doc.getElementsByTagName("system_id");
+
+                    for (int i = 0; i < nList.getLength(); i++)
+                    {
+                        Node nNode = nList.item(i);
+
+                        if (nNode.getNodeType() == Node.ELEMENT_NODE)
+                        {
+
+                            Element eElement = (Element) nNode;
+
+                            results.append(eElement.getTextContent());
+
+
+                        }
                     }
+
                     conn.disconnect();
                 }
-                catch(IOException | XmlPullParserException e)
+                catch(IOException | ParserConfigurationException | SAXException e)
                 {
                     e.printStackTrace();
                     Log.i("readIcomera", e.toString());
@@ -228,7 +262,15 @@ public class APIHandler
             }
         };
         myThread.start();
-        return results;
+        try
+        {
+            myThread.join();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        return results.toString();
     }
 
 
@@ -277,7 +319,7 @@ public class APIHandler
         while (eventType != XmlPullParser.END_TAG)
         {
             String name = parser.getName();
-            if(name.equals("system_id"))
+            if(name.equals("system"))
                 res.system_id = Integer.parseInt(parser.getText());
             eventType = parser.next();
         }
