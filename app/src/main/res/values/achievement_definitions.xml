@@ -10,7 +10,7 @@
         <item>Wow! fortsätt kämpa!, flavor, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c</item>
 
         <!--Collection Achievements-->
-        <item>Miljövän!, flavor, 50, gold_bus, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3</item>
+        <item>Miljövän!, flavor, 50, gold_bus, C1, COL, B_RIDE:BUS1/BUS2/BUS3</item>
     </string-array>
 
 </resources>
