@@ -11,6 +11,9 @@
 
         <!--Collection Achievements-->
         <item> Miljövän!, 50, someimg, C1, COL, C_SCAN:BUS1/BUS2/BUS3</item>
+
+        <item>Den du diggade diggar samma saker!, 50, ach_front_test:background, S1, SIN, P_SCAN:1</item>
+
     </string-array>
 
 </resources>

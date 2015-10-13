@@ -4,12 +4,14 @@ package com.soctec.soctec.core;
  * Created by Jeppe on 2015-09-22.
  */
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ public class AchievementsFragment extends Fragment
     ImageButton unlocked, locked;
     ViewSwitcher viewSwitcher;
     View view;
+    MainActivity main;
 
     @Nullable
     @Override
@@ -60,14 +63,14 @@ public class AchievementsFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        MainActivity main = (MainActivity)getActivity();
+        main = (MainActivity)getActivity();
         main.updateAchievementFragment();
     }
 
-    public void refreshAchievements(ArrayList<Achievement> locked, ArrayList<Achievement> unlocked)
+    public void refreshAchievements(final ArrayList<Achievement> locked, final ArrayList<Achievement> unlocked)
     {
 
-        ArrayList<String> unlockedList =  new ArrayList<>();
+        final ArrayList<String> unlockedList =  new ArrayList<>();
         ListView unlockedAchievementListView;
 
         for (Achievement achi : unlocked)
@@ -83,13 +86,26 @@ public class AchievementsFragment extends Fragment
         }
 
         unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
+
         AchievementsAdapter unlockedAdapter = new AchievementsAdapter(getActivity(), unlockedList);
         unlockedAchievementListView.setAdapter(unlockedAdapter);
+        unlockedAchievementListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id)
+            {
+                Achievement achi = unlocked.get((int)id);
+                Intent showerIntent = new Intent(main, AchievementShowerActivity.class);
+                showerIntent.putExtra("AchievementObject", achi);
+                startActivity(showerIntent);
+            }
+        });
 
-        ArrayList<String> lockedList =  new ArrayList<>();
+        ArrayList<String> lockedList = new ArrayList<>();
         ListView lockedAchievementListView;
 
-        for (Achievement achi : locked)
+        for(Achievement achi : locked)
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
@@ -99,12 +115,27 @@ public class AchievementsFragment extends Fragment
             lockedList.add(sb.toString());
         }
 
-        lockedAchievementListView = (ListView)view.findViewById(R.id.listlocked);
+        lockedAchievementListView = (ListView) view.findViewById(R.id.listlocked);
         AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList);
         lockedAchievementListView.setAdapter(lockedAdapter);
+
+        lockedAchievementListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id)
+            {
+                Achievement achi = locked.get((int) id);
+                Intent showerIntent = new Intent(main, AchievementShowerActivity.class);
+                showerIntent.putExtra("AchievementObject", achi);
+                startActivity(showerIntent);
+            }
+        });
     }
-    public void setPoints (int points){
-        TextView textView = (TextView)view.findViewById(R.id.pointsAchi);
-        textView.setText("Dina poäng: "+ points);
-    }
-}
+
+            public void setPoints(int points)
+            {
+                TextView textView = (TextView) view.findViewById(R.id.pointsAchi);
+                textView.setText("Dina poäng: " + points);
+            }
+        }

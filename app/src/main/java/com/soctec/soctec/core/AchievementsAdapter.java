@@ -44,7 +44,7 @@ public class AchievementsAdapter extends ArrayAdapter
         titleText.setText(strings[0]);
         flavorText.setText(strings[1]);
         FileHandler fh = FileHandler.getInstance();
-        imageView.setImageResource(fh.getResourceID(strings[1], "drawable"));
+        imageView.setImageResource(fh.getResourceID(strings[2], "drawable"));
 
         return rowView;
     }

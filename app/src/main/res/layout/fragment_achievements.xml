@@ -61,7 +61,8 @@
                 android:id="@+id/listunlocked"
                 android:layout_gravity="center_horizontal"
                 android:layout_above="@+id/unlocked"
-                android:layout_below="@id/unlockedAchievementsTitle"/>
+                android:layout_below="@id/unlockedAchievementsTitle"
+                android:clickable="true"/>
 
 
             <ImageButton
@@ -98,7 +99,10 @@
                 android:id="@+id/listlocked"
                 android:layout_gravity="center_horizontal"
                 android:layout_above="@+id/locked"
-                android:layout_below="@id/lockedAchievementsTitle"/>
+                android:layout_below="@id/lockedAchievementsTitle"
+                android:clickable="true"
+                android:longClickable="false"
+                android:touchscreenBlocksFocus="true"/>
 
 
             <ImageButton

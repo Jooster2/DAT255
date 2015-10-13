@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize the ActionBar
         setupActionBar();
         mViewPager.addOnPageChangeListener(new PageChangeListener());
+        mViewPager.setCurrentItem(1);
     }
 
     /**
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onStart()
     {
         super.onStart();
-        mViewPager.setCurrentItem(1);
+        //mViewPager.setCurrentItem(1);
     }
 
     /**
@@ -163,7 +164,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(connectionChecker, intentFilter);
-        //mViewPager.setCurrentItem(1);
+        if (mViewPager.getCurrentItem()== 0)
+            mViewPager.setCurrentItem(1);
     }
 
     /**
