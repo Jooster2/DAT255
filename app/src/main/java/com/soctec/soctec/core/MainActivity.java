@@ -228,10 +228,22 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         FileHandler fH = FileHandler.getInstance();
         int icomeraID = aH.readIcomera("system").get(0).system_id;
         int resourceID = fH.getResourceID("SID" + String.valueOf(icomeraID), "string");
-        String vinNumber = fH.readString(resourceID);
-        resourceID = fH.getResourceID(vinNumber, "string");
-        String busID = fH.readString(resourceID);
-        unlocker.receiveEvent(2, busID);
+        if(resourceID != 0)
+        {
+            String vinNumber = fH.readString(resourceID);
+            resourceID = fH.getResourceID(vinNumber, "string");
+            if(resourceID != 0)
+            {
+                String busID = fH.readString(resourceID);
+                unlocker.receiveEvent(2, busID);
+            }
+            unlocker.startLivingDemands();
+        }
+        else
+        {
+            unlocker.stopLivingDemands();
+        }
+
     }
 
     /**

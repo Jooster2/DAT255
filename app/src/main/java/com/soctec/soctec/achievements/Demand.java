@@ -114,9 +114,14 @@ public class Demand extends Observable implements Runnable, Serializable
         eq.remove(i-1);
     }
 
-    public void running(boolean running)
+    public void shutdown()
     {
-        this.running = running;
+        running = false;
+    }
+
+    public void start()
+    {
+        running = true;
     }
 
     public boolean isRunning()

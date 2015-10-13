@@ -48,8 +48,22 @@ public class AchievementUnlocker implements Observer
     {
         livingDemands.put(demand, owner);
         demand.addObserver(this);
-        Thread demandThread = new Thread(demand);
-        demandThread.start();
+    }
+
+    public void startLivingDemands()
+    {
+        for(Demand demand : livingDemands.keySet())
+        {
+            demand.start();
+            Thread demandThread = new Thread(demand);
+            demandThread.start();
+        }
+    }
+
+    public void stopLivingDemands()
+    {
+        for(Demand demand : livingDemands.keySet())
+            demand.shutdown();
     }
 
     public void checkLivingDemand(Demand demand, String value)
@@ -57,7 +71,7 @@ public class AchievementUnlocker implements Observer
         Achievement achievement = livingDemands.get(demand);
         if(achievement.checkDemands(demand.type, value))
         {
-            demand.running(false);
+            demand.shutdown();
             livingDemands.remove(demand);
             if(achievement.isCompleted())
             {
