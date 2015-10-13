@@ -86,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator.createFromFile();
 
         //Initialize networkHandler. Start server thread
-        NetworkHandler.getInstance(this).startThread();
+        NetworkHandler.getInstance().setMyActivity(this);
+        NetworkHandler.getInstance().startThread();
 
         //Initialize the ActionBar
         setupActionBar();
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
         {
             String scannedCode = data.getExtras().getString("result");
-            NetworkHandler.getInstance(this).sendScanInfoToPeer(scannedCode);
+            NetworkHandler.getInstance().sendScanInfoToPeer(scannedCode);
         }
     }
     @Override
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         super.onResume();
 
         //Start thread that listens for peer connections
-        NetworkHandler.getInstance(this).startThread();
+        NetworkHandler.getInstance().startThread();
 
         //Register broadcast receiver that listens for wifi changes
         IntentFilter intentFilter =
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         registerReceiver(connectionChecker, intentFilter);
 
         //Fetch latest rating statistics from server
-        NetworkHandler.getInstance(this).fetchRatingFromServer();
+        NetworkHandler.getInstance().fetchRatingFromServer();
 
         //Set current tab
         if (mViewPager.getCurrentItem()== 0)
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void onPause()
     {
         super.onPause();
-        NetworkHandler.getInstance(this).stopThread();
+        NetworkHandler.getInstance().stopThread();
         unregisterReceiver(connectionChecker);
     }
 

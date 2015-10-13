@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.network.ConnectionChecker;
+import com.soctec.soctec.network.NetworkHandler;
 
 /**
  *
@@ -53,8 +54,7 @@ public class MainFragment extends Fragment
         yesButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-
-                        //SEND incPosRating();to other user
+                        sendRatingToServer(true);
                         disableRatingButtons();
                     }
                 }
@@ -65,8 +65,7 @@ public class MainFragment extends Fragment
         noButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-
-                        //SEND incNegRating(); to other user
+                        sendRatingToServer(false);
                         disableRatingButtons();
                     }
                 }
@@ -109,6 +108,17 @@ public class MainFragment extends Fragment
         {
             progressBar.setProgress((int) ratingPercent);
         }
+    }
+
+    /**
+     * Tells NetworkHandler to send rating to server
+     * @param positiveRating true, if thumbs up was clicked. false if thumbs down
+     */
+    private void sendRatingToServer(boolean positiveRating)
+    {
+        NetworkHandler.getInstance().pushRatingToServer(
+                ((MainActivity) getActivity()).getStats().getlastScanned(),
+                positiveRating);
     }
 }
 
