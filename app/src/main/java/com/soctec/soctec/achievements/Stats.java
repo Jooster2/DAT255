@@ -120,19 +120,22 @@ public class Stats implements Serializable
      */
     public void setLastScanned(String newScan)
     {
-        if(lastScanned.equals(newScan) && talkDone == false && lastScannedTime != 0)
+        if (isScannedRecently(newScan))
         {
-            timeTalked += (System.currentTimeMillis()-lastScannedTime)/1000;
-            talkDone = true;
-        }
-        else if(!lastScanned.equals(newScan) && talkDone == false)
-        {
-            lastScannedTime = System.currentTimeMillis();
-            lastScanned = newScan;
-        }
-        else //(lastScanned.equals(newScan) && talkDone == true)
-        {
-            //TODO what happens here? nothing?
+            if(lastScanned.equals(newScan) && talkDone == false && lastScannedTime != 0)
+            {
+                timeTalked += (System.currentTimeMillis() - lastScannedTime) / 1000;
+                talkDone = true;
+            }
+            else if(!lastScanned.equals(newScan) && talkDone == false)
+            {
+                lastScannedTime = System.currentTimeMillis();
+                lastScanned = newScan;
+            }
+            else //(lastScanned.equals(newScan) && talkDone == true)
+            {
+                //TODO what happens here? nothing?
+            }
         }
     }
 

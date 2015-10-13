@@ -102,6 +102,7 @@ public class AchievementUnlocker implements Observer
     {
         if (data instanceof Achievement )
         {
+            if (!currentStats.getAchievements().contains(data))
             unlockableAchievements.add((Achievement)data);
         }
     }
