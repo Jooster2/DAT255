@@ -1,8 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_profile" android:title="@string/profile_activity_name"
-          android:orderInCategory="100" android:icon="@mipmap/profilikon" app:showAsAction="ifRoom"/>
+
+    <group android:enabled="true">
+        <item
+            android:id="@+id/om"
+            android:orderInCategory="1"
+            app:showAsAction="never"
+            android:title="Om"/>
+        <item
+            android:id="@+id/hjälp"
+            android:orderInCategory="2"
+            app:showAsAction="never"
+            android:title="Hjälp"/>
+    </group>
+
+    <item android:id="@+id/action_profile"
+          android:title="@string/profile_activity_name"
+          android:orderInCategory="100"
+          android:icon="@mipmap/profilikon"
+          app:showAsAction="ifRoom"/>
 </menu>
