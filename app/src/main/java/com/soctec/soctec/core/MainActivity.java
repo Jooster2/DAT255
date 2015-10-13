@@ -232,13 +232,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         APIHandler aH = APIHandler.getInstance();
         FileHandler fH = FileHandler.getInstance();
-        //ArrayList<APIHandler.Icomera> fromAPI = aH.readIcomera("system");
+        Log.i("icomera", "checkIcomera");
         try
         {
-            //int icomeraID = aH.readIcomera("system").get(0).system_id;
-            int icomeraID = Integer.parseInt(aH.readIcomera());
-            Toast.makeText(this, String.valueOf(icomeraID), Toast.LENGTH_SHORT).show();
-            /*int resourceID = fH.getResourceID("SID" + String.valueOf(icomeraID), "string");
+            String icomeraID = aH.readIcomera();
+            Log.i("icomera", icomeraID);
+            int resourceID = fH.getResourceID("SID" + icomeraID, "string");
             if(resourceID != 0)
             {
                 String vinNumber = fH.readString(resourceID);
@@ -246,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                 if(resourceID != 0)
                 {
                     String busID = fH.readString(resourceID);
+                    Log.i("icomera", busID);
                     unlocker.receiveEvent(2, busID);
                 }
                 unlocker.startLivingDemands();
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             else
             {
                 unlocker.stopLivingDemands();
-            }*/
+            }
         }
         catch(Exception e)
         {

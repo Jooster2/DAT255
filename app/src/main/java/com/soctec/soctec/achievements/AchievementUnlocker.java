@@ -1,5 +1,6 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.soctec.soctec.utils.FileHandler;
@@ -117,6 +118,7 @@ public class AchievementUnlocker implements Observer
                         String.valueOf(stats.getScanCount()));
                 break;
             case Demand.BUS_RIDE:
+                Log.i("icomera", "walla");
                 didUnlock = checkUnlockables(Demand.BUS_RIDE, content);
                 break;
         }
@@ -138,11 +140,14 @@ public class AchievementUnlocker implements Observer
         Iterator<Achievement> it = unlockableAchievements.iterator();
         while(it.hasNext())
         {
+            Log.i("icomera", "walla2");
             Achievement achievement = it.next();
             if(achievement.checkDemands(type, content))
             {
+
                 if(achievement.isCompleted())
                 {
+                    Log.i("icomera", "unlocking");
                     it.remove();
                     stats.addCompletedAchievement(achievement);
                     recentlyUnlocked.add(achievement);

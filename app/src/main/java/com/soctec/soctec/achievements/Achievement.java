@@ -1,5 +1,7 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,6 +102,7 @@ public class Achievement implements Serializable
             if(element.type == demandType &&
                     element.requirement.equals(demandContent))
             {
+                Log.i("icomera", "demand equaled");
                 it.remove();
                 completedDemands.add(element);
                 return true;
