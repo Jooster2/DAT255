@@ -203,10 +203,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             mViewPager.setCurrentItem(1);
     }
 
+    @Override
     protected void onStop()
     {
         super.onStop();
         unlocker.saveUnlockable();
+        FileHandler.getInstance().writeObject("stats.sav", stats);
     }
 
     /**
@@ -218,13 +220,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         super.onPause();
         NetworkHandler.getInstance(this).stopThread();
         unregisterReceiver(connectionChecker);
-    }
-
-    @Override
-    protected void onStop ()
-    {
-        FileHandler.getInstance().writeObject("stats.sav", stats);
-        super.onStop();
     }
 
     /**

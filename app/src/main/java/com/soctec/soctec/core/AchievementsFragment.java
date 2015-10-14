@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
+import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.core.AchievementsAdapter;
 
 import java.util.ArrayList;
@@ -77,10 +78,11 @@ public class AchievementsFragment extends Fragment
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            //if (achi.getType().equals("INF");
-                //sb.append(achi.getFlavorText() + " "+ stats.getScans() + " av "+achi.getDemands+ ",");
-            //sb.append(achi.getFlavorText() + ",");
-            sb.append("walla,");
+            if (achi.getType().equals("INF"))
+                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
+                                  " av " + achi.getDemands().get(0).requirement + ",");
+            else
+                sb.append(achi.getFlavorText() + ",");
             sb.append(achi.getImageName());
             unlockedList.add(sb.toString());
         }
@@ -109,8 +111,11 @@ public class AchievementsFragment extends Fragment
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            //sb.append(achi.getFlavorText() + ",");
-            sb.append("walla,");
+            if (achi.getType().equals("INF"))
+                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
+                                  " av " + achi.getDemands().get(0).requirement + ",");
+            else
+                sb.append(achi.getFlavorText() + ",");
             sb.append(achi.getImageName());
             lockedList.add(sb.toString());
         }
