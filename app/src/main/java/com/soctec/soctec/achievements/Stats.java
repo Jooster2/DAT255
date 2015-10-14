@@ -1,19 +1,20 @@
 package com.soctec.soctec.achievements;
 
 import android.content.Context;
-import android.content.Intent;
 
-import com.soctec.soctec.core.AchievementShowerActivity;
-
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 /**
  * Stats contains information about game progress
  * @author Joakim Schmidt
  * @version 1.0
  */
-public class Stats
+public class Stats implements Serializable
 {
+    private static final long serialVersionUID = 8L;
+
     private int points;
     private int scanCount;
     private int ratingPos;
@@ -22,6 +23,7 @@ public class Stats
     private String lastScanned;
     private LinkedList<Achievement> lastCompletedAchievements;
     private ArrayList<Achievement> completedAchievements;
+    private LinkedList <UserPair> listRecentScans;
     private long lastScannedTime;
     private boolean talkDone = false;
 
@@ -34,6 +36,7 @@ public class Stats
         lastScanned = "";
         lastCompletedAchievements = new LinkedList<>();
         completedAchievements = new ArrayList<>();
+        listRecentScans = new LinkedList<>();
         //TODO read db
     }
 
@@ -124,20 +127,25 @@ public class Stats
      */
     public void setLastScanned(String newScan)
     {
+        removeOldScans();
+
         if(lastScanned.equals(newScan) && talkDone == false && lastScannedTime != 0)
         {
-            timeTalked += (System.currentTimeMillis()-lastScannedTime)/1000;
+            timeTalked += (System.currentTimeMillis() - lastScannedTime) / 1000;
             talkDone = true;
+            lastScannedTime = System.currentTimeMillis();
         }
-        else if(!lastScanned.equals(newScan) && talkDone == false)
+        else if(!lastScanned.equals(newScan))
         {
             lastScannedTime = System.currentTimeMillis();
             lastScanned = newScan;
+            talkDone = false;
         }
-        else //(lastScanned.equals(newScan) && talkDone == true)
+        else if (lastScanned.equals(newScan) && talkDone == true)
         {
-            //TODO what happens here? nothing?
+            timeTalked+= (System.currentTimeMillis() - lastScannedTime) / 1000;
         }
+        addRecentScan(System.currentTimeMillis(), newScan);
     }
 
     /**
@@ -185,6 +193,59 @@ public class Stats
         temp.addAll(lastCompletedAchievements);
         lastCompletedAchievements.clear();
         return temp;
+    }
+
+    public void removeOldScans ()
+    {
+        Iterator it = listRecentScans.iterator();
+        while (it.hasNext())
+        {
+            UserPair element = (UserPair) it.next();
+            //two hours :7200000
+            if((System.currentTimeMillis() - element.getScanTime()) >60000)
+                it.remove();
+            else
+                break;
+        }
+    }
+    public boolean isScannedRecently (String lastScanned)
+    {
+        for (UserPair pair :listRecentScans)
+        {
+            if (pair.getScannedUser().equals(lastScanned))
+                return true;
+        }
+        return false;
+    }
+
+    public void addRecentScan(long lastScannedTime, String lastScanned)
+    {
+        if (!isScannedRecently(lastScanned))
+            listRecentScans.addLast (new UserPair(lastScannedTime, lastScanned));
+    }
+
+
+
+    public class UserPair implements Serializable
+    {
+        private static final long serialVersionUID = 7L;
+        long scanTime;
+        String scannedUser;
+        public UserPair (long scanTime, String scannedUser)
+        {
+            this.scanTime = scanTime;
+            this.scannedUser = scannedUser;
+        }
+
+        public long getScanTime()
+        {
+            return scanTime;
+        }
+
+        public String getScannedUser()
+        {
+            return scannedUser;
+        }
     }
 
 }

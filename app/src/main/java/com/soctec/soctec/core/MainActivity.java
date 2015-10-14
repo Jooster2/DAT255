@@ -80,14 +80,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Profile.initProfile();
 
         //Initialize the Achievement engine
-        stats = new Stats();
+        stats = (Stats)FileHandler.getInstance().readObject("stats.sav");
+        if (stats == null)
+            stats = new Stats();
         creator = new AchievementCreator();
         unlocker = new AchievementUnlocker(this, stats, creator);
         creator.addObserver(unlocker);
         //int loaded = unlocker.loadUnlockable();
         //if(loaded > 0)
         creator.createFromFile();
-
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance().setMyActivity(this);
         NetworkHandler.getInstance().startThread();
@@ -171,6 +172,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //mViewPager.setCurrentItem(1);
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        new File(getFilesDir(),"stats.sav").delete();
+        super.onDestroy();
+    }
+
     /**
      * Starts NetworkHandler and registers connectionChecker as receiver
      */
@@ -196,10 +204,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             mViewPager.setCurrentItem(1);
     }
 
+    @Override
     protected void onStop()
     {
         super.onStop();
         unlocker.saveUnlockable();
+        FileHandler.getInstance().writeObject("stats.sav", stats);
     }
 
     /**
