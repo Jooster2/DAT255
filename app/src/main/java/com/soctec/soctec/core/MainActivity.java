@@ -101,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //Display help to user. Only on the very first startup
         SharedPreferences preferences = getSharedPreferences("com.soctec.soctec", MODE_PRIVATE);
-        if (preferences.getBoolean("first_time", true)) {
+        if (preferences.getBoolean("first_time", true))
+        {
             //Do this only the first startup
             FragmentManager fm = getSupportFragmentManager();
             HelpFragment hFragment = new HelpFragment();
