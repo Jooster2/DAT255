@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="false"
-        android:src="@drawable/newAchievementHeader" />
+        android:src="@drawable/new_achievement_header" />
 
     <ImageView
         android:layout_width="250dp"

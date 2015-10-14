@@ -11,7 +11,7 @@
         android:layout_height="60dp"
         android:paddingTop="10dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/matchHeader"/>
+        android:src="@drawable/match_header"/>
 
     <ListView
         android:layout_width="wrap_content"
