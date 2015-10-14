@@ -195,8 +195,8 @@ public class APIHandler
                     HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
                     Log.i("readIcomera", "Connection established");
                     conn.setRequestMethod("GET");
-                    conn.setConnectTimeout(2000);
-                    conn.setReadTimeout(2000);
+                    conn.setConnectTimeout(200);
+                    conn.setReadTimeout(200);
                     Log.i("readIcomera", "ResponseCode: " + conn.getResponseCode());
 
                     InputStream in = conn.getInputStream();
