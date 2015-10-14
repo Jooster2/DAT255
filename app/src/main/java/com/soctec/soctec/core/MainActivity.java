@@ -439,6 +439,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        FragmentManager fm = getSupportFragmentManager();
         InfoFragment iFragment = new InfoFragment();
         HelpFragment hFragment = new HelpFragment();
 
@@ -455,12 +456,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         else if(id == R.id.about)
         {
-           iFragment.show(getFragmentManager(), "Om");
+           iFragment.show(fm, "About");
         }
 
         else if (id == R.id.help)
         {
-            hFragment.show(getFragmentManager(), "Hjälp");
+            hFragment.show(fm, "Help");
         }
 
         return super.onOptionsItemSelected(item);
