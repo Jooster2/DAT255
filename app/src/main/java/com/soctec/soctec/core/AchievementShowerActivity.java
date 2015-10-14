@@ -28,7 +28,7 @@ public class AchievementShowerActivity extends Activity
         setContentView(R.layout.activity_achievement_shower);
 
         achievement = (Achievement) getIntent().getSerializableExtra("AchievementObject");
-
+        int scanCount = getIntent().getIntExtra("ScanCount", 0);
         ImageView headImageView = (ImageView)findViewById(R.id.showerHeadView);
         //headImageView.setImageResource(R.drawable.shower_head_text);
 
@@ -45,7 +45,15 @@ public class AchievementShowerActivity extends Activity
         pointsView.setText("Detta ger "+ achievement.getPoints() +" poäng!");
 
         TextView flavorText = (TextView)findViewById(R.id.flavorTextView);
+        if (achievement.getCompletedDemands().size() > 0 && achievement.getType().equals("INF"))
+            flavorText.setText(achievement.getFlavorText() + " " +scanCount+
+                                       " av " + achievement.getCompletedDemands().get(0).requirement + ",");
+        else if (achievement.getDemands().size() > 0 && achievement.getType().equals("INF"))
+            flavorText.setText(achievement.getFlavorText() + " " + scanCount +
+                    " av " + achievement.getDemands().get(0).requirement);
+        else
         flavorText.setText(achievement.getFlavorText());
+
 
         Button closeButton = (Button)findViewById(R.id.showerCloseButton);
         closeButton.setOnClickListener(
