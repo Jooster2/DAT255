@@ -13,12 +13,33 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/match_header"/>
 
+    <Button
+        android:id="@+id/matchOKButton"
+        android:text="OKEJ"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="4"
+        android:shadowRadius="4"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:onClick="onFinishedClick"/>
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/matchListView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/match_title"/>
+        android:layout_below="@+id/match_title"
+        android:layout_above="@+id/matchOKButton"/>
+
+
 
 </RelativeLayout>
