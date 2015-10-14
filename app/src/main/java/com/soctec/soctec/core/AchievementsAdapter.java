@@ -13,15 +13,16 @@ import android.widget.TextView;
 import com.soctec.soctec.R;
 import com.soctec.soctec.utils.FileHandler;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class AchievementsAdapter extends ArrayAdapter
 {
 
     private final Activity context;
-    ArrayList<String> itemNames;
+    LinkedList<String> itemNames;
 
 
-    public AchievementsAdapter(Activity context, ArrayList<String> itemNames)
+    public AchievementsAdapter(Activity context, LinkedList<String> itemNames)
     {
         super(context, R.layout.row_achievements, itemNames);
         // TODO Auto-generated constructor stub (why is this TODO?)

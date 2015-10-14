@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new File("stats.sav").delete();
         String account = getPlayAcc();
         if(account == null)
             account = "walla";
@@ -88,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator = new AchievementCreator();
         unlocker = new AchievementUnlocker(this, stats, creator);
         creator.addObserver(unlocker);
-        //int loaded = unlocker.loadUnlockable();
-        //if(loaded > 0)
-        creator.createFromFile();
+        int loaded = unlocker.loadUnlockable();
+        if(loaded == 0)
+            creator.createFromFile();
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance().setMyActivity(this);
         NetworkHandler.getInstance().startThread();
@@ -143,8 +142,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     protected void updateAchievementFragment()
     {
         AchievementsFragment aF = (AchievementsFragment)mSectionsPagerAdapter.getFragment(2);
+        if (unlocker.getUnlockableAchievements()!= null)
+        {
         aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
         aF.setPoints(stats.getPoints());
+        }
     }
 
     public Stats getStats()
@@ -172,6 +174,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         super.onStart();
         //mViewPager.setCurrentItem(1);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        //new File(getFilesDir(),"unlockableAchievements").delete();
+        //new File(getFilesDir(),"stats.sav").delete();
+        super.onDestroy();
     }
 
     /**
