@@ -269,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         {
             Intent showerIntent = new Intent(this, AchievementShowerActivity.class);
             showerIntent.putExtra("AchievementObject", achievement);
+            showerIntent.putExtra("ScanCount", stats.getScanCount());
             startActivity(showerIntent);
         }
         if(newAchievements.size() != 0)
