@@ -21,7 +21,7 @@ import java.util.Arrays;
  * FileHandler handles all reading and writing of files.
  * @singleton true
  * @author Joakim Schmidt
- * @version 1.0
+ * @version 1.1
  */
 public class FileHandler
 {

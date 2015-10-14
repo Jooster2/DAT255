@@ -2,15 +2,14 @@ package com.soctec.soctec.utils;
 
 import android.util.JsonReader;
 import android.util.Log;
-import android.util.Xml;
+
+import com.soctec.soctec.core.MainActivity;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  *  Handles all API-reading
  *  @author Joakim Schmidt
- *  @version 1.2
+ *  @version 1.3
  */
 public class APIHandler
 {
@@ -176,19 +175,18 @@ public class APIHandler
     //------------------------ ICOMERA STUFF BELOW ---------------------------
 
     /**
-     * Reads the Icomera API and returns a string with the SystemID
-     * @return string containing SystemID
+     * Reads the Icomera API and returns a string with the SystemID if parameter is null
+     * Otherwise calls MainActivity.fromIcomera() with runOnUIThread and returns null
+     * @return string containing SystemID or null if parameter set
      */
-    public String readIcomera()
+    public String readIcomera(final MainActivity main)
     {
         final StringBuilder results = new StringBuilder();
         Thread myThread = new Thread()
         {
             public void run()
             {
-                Log.i("readIcomera", "Thread start");
                 String url = "http://www.ombord.info/api/xml/system";
-
                 try
                 {
                     URL requestURL = new URL(url);
@@ -197,7 +195,7 @@ public class APIHandler
                     conn.setRequestMethod("GET");
                     conn.setConnectTimeout(200);
                     conn.setReadTimeout(200);
-                    Log.i("readIcomera", "ResponseCode: " + conn.getResponseCode());
+                    Log.i("readIcomera", "ResponseCode: "+conn.getResponseCode());
 
                     InputStream in = conn.getInputStream();
                     Log.i("readIcomera", "InputStream connected");
@@ -206,12 +204,12 @@ public class APIHandler
                     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                     Document doc = dBuilder.parse(in);
                     doc.getDocumentElement().normalize();
-                    
+
                     NodeList nList = doc.getElementsByTagName("system_id");
-                    for (int i = 0; i < nList.getLength(); i++)
+                    for(int i = 0; i < nList.getLength(); i++)
                     {
                         Node node = nList.item(i);
-                        if (node.getNodeType() == Node.ELEMENT_NODE)
+                        if(node.getNodeType() == Node.ELEMENT_NODE)
                         {
                             Element element = (Element) node;
                             results.append(element.getTextContent());
@@ -219,26 +217,34 @@ public class APIHandler
                     }
 
                     conn.disconnect();
-                }
-                catch(IOException | ParserConfigurationException | SAXException e)
+                } catch(IOException | ParserConfigurationException | SAXException e)
                 {
                     e.printStackTrace();
                     Log.i("readIcomera", e.toString());
                 }
 
-
+                if(main != null)
+                {
+                    main.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            main.fromIcomera(results.toString());
+                        }
+                    });
+                }
             }
         };
         myThread.start();
-        try
+        if(main == null)
         {
-            myThread.join();
+            try{ myThread.join(); }
+            catch(InterruptedException e){ e.printStackTrace(); }
+            return results.toString();
         }
-        catch(InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        else
+            return null;
 
-        return results.toString();
     }
 }

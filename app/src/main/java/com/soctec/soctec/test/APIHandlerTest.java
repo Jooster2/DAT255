@@ -51,7 +51,7 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testIcomera() throws Exception
     {
-        String data = aH.readIcomera();
+        String data = aH.readIcomera(null);
         assertNotNull(data);
     }
 }

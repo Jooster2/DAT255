@@ -124,16 +124,6 @@ public class Demand extends Observable implements Runnable, Serializable
     }
 
     /**
-     * Sets the running variable to true. Call before attempting to run
-     * the Demand in a Thread
-     */
-    public void start()
-    {
-        Log.i("LivingDemand", "Starting up");
-        running = true;
-    }
-
-    /**
      * Check whether the Demand is capable of being run in a Thread right now
      * @return true if runnable
      */
@@ -151,10 +141,9 @@ public class Demand extends Observable implements Runnable, Serializable
         running = true;
         while(running)
         {
-            Log.i("LivingDemand", "Starting loop");
             APIHandler aH = APIHandler.getInstance();
             FileHandler fH = FileHandler.getInstance();
-            String vinNumber = extraPrimary;
+            String vinNumber;
             if(extraPrimary.equals("CURRENT_BUS"))
             {
                 /*
@@ -162,13 +151,10 @@ public class Demand extends Observable implements Runnable, Serializable
                 resource-id from FileHandler for that particular string, then read the string,
                 which is the vinNumber that is inserted into APIHandler.readSingle.
                  */
-                //TODO clean up a bit, and restore functionality outcommented below
-                String icomeraID = aH.readIcomera();
+                String icomeraID = aH.readIcomera(null);
                 int resourceID = fH.getResourceID("SID" + icomeraID, "string");
                 vinNumber = fH.readString(resourceID);
 
-                //For testing, uncomment line below
-                //vinNumber = "Vin_Num_001";
             }
             else
             {

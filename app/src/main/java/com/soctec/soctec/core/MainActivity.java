@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         int loaded = unlocker.loadUnlockable();
         if(loaded == 0)
             creator.createFromFile();
+
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance().setMyActivity(this);
         NetworkHandler.getInstance().startThread();
@@ -146,8 +147,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         AchievementsFragment aF = (AchievementsFragment)mSectionsPagerAdapter.getFragment(2);
         if (unlocker.getUnlockableAchievements()!= null)
         {
-        aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
-        aF.setPoints(stats.getPoints());
+            aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
+            aF.setPoints(stats.getPoints());
         }
     }
 
@@ -212,6 +213,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     }
 
+    /**
+     * Saves stats and unlocker-data to respective savefiles
+     */
     @Override
     protected void onStop()
     {
@@ -299,35 +303,29 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public void checkIcomera()
     {
-        APIHandler aH = APIHandler.getInstance();
+        APIHandler.getInstance().readIcomera(this);
+    }
+    public void fromIcomera(String icomeraID)
+    {
         FileHandler fH = FileHandler.getInstance();
-        try
+        int resourceID = fH.getResourceID("SID" + icomeraID, "string");
+        if(resourceID != 0)
         {
-            String icomeraID = aH.readIcomera();
-            int resourceID = fH.getResourceID("SID" + icomeraID, "string");
+            String vinNumber = fH.readString(resourceID);
+            resourceID = fH.getResourceID(vinNumber, "string");
             if(resourceID != 0)
             {
-                String vinNumber = fH.readString(resourceID);
-                resourceID = fH.getResourceID(vinNumber, "string");
-                if(resourceID != 0)
-                {
-                    String busID = fH.readString(resourceID);
-                    unlocker.receiveEvent(2, busID);
-                    checkAchievementChanges();
+                String busID = fH.readString(resourceID);
+                unlocker.receiveEvent(2, busID);
+                checkAchievementChanges();
 
-                }
-                unlocker.startLivingDemands();
             }
-            else
-            {
-                unlocker.stopLivingDemands();
-            }
+            unlocker.startLivingDemands();
         }
-        catch(Exception e)
+        else
         {
-            e.printStackTrace();
+            unlocker.stopLivingDemands();
         }
-
     }
 
     /**

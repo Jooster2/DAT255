@@ -51,7 +51,8 @@ public class Stats implements Serializable
         hasRated = rate;
     }
 
-    public int getTimeTalked (){
+    public int getTimeTalked()
+    {
         return timeTalked;
     }
     /**
@@ -213,7 +214,7 @@ public class Stats implements Serializable
         {
             UserPair element = (UserPair) it.next();
             //two hours :7200000
-            if((System.currentTimeMillis() - element.getScanTime()) >60000)
+            if((System.currentTimeMillis() - element.getScanTime()) >= 60000)
                 it.remove();
             else
                 break;

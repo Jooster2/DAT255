@@ -6,9 +6,11 @@ import android.util.Pair;
 import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.utils.FileHandler;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 /**
@@ -18,14 +20,14 @@ import java.util.Observer;
  */
 public class AchievementUnlocker implements Observer
 {
-    private static final String SAVE_FILE = "unlockableAchievements";
+    private static final String SAVE_FILE = "unlocker.sav";
 
-    ArrayList<Achievement> unlockableAchievements;
-    ArrayList<Achievement> recentlyUnlocked;
-    MainActivity main;
-    Stats stats;
-    AchievementCreator creator;
-    HashMap<Demand, Achievement> livingDemands;
+    private ArrayList<Achievement> unlockableAchievements;
+    private ArrayList<Achievement> recentlyUnlocked;
+    private MainActivity main;
+    private Stats stats;
+    private AchievementCreator creator;
+    private HashMap<Demand, Achievement> livingDemands;
 
     /**
      * Constructor that initiates the unlockableAchievements list, saves a reference to Stats and
@@ -61,7 +63,6 @@ public class AchievementUnlocker implements Observer
     {
         for(Demand demand : livingDemands.keySet())
         {
-            demand.start();
             Thread demandThread = new Thread(demand);
             demandThread.start();
         }
@@ -104,28 +105,36 @@ public class AchievementUnlocker implements Observer
     }
 
     /**
-     * Loads the current unlockableAchievements-list from file
+     * Restores the unlocker from save file
      */
+    @SuppressWarnings("unchecked")
     public int loadUnlockable()
     {
         FileHandler fH = FileHandler.getInstance();
-        if((ArrayList<Achievement>)fH.readObject(SAVE_FILE)== null)
+        if(fH.readObject(SAVE_FILE) == null)
             return 0;
         else
         {
-            unlockableAchievements = (ArrayList<Achievement>)fH.readObject(SAVE_FILE);
+            LinkedList<Serializable> buffer = (LinkedList<Serializable>)fH.readObject(SAVE_FILE);
+            unlockableAchievements = (ArrayList<Achievement>)buffer.removeFirst();
+            recentlyUnlocked = (ArrayList<Achievement>)buffer.removeFirst();
+            livingDemands = (HashMap<Demand, Achievement>)buffer.removeFirst();
             return unlockableAchievements.size();
         }
 
     }
 
     /**
-     * Saves the current unlockableAchievements-list to file
+     * Saves the unlocker to file
      */
     public void saveUnlockable()
     {
+        LinkedList<Serializable> buffer = new LinkedList<>();
+        buffer.add(unlockableAchievements);
+        buffer.add(recentlyUnlocked);
+        buffer.add(livingDemands);
         FileHandler fH = FileHandler.getInstance();
-        fH.writeObject(SAVE_FILE, unlockableAchievements);
+        fH.writeObject(SAVE_FILE, buffer);
     }
 
     /**
