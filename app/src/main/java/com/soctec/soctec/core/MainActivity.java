@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        new File("stats.sav").delete();
         String account = getPlayAcc();
         if(account == null)
             account = "walla";
@@ -196,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Set current tab
         if (mViewPager.getCurrentItem()== 0)
             mViewPager.setCurrentItem(1);
+
     }
 
     @Override
@@ -230,6 +232,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             mViewPager.setCurrentItem(1);
     }
 
+    public void updateRatingBar()
+    {
+        ((MainFragment)mSectionsPagerAdapter.getFragment(0)).updateRatingBar();
+    }
+
     /**
      * Called by NetworkHandler when data has been received from a peer.
      * @param idFromPeer The unique ID of the peer
@@ -237,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public void receiveDataFromPeer(String idFromPeer, ArrayList<ArrayList<String>> profileFromPeer)
     {
+        stats.setHasRated(false);
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 
@@ -254,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         //getFragment() must have position 0 for some reason
         ((MainFragment)mSectionsPagerAdapter.getFragment(0)).enableRatingButtons();
+
 
     }
 

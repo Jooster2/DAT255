@@ -26,6 +26,7 @@ public class Stats implements Serializable
     private LinkedList <UserPair> listRecentScans;
     private long lastScannedTime;
     private boolean talkDone = false;
+    private boolean hasRated = true;
 
     /**
      * Constructs an empty Stats object
@@ -38,6 +39,16 @@ public class Stats implements Serializable
         completedAchievements = new ArrayList<>();
         listRecentScans = new LinkedList<>();
         //TODO read db
+    }
+
+    public boolean hasRated()
+    {
+        return hasRated;
+    }
+
+    public void setHasRated(boolean rate)
+    {
+        hasRated = rate;
     }
 
     public int getTimeTalked (){

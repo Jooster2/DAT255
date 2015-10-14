@@ -1,6 +1,7 @@
 package com.soctec.soctec.network;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.core.MainActivity;
@@ -307,6 +308,14 @@ public class NetworkHandler
                     int ratingNeg = ois.readInt();
                     myActivity.getStats().setRatingPos(ratingPos);
                     myActivity.getStats().setRatingNeg(ratingNeg);
+                    myActivity.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            myActivity.updateRatingBar();
+                        }
+                    });
                     ois.close();
                 }
                 else //msg == PUSH_TYPE

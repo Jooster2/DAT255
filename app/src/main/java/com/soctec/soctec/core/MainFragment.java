@@ -31,7 +31,7 @@ import com.soctec.soctec.network.NetworkHandler;
 public class MainFragment extends Fragment
 {
 
-    private int ratingUpdateFreq = 1; // Defines the update frequency of the progressbar
+    private int ratingUpdateFreq = 3; // Defines the update frequency of the progressbar
     ProgressBar progressBar;
     ImageButton yesButton;
     ImageButton noButton;
@@ -66,6 +66,7 @@ public class MainFragment extends Fragment
                     public void onClick(View v) {
                         sendRatingToServer(true);
                         disableRatingButtons();
+                        stats.setHasRated(true);
                     }
                 }
         );
@@ -77,12 +78,21 @@ public class MainFragment extends Fragment
                     public void onClick(View v) {
                         sendRatingToServer(false);
                         disableRatingButtons();
+                        stats.setHasRated(true);
                     }
                 }
         );
 
         updateRatingBar();
 
+        if(stats.hasRated())
+        {
+            enableRatingButtons();
+        }
+        else
+        {
+            disableRatingButtons();
+        }
         ((MainActivity)getActivity()).startReceiver();
     }
 
