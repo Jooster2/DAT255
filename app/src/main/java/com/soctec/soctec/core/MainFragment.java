@@ -71,7 +71,7 @@ public class MainFragment extends Fragment
                 }
         );
 
-
+        updateRatingBar();
 
         return view;
     }
