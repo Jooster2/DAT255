@@ -1,6 +1,7 @@
 package com.soctec.soctec.core;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -258,7 +259,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         matchIntent.putExtras(b);
         startActivity(matchIntent);
 
-        //((MainFragment)mSectionsPagerAdapter.getFragment(1)).enableRatingButtons();
+        //getFragment() must have position 0 for some reason
+        ((MainFragment)mSectionsPagerAdapter.getFragment(0)).enableRatingButtons();
 
     }
 
@@ -494,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter
     {
-        FragmentManager fragmentManager;
+        public FragmentManager fragmentManager;
 
         public SectionsPagerAdapter(FragmentManager fm)
         {
