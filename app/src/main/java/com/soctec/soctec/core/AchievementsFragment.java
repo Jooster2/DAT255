@@ -78,11 +78,20 @@ public class AchievementsFragment extends Fragment
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            if (achi.getType().equals("INF"))
+            if (achi.getCompletedDemands().size() > 0 && achi.getType().equals("INF"))
+            {
                 sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
-                                  " av " + achi.getDemands().get(0).requirement + ",");
+                        " av " + achi.getCompletedDemands().get(0).requirement + ",");
+            }
+            else if(achi.getDemands().size() > 0 && achi.getType().equals("INF"))
+            {
+                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
+                        " av " + achi.getDemands().get(0).requirement + ",");
+            }
             else
+            {
                 sb.append(achi.getFlavorText() + ",");
+            }
             sb.append(achi.getImageName());
             unlockedList.add(sb.toString());
         }
@@ -111,11 +120,20 @@ public class AchievementsFragment extends Fragment
         {
             StringBuilder sb = new StringBuilder();
             sb.append(achi.getName() + ",");
-            if (achi.getType().equals("INF"))
+            if (achi.getCompletedDemands().size() > 0 && achi.getType().equals("INF"))
+            {
                 sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
-                                  " av " + achi.getDemands().get(0).requirement + ",");
+                        " av " + achi.getCompletedDemands().get(0).requirement + ",");
+            }
+            else if(achi.getDemands().size() > 0 && achi.getType().equals("INF"))
+            {
+                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
+                        " av " + achi.getDemands().get(0).requirement + ",");
+            }
             else
+            {
                 sb.append(achi.getFlavorText() + ",");
+            }
             sb.append(achi.getImageName());
             lockedList.add(sb.toString());
         }
