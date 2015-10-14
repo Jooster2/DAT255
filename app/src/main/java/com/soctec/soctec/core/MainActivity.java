@@ -244,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         startActivity(matchIntent);
 
         updateAchievementFragment();
+        ((MainFragment)mSectionsPagerAdapter.getFragment(1)).enableRatingButtons();
     }
 
     /**
