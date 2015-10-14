@@ -89,14 +89,14 @@ public class MainFragment extends Fragment
     public void enableRatingButtons(){
         yesButton.setEnabled(true);
         noButton.setEnabled(true);
-        yesButton.setImageResource(R.drawable.thumb_up_black_36dp); //TODO Fixa färgade tummar
-        noButton.setImageResource(R.drawable.thumb_down_black_36dp);
+        yesButton.setImageResource(R.drawable.thumb_up_blackgreen);
+        noButton.setImageResource(R.drawable.thumb_down_blackred);
     }
     public void disableRatingButtons(){
         yesButton.setEnabled(false);
         noButton.setEnabled(false);
-        yesButton.setImageResource(R.drawable.thumb_up_grey_test); //TODO Fixa bleka tummar
-        noButton.setImageResource(R.drawable.thumb_up_grey_test);
+        yesButton.setImageResource(R.drawable.thumb_up_grey);
+        noButton.setImageResource(R.drawable.thumb_down_grey);
     }
 
     public void updateRatingBar()
@@ -124,6 +124,6 @@ public class MainFragment extends Fragment
 
 
 //TODO ny update beroede på hur vi tar in data från server
-//TODO Ny grafik: "Utmärkelse!", Grön (y), Röd (n), Blek (y), Blek (n)
+//TODO Ny grafik: "Utmärkelse!", Grön (y), Röd (n), Blek (y), Blek (n), Profil, utmärkelse
 
 
