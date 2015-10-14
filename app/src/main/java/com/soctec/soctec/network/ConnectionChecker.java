@@ -74,6 +74,7 @@ public class ConnectionChecker extends BroadcastReceiver
             if (ni.getState().equals(NetworkInfo.State.CONNECTED) && connectedToElectricity)
             {
                 myActivity.updateQR(getNewQR(context));
+                myActivity.checkIcomera();
             }
             else
             {

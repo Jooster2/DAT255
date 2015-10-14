@@ -15,7 +15,7 @@ public class APIHandlerTest extends AndroidTestCase
 {
     APIHandler aH = APIHandler.getInstance();
     // Insert key from klotterplank here
-    public static String key = "";
+    public static String key = "Basic Z3JwMjQ6UVg0Tk5WZkJ3Zg==";
 
 
     /**
@@ -51,8 +51,7 @@ public class APIHandlerTest extends AndroidTestCase
      */
     public void testIcomera() throws Exception
     {
-        ArrayList<APIHandler.Icomera> data = aH.readIcomera("system");
-        assertEquals(1, data.size());
-        assertNotNull(data.get(0).system_id);
+        String data = aH.readIcomera();
+        assertNotNull(data);
     }
 }

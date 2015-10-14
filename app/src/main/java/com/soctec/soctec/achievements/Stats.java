@@ -26,7 +26,6 @@ public class Stats implements Serializable
     private LinkedList <UserPair> listRecentScans;
     private long lastScannedTime;
     private boolean talkDone = false;
-    Context mContext;
 
     /**
      * Constructs an empty Stats object
