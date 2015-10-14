@@ -27,7 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  *  Handles all API-reading
  *  @author Joakim Schmidt
- *  @version 1.1
+ *  @version 1.2
  */
 public class APIHandler
 {
@@ -87,7 +87,6 @@ public class APIHandler
             Log.i("APIHandler", "Has read new values, list is now size: " + lastReadList.size());
         }
         ArrayList<String> lastReadValue = lastReadList.get(0);
-        Log.i("APIHandler", "List is: " + lastReadValue.toString());
         for(String item : lastReadValue)
         {
             if(item.contains(lookingFor))
@@ -97,7 +96,6 @@ public class APIHandler
                 break;
             }
         }
-        Log.i("APIHandler", "Returning " + valueFound);
         return valueFound;
     }
 
@@ -134,10 +132,8 @@ public class APIHandler
 
 
             reader.beginArray();
-            Log.i("APIHandler", reader.toString());
             while(reader.hasNext())
             {
-                Log.i("APIHandler", "parsing messages");
                 responseData.add(getMessages(reader));
             }
             reader.endArray();

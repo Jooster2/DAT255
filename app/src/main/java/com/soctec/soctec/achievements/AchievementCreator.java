@@ -7,7 +7,7 @@ import java.util.Observable;
 /**
  * An AchievementCreator creates Achievement objects on request.
  * @author Joakim Schmidt
- * @version 2.0
+ * @version 2.1
  */
 public class AchievementCreator extends Observable
 {

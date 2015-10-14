@@ -14,7 +14,7 @@ import java.util.Observer;
 /**
  * Handles created achievements that are not yet completed, checks for completion
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.0
+ * @version 2.1
  */
 public class AchievementUnlocker implements Observer
 {

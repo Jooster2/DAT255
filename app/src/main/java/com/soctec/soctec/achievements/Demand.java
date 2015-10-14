@@ -14,7 +14,7 @@ import java.util.Observable;
 /**
  * Demand used by Achievements to determine if it is earned or not
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.1
+ * @version 2.2
  */
 public class Demand extends Observable implements Runnable, Serializable
 {
@@ -119,6 +119,7 @@ public class Demand extends Observable implements Runnable, Serializable
      */
     public void shutdown()
     {
+        Log.i("LivingDemand", "Shutting down");
         running = false;
     }
 
@@ -128,6 +129,7 @@ public class Demand extends Observable implements Runnable, Serializable
      */
     public void start()
     {
+        Log.i("LivingDemand", "Starting up");
         running = true;
     }
 
@@ -149,6 +151,7 @@ public class Demand extends Observable implements Runnable, Serializable
         running = true;
         while(running)
         {
+            Log.i("LivingDemand", "Starting loop");
             APIHandler aH = APIHandler.getInstance();
             FileHandler fH = FileHandler.getInstance();
             String vinNumber = extraPrimary;
@@ -160,15 +163,22 @@ public class Demand extends Observable implements Runnable, Serializable
                 which is the vinNumber that is inserted into APIHandler.readSingle.
                  */
                 //TODO clean up a bit, and restore functionality outcommented below
-                /*String icomeraID = aH.readIcomera();
+                String icomeraID = aH.readIcomera();
                 int resourceID = fH.getResourceID("SID" + icomeraID, "string");
                 vinNumber = fH.readString(resourceID);
-                */
-                vinNumber = "Vin_Num_001";
+
+                //For testing, uncomment line below
+                //vinNumber = "Vin_Num_001";
             }
+            else
+            {
+                int resourceID = fH.getResourceID(extraPrimary, "string");
+                vinNumber = fH.readString(resourceID);
+            }
+            Log.i("LivingDemand", "Got VinNumber: " + vinNumber);
             aH.clearLastRead();
             String fromAPI = aH.readSingle("value", vinNumber, extraSecondary, detail);
-            Log.i("APIHandler", "Read from API: " + fromAPI);
+            Log.i("LivingDemand", "Retrieved from API: " + fromAPI);
             if(fromAPI != null)
             {
                 setChanged();
@@ -177,6 +187,7 @@ public class Demand extends Observable implements Runnable, Serializable
 
             try
             {
+                Log.i("LivingDemand", "Going to sleep");
                 Thread.sleep(10000);
             }
             catch(InterruptedException e)

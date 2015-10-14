@@ -238,9 +238,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      * Reads the Icomera API, and determines if we are on a bus. If so, we start all
      * LivingDemands, and then sends an event to unlocker, to check Achievements.
      */
-    public void checkIcomera(View v)
+    public void checkIcomera()
     {
-        /*APIHandler aH = APIHandler.getInstance();
+        APIHandler aH = APIHandler.getInstance();
         FileHandler fH = FileHandler.getInstance();
         try
         {
@@ -267,8 +267,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         catch(Exception e)
         {
             e.printStackTrace();
-        }*/
-        unlocker.startLivingDemands();
+        }
 
     }
 

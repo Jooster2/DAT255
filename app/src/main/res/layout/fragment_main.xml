@@ -57,15 +57,4 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Icomera"
-        android:id="@+id/icomeraButton"
-        android:layout_above="@+id/imageView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:clickable="true"
-        android:onClick="checkIcomera"/>
-
 </RelativeLayout>
