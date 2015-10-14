@@ -1,7 +1,5 @@
 package com.soctec.soctec.network;
 
-import android.util.Pair;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,7 +10,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class can receive connection from a client. The client might want to push data to the
@@ -25,7 +22,7 @@ public class Server
     final int PORT_NR = 49999;
     final boolean PUSH_MSG = true;
     final boolean FETCH_MSG = false;
-    HashMap<String, Pair<Integer, Integer>> database;
+    HashMap<String, Rating> database;
 
     /**
      * Creates a new Server object
@@ -166,12 +163,12 @@ public class Server
     {
         if(database.containsKey(user))
         {
-            database.put(user, new Pair<>(database.get(user).first + 1,
-                                          database.get(user).second));
+            database.put(user, new Rating(database.get(user).positive + 1,
+                                          database.get(user).negative));
         }
         else
         {
-            database.put(user, new Pair<>(1, 0));
+            database.put(user, new Rating(1, 0));
         }
     }
 
@@ -183,12 +180,12 @@ public class Server
     {
         if(database.containsKey(user))
         {
-            database.put(user, new Pair<>(database.get(user).first,
-                                          database.get(user).second + 1));
+            database.put(user, new Rating(database.get(user).positive,
+                                          database.get(user).negative + 1));
         }
         else
         {
-            database.put(user, new Pair<>(0, 1));
+            database.put(user, new Rating(0, 1));
         }
     }
 
@@ -201,7 +198,7 @@ public class Server
     {
         if(database.containsKey(user))
         {
-            return database.get(user).first;
+            return database.get(user).positive;
         }
         else
             return 0;
@@ -216,9 +213,17 @@ public class Server
     {
         if(database.containsKey(user))
         {
-            return database.get(user).second;
+            return database.get(user).negative;
         }
         else
             return 0;
+    }
+
+    private class Rating
+    {
+        public int positive;
+        public int negative;
+
+        public Rating(int pos, int neg){positive=pos;negative=neg;}
     }
 }
