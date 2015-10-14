@@ -31,7 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class APIHandler
 {
-    private String key = "Basic Z3JwMjQ6UVg0Tk5WZkJ3Zg==";
+    private String key = "";
     private ArrayList<ArrayList<String>> lastReadList;
 
     /**
