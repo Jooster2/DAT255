@@ -59,7 +59,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceM"
                 android:text="Ditt betyg"
                 android:id="@+id/textView4"
                 android:layout_marginLeft="5dp"
@@ -76,7 +76,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:indeterminate="false" />
         </LinearLayout>
 
@@ -90,7 +90,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Hur var senaste mötet?"
                 android:id="@+id/textView" />
 
@@ -104,8 +104,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/pos_button"
-                    android:background=""
-                    android:src="@drawable/thumb_up_black_36dp"
+                    android:background="#fffff"
+                    android:src="@drawable/thumb_up_blackgreen"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
 
@@ -113,8 +113,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/neg_button"
-                    android:background=""
-                    android:src="@drawable/thumb_down_black_36dp"
+                    android:background="#fffff"
+                    android:src="@drawable/thumb_down_blackred"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"/>
 
