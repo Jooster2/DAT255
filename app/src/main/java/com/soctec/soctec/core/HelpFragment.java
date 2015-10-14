@@ -1,27 +1,33 @@
 package com.soctec.soctec.core;
 
-import android.app.DialogFragment;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.soctec.soctec.R;
+import android.support.v4.app.DialogFragment;
 
 /**
- * Created by Jeppe on 2015-10-13.
+ * Created by Jeppe on 2015-10-12.
  */
+
 public class HelpFragment extends DialogFragment
 {
-    public HelpFragment()
-    {
-        // EMPTY CONSTRUCTOR
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_help, container, false);
-        return rootView;
+        return new AlertDialog.Builder(getActivity())
+                // Set Dialog Title
+                .setTitle("Hjälp")
+                        // Set Dialog Message
+                .setMessage("Kontakta GitMaster Joakim Schmidt för hjälp!")
+
+                        // OK button
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dismiss();
+                    }
+                }).create();
     }
 }
