@@ -15,7 +15,7 @@ public class APIHandlerTest extends AndroidTestCase
 {
     APIHandler aH = APIHandler.getInstance();
     // Insert key from klotterplank here
-    public static String key = "Basic Z3JwMjQ6UVg0Tk5WZkJ3Zg==";
+    public static String key = "";
 
 
     /**

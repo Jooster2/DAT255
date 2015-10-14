@@ -2,6 +2,7 @@ package com.soctec.soctec.network;
 
 import android.util.Log;
 
+import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.profile.Profile;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 /**
  * @author David
- * @version 5.0
+ * @version 5.2
  */
 public class NetworkHandler
 {
@@ -28,25 +29,20 @@ public class NetworkHandler
     private static NetworkHandler instance = null;
 
     /**
-     * Constructor
-     * @param act MainActivity
-     */
-    private NetworkHandler(MainActivity act)
-    {
-        myActivity = act;
-    }
-
-    /**
      * Returns the only instance
-     * @param activity MainActivity
      * @return the instance
      */
-    public static NetworkHandler getInstance(MainActivity activity)
+    public static NetworkHandler getInstance()
     {
         if(instance == null)
-            return instance = new NetworkHandler(activity);
+            return instance = new NetworkHandler();
         else
             return instance;
+    }
+
+    public void setMyActivity(MainActivity activity)
+    {
+        myActivity = activity;
     }
 
     /**
@@ -79,7 +75,7 @@ public class NetworkHandler
      */
     public void fetchRatingFromServer()
     {
-        ServerThread serverThread = new ServerThread();
+        ServerThread serverThread = new ServerThread(Profile.getUserCode());
         serverThread.start();
     }
 
@@ -283,10 +279,12 @@ public class NetworkHandler
 
         /**
          * Thread that fetches rating from server
+         * @param myID The ID of this device's user
          */
-        public ServerThread()
+        public ServerThread(String myID)
         {
             msgType = FETCH_TYPE;
+            userID = myID;
         }
 
         @Override
@@ -295,23 +293,28 @@ public class NetworkHandler
             try
             {
                 Socket socket = new Socket(SERVER_IP, SERVER_PORT_NR);
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeBoolean(msgType);
 
                 if(msgType == FETCH_TYPE)
                 {
+                    //Tell server who I am
+                    oos.writeObject(userID);
+
+                    //Read data from server
                     ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     int ratingPos = ois.readInt();
                     int ratingNeg = ois.readInt();
-                    ((MainActivity)myActivity).getStats().setRatingPos(ratingPos);
-                    ((MainActivity)myActivity).getStats().setRatingNeg(ratingNeg);
+                    myActivity.getStats().setRatingPos(ratingPos);
+                    myActivity.getStats().setRatingNeg(ratingNeg);
                     ois.close();
                 }
                 else //msg == PUSH_TYPE
                 {
-                    ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                     oos.writeObject(userID);
                     oos.writeBoolean(rating);
-                    oos.close();
                 }
+                oos.close();
                 socket.close();
             }
             catch(IOException e)

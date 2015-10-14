@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.network.ConnectionChecker;
+import com.soctec.soctec.network.NetworkHandler;
 
 /**
  *
@@ -47,32 +48,6 @@ public class MainFragment extends Fragment
         MainActivity main = (MainActivity)getActivity();
         stats = main.getStats();
 
-        progressBar = (ProgressBar)getView().findViewById(R.id.progressBar);
-
-        yesButton = (ImageButton) getView().findViewById(R.id.pos_button);
-        yesButton.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-
-                        //SEND incPosRating();to other user
-                        disableRatingButtons();
-                    }
-                }
-        );
-
-
-        noButton = (ImageButton) getView().findViewById(R.id.neg_button);
-        noButton.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-
-                        //SEND incNegRating(); to other user
-                        disableRatingButtons();
-                    }
-                }
-        );
-
-
 
         return view;
     }
@@ -83,6 +58,31 @@ public class MainFragment extends Fragment
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState)
     {
+        progressBar = (ProgressBar)getView().findViewById(R.id.rating_progress_bar);
+
+        yesButton = (ImageButton) getView().findViewById(R.id.pos_button);
+        yesButton.setOnClickListener(
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        sendRatingToServer(true);
+                        disableRatingButtons();
+                    }
+                }
+        );
+
+
+        noButton = (ImageButton) getView().findViewById(R.id.neg_button);
+        noButton.setOnClickListener(
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        sendRatingToServer(false);
+                        disableRatingButtons();
+                    }
+                }
+        );
+
+        updateRatingBar();
+
         ((MainActivity)getActivity()).startReceiver();
     }
 
@@ -90,14 +90,14 @@ public class MainFragment extends Fragment
     public void enableRatingButtons(){
         yesButton.setEnabled(true);
         noButton.setEnabled(true);
-        yesButton.setImageResource(R.drawable.thumb_up_black_36dp); //TODO Fixa färgade tummar
-        noButton.setImageResource(R.drawable.thumb_down_black_36dp);
+        yesButton.setImageResource(R.drawable.thumb_up_blackgreen);
+        noButton.setImageResource(R.drawable.thumb_down_blackred);
     }
     public void disableRatingButtons(){
         yesButton.setEnabled(false);
         noButton.setEnabled(false);
-        yesButton.setImageResource(R.drawable.thumb_up_grey_test); //TODO Fixa bleka tummar
-        noButton.setImageResource(R.drawable.thumb_up_grey_test);
+        yesButton.setImageResource(R.drawable.thumb_up_grey);
+        noButton.setImageResource(R.drawable.thumb_down_grey);
     }
 
     public void updateRatingBar()
@@ -110,10 +110,21 @@ public class MainFragment extends Fragment
             progressBar.setProgress((int) ratingPercent);
         }
     }
+
+    /**
+     * Tells NetworkHandler to send rating to server
+     * @param positiveRating true, if thumbs up was clicked. false if thumbs down
+     */
+    private void sendRatingToServer(boolean positiveRating)
+    {
+        NetworkHandler.getInstance().pushRatingToServer(
+                ((MainActivity) getActivity()).getStats().getlastScanned(),
+                positiveRating);
+    }
 }
 
 
 //TODO ny update beroede på hur vi tar in data från server
-//TODO Ny grafik: "Utmärkelse!", Grön (y), Röd (n), Blek (y), Blek (n)
+//TODO Ny grafik: "Utmärkelse!", Grön (y), Röd (n), Blek (y), Blek (n), Profil, utmärkelse
 
 

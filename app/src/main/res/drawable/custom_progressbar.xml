@@ -5,9 +5,9 @@
 <item android:id="@android:id/background">
     <shape>
         <gradient
-            android:startColor="#CC0000"
+            android:startColor="#FF0000"
 
-            android:endColor="#CC0000"
+            android:endColor="#FF0000"
             android:angle="270"
             />
     </shape>
