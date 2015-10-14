@@ -1,6 +1,8 @@
 package com.soctec.soctec.core;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import android.accounts.Account;
@@ -80,9 +82,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Initialize the Achievement engine
         stats = new Stats();
         creator = new AchievementCreator();
-
-        unlocker = new AchievementUnlocker(stats, creator);
+        unlocker = new AchievementUnlocker(this, stats, creator);
         creator.addObserver(unlocker);
+        //int loaded = unlocker.loadUnlockable();
+        //if(loaded > 0)
         creator.createFromFile();
 
         //Initialize networkHandler. Start server thread
@@ -192,6 +195,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             mViewPager.setCurrentItem(1);
     }
 
+    protected void onStop()
+    {
+        super.onStop();
+        unlocker.saveUnlockable();
+    }
+
     /**
      * Stops NetworkHandler and unregisters connectionChecker as receiver
      */
@@ -226,14 +235,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 
+        //Achievement stuff
         unlocker.receiveEvent(1, idFromPeer);
+        checkAchievementChanges();
 
-        for(Achievement achi : stats.getLastCompleted())
-        {
-            Intent showerIntent = new Intent(this, AchievementShowerActivity.class);
-            showerIntent.putExtra("AchievementObject", achi);
-            startActivity(showerIntent);
-        }
         //Match profile stuff
         Bundle b = new Bundle();
         b.putSerializable("list1", Profile.getProfile());
@@ -242,7 +247,57 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         matchIntent.putExtras(b);
         startActivity(matchIntent);
 
-        updateAchievementFragment();
+    }
+
+    public void checkAchievementChanges()
+    {
+        LinkedList<Achievement> newAchievements = stats.getLastCompleted();
+        for(Achievement achievement : newAchievements)
+        {
+            Intent showerIntent = new Intent(this, AchievementShowerActivity.class);
+            showerIntent.putExtra("AchievementObject", achievement);
+            startActivity(showerIntent);
+        }
+        if(newAchievements.size() != 0)
+            updateAchievementFragment();
+    }
+
+    /**
+     * Run whenever the WiFi state changes in ConnectionChecker.
+     * Reads the Icomera API, and determines if we are on a bus. If so, we start all
+     * LivingDemands, and then sends an event to unlocker, to check Achievements.
+     */
+    public void checkIcomera()
+    {
+        APIHandler aH = APIHandler.getInstance();
+        FileHandler fH = FileHandler.getInstance();
+        try
+        {
+            String icomeraID = aH.readIcomera();
+            int resourceID = fH.getResourceID("SID" + icomeraID, "string");
+            if(resourceID != 0)
+            {
+                String vinNumber = fH.readString(resourceID);
+                resourceID = fH.getResourceID(vinNumber, "string");
+                if(resourceID != 0)
+                {
+                    String busID = fH.readString(resourceID);
+                    unlocker.receiveEvent(2, busID);
+                    checkAchievementChanges();
+
+                }
+                unlocker.startLivingDemands();
+            }
+            else
+            {
+                unlocker.stopLivingDemands();
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     /**

@@ -1,69 +1,68 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Log;
+import android.util.Pair;
+
+import com.soctec.soctec.utils.APIHandler;
+import com.soctec.soctec.utils.FileHandler;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Observable;
 
 /**
- * Demand for Achievements, of the type "requires x of y to complete"
+ * Demand used by Achievements to determine if it is earned or not
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 1.2
+ * @version 2.2
  */
-public class Demand implements Serializable
+public class Demand extends Observable implements Runnable, Serializable
 {
+    public static final int PERSON_SCAN = 1;
+    public static final int BUS_RIDE = 2;
+    public static final int API = 3;
+
     private static final long serialVersionUID = 2L;
-    public String type;
-    public int amount;
-    public String equation;
+    public volatile boolean running;
+    //Type of requirement
+    public int type;
+    //The actual requirement
     public String requirement;
+    //Some extra data for doing different things
+    public String extraPrimary = null;
+    //Some more extra data, mostly used for API type Demands
+    public String extraSecondary = null;
+    //Numerical extra, for equations and API type Demands
+    public int detail;
 
     /**
      * Constructor that sets class variables to received parameters.
      * @param type type of demand
-     * @param amount the amount of times, for example "the number of scans before unlocked".
+     * @param requirement requirement for unlocking
+     * @param extraPrimary extra data for constructing demand
+     * @param detail comes from Achievement-ID, how many times it has been created (inclusive)
      */
-    public Demand(String type, int amount)
+    public Demand(int type, String requirement,
+                  String extraPrimary, String extraSecondary, int detail)
     {
+        running = false;
         this.type = type;
-        this.amount = amount;
-    }
-
-    /**
-     * Constructor that sets class variables to received parameters.
-     * @param type type of demand
-     * @param amount amount of type-events needed to unlock
-     * @param equation equation for infinite demands
-     * @param cycle comes from Achievement-ID, how many times it has been created (inclusive)
-     */
-    public Demand(String type, int amount, String equation, int cycle)
-    {
-        this.type = type;
-        this.amount = calculateDemand(amount, equation, cycle);
-        this.equation = equation;
-    }
-
-    /**
-     * Constructor that sets class variables to received parameters.
-     * @param requirement Requirement for completion
-     */
-    public Demand(String type, String requirement)
-    {
-        //TODO determine if type is really necessary for this type of demand
-        /* It will help by allowing more complex achievements to be constructed, with
-        different types of demands. On the other hand, do we even want to construct such complex
-        achievements? On the third hand, it's already in the code, does anyone even care?
-         */
-        this.type = type;
-        this.requirement = requirement;
+        if(type == PERSON_SCAN && extraPrimary != null)
+            this.requirement = calculateRequirement(requirement, extraPrimary, detail);
+        else
+            this.requirement = requirement;
+        this.extraPrimary = extraPrimary;
+        this.extraSecondary = extraSecondary;
+        this.detail = detail;
     }
 
     /**
      * An extremely simple parser for calculating equations. Supports ^,*,/,+,- but not parenthesis
-     * @param amount the base of the equation
+     * @param requirement the base of the equation
      * @param equation the equation to be applied
-     * @return calculated amount
+     * @return calculated requirement
      */
-    private int calculateDemand(int amount, String equation, int cycle)
+    private String calculateRequirement(String requirement, String equation, int detail)
     {
         //TODO might want to migrate eq to LinkedList<Character> for optimization, but maybe not worth it
         LinkedList<String> eq = new LinkedList<>(Arrays.asList(equation.split("")));
@@ -72,10 +71,10 @@ public class Demand implements Serializable
             eq.remove(0);
         // Replace all instances of 'a' with amount
         while(eq.contains("a"))
-            eq.set(eq.indexOf("a"), String.valueOf(amount));
-        // Replace all instances of 'c' with cycle
+            eq.set(eq.indexOf("a"), requirement);
+        // Replace all instances of 'c' with detail
         while(eq.contains("c"))
-            eq.set(eq.indexOf("c"), String.valueOf(cycle));
+            eq.set(eq.indexOf("c"), String.valueOf(detail));
         while(eq.size() > 1)
         {
 
@@ -90,9 +89,14 @@ public class Demand implements Serializable
             else if(eq.contains("-"))
                 calc(eq, "-");
         }
-        return Integer.parseInt(eq.getFirst());
+        return eq.getFirst();
     }
 
+    /**
+     * Performs calculations and equation cleanup for calculateRequirement()
+     * @param eq equation to be calculated
+     * @param op operation to perform
+     */
     private void calc(LinkedList<String> eq, String op)
     {
         int i = eq.indexOf(op);
@@ -108,5 +112,88 @@ public class Demand implements Serializable
         }
         eq.remove(i+1);
         eq.remove(i-1);
+    }
+
+    /**
+     * Causes the run method to stop on it's next cycle
+     */
+    public void shutdown()
+    {
+        Log.i("LivingDemand", "Shutting down");
+        running = false;
+    }
+
+    /**
+     * Sets the running variable to true. Call before attempting to run
+     * the Demand in a Thread
+     */
+    public void start()
+    {
+        Log.i("LivingDemand", "Starting up");
+        running = true;
+    }
+
+    /**
+     * Check whether the Demand is capable of being run in a Thread right now
+     * @return true if runnable
+     */
+    public boolean isRunnable()
+    {
+        return running;
+    }
+
+    /**
+     * For running Demands in their own Threads
+     */
+    @Override
+    public void run()
+    {
+        running = true;
+        while(running)
+        {
+            Log.i("LivingDemand", "Starting loop");
+            APIHandler aH = APIHandler.getInstance();
+            FileHandler fH = FileHandler.getInstance();
+            String vinNumber = extraPrimary;
+            if(extraPrimary.equals("CURRENT_BUS"))
+            {
+                /*
+                Retreive the Icomera bus-id from APIHandler, then retreive the
+                resource-id from FileHandler for that particular string, then read the string,
+                which is the vinNumber that is inserted into APIHandler.readSingle.
+                 */
+                //TODO clean up a bit, and restore functionality outcommented below
+                String icomeraID = aH.readIcomera();
+                int resourceID = fH.getResourceID("SID" + icomeraID, "string");
+                vinNumber = fH.readString(resourceID);
+
+                //For testing, uncomment line below
+                //vinNumber = "Vin_Num_001";
+            }
+            else
+            {
+                int resourceID = fH.getResourceID(extraPrimary, "string");
+                vinNumber = fH.readString(resourceID);
+            }
+            Log.i("LivingDemand", "Got VinNumber: " + vinNumber);
+            aH.clearLastRead();
+            String fromAPI = aH.readSingle("value", vinNumber, extraSecondary, detail);
+            Log.i("LivingDemand", "Retrieved from API: " + fromAPI);
+            if(fromAPI != null)
+            {
+                setChanged();
+                notifyObservers(new Pair<>(this, fromAPI));
+            }
+
+            try
+            {
+                Log.i("LivingDemand", "Going to sleep");
+                Thread.sleep(10000);
+            }
+            catch(InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }

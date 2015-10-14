@@ -25,10 +25,21 @@ import java.util.Arrays;
  */
 public class FileHandler
 {
-    private static FileHandler ourInstance = new FileHandler();
+    /**
+     * Magic thread-safety
+     */
+    private static class Loader
+    {
+        static FileHandler INSTANCE = new FileHandler();
+    }
+
+    /**
+     * Returns the instance of FileHandler
+     * @return the instance of FileHandler
+     */
     public static FileHandler getInstance()
     {
-        return ourInstance;
+        return Loader.INSTANCE;
     }
 
     private Context context;
