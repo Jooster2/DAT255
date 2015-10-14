@@ -22,6 +22,7 @@ import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.core.AchievementsAdapter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class AchievementsFragment extends Fragment
 {
@@ -71,7 +72,7 @@ public class AchievementsFragment extends Fragment
     public void refreshAchievements(final ArrayList<Achievement> locked, final ArrayList<Achievement> unlocked)
     {
 
-        final ArrayList<String> unlockedList =  new ArrayList<>();
+        final LinkedList<String> unlockedList =  new LinkedList<>();
         ListView unlockedAchievementListView;
 
         for (Achievement achi : unlocked)
@@ -80,12 +81,12 @@ public class AchievementsFragment extends Fragment
             sb.append(achi.getName() + ",");
             if (achi.getCompletedDemands().size() > 0 && achi.getType().equals("INF"))
             {
-                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
+                sb.append(achi.getFlavorText() + " " + achi.getCompletedDemands().get(0).requirement +
                         " av " + achi.getCompletedDemands().get(0).requirement + ",");
             }
             else if(achi.getDemands().size() > 0 && achi.getType().equals("INF"))
             {
-                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
+                sb.append(achi.getFlavorText() + " " + achi.getCompletedDemands().get(0).requirement +
                         " av " + achi.getDemands().get(0).requirement + ",");
             }
             else
@@ -93,9 +94,8 @@ public class AchievementsFragment extends Fragment
                 sb.append(achi.getFlavorText() + ",");
             }
             sb.append(achi.getImageName());
-            unlockedList.add(sb.toString());
+            unlockedList.addFirst(sb.toString());
         }
-
         unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
 
         AchievementsAdapter unlockedAdapter = new AchievementsAdapter(getActivity(), unlockedList);
@@ -113,7 +113,7 @@ public class AchievementsFragment extends Fragment
             }
         });
 
-        ArrayList<String> lockedList = new ArrayList<>();
+        LinkedList<String> lockedList = new LinkedList<>();
         ListView lockedAchievementListView;
 
         for(Achievement achi : locked)
@@ -135,7 +135,7 @@ public class AchievementsFragment extends Fragment
                 sb.append(achi.getFlavorText() + ",");
             }
             sb.append(achi.getImageName());
-            lockedList.add(sb.toString());
+            lockedList.addFirst(sb.toString());
         }
 
         lockedAchievementListView = (ListView) view.findViewById(R.id.listlocked);

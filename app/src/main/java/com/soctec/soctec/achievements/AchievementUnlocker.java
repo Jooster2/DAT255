@@ -109,8 +109,14 @@ public class AchievementUnlocker implements Observer
     public int loadUnlockable()
     {
         FileHandler fH = FileHandler.getInstance();
-        unlockableAchievements = (ArrayList<Achievement>)fH.readObject(SAVE_FILE);
-        return unlockableAchievements.size();
+        if((ArrayList<Achievement>)fH.readObject(SAVE_FILE)== null)
+            return 0;
+        else
+        {
+            unlockableAchievements = (ArrayList<Achievement>)fH.readObject(SAVE_FILE);
+            return unlockableAchievements.size();
+        }
+
     }
 
     /**
