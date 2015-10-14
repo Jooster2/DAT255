@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
 import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;

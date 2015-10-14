@@ -48,7 +48,17 @@ public class MainFragment extends Fragment
         MainActivity main = (MainActivity)getActivity();
         stats = main.getStats();
 
-        progressBar = (ProgressBar)getView().findViewById(R.id.progressBar);
+
+        return view;
+    }
+
+    /**
+     * When the main UI has been created, start the BroadcastReceiver
+     */
+    @Override
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState)
+    {
+        progressBar = (ProgressBar)getView().findViewById(R.id.rating_progress_bar);
 
         yesButton = (ImageButton) getView().findViewById(R.id.pos_button);
         yesButton.setOnClickListener(
@@ -73,15 +83,6 @@ public class MainFragment extends Fragment
 
         updateRatingBar();
 
-        return view;
-    }
-
-    /**
-     * When the main UI has been created, start the BroadcastReceiver
-     */
-    @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState)
-    {
         ((MainActivity)getActivity()).startReceiver();
     }
 
