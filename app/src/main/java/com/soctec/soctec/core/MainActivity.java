@@ -103,8 +103,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         SharedPreferences preferences = getSharedPreferences("com.soctec.soctec", MODE_PRIVATE);
         if (preferences.getBoolean("first_time", true)) {
             //Do this only the first startup
-            Toast.makeText(getApplicationContext(), "First time ever!", Toast.LENGTH_SHORT).show();
-
+            FragmentManager fm = getSupportFragmentManager();
+            HelpFragment hFragment = new HelpFragment();
+            hFragment.show(fm, "Help", 1);
 
             preferences.edit().putBoolean("first_time", false).apply();
         }
@@ -458,10 +459,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        FragmentManager fm = getSupportFragmentManager();
-        InfoFragment iFragment = new InfoFragment();
-        HelpFragment hFragment = new HelpFragment();
-
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_settings)
         {
@@ -472,15 +469,17 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
         }
-
         else if(id == R.id.about)
         {
-           iFragment.show(fm, "About");
+            FragmentManager fm = getSupportFragmentManager();
+            InfoFragment iFragment = new InfoFragment();
+            iFragment.show(fm, "About");
         }
-
         else if (id == R.id.help)
         {
-            hFragment.show(fm, "Help");
+            FragmentManager fm = getSupportFragmentManager();
+            HelpFragment hFragment = new HelpFragment();
+            hFragment.show(fm, "Help", 0);
         }
 
         return super.onOptionsItemSelected(item);

@@ -17,4 +17,19 @@
     <string name="profile_category4_hint">Exempel: <i>Sci-Fi, Titanic</i></string>
     <string name="profile_category5_hint">Exempel: <i>kläder, bilar<i/></i></string>
 
+    <string name="about_text">Utvecklad av SocTec inc.</string>
+    <string name="help_welcome">Välkommen till Dignum!\n\n</string>
+    <string name="help_help">\n\nTryck på <i>Hjälp</i> i menyn för att se den här informationen igen. </string>
+
+    <string name="help_main">Svep till vänster för att digga någon. Svep till höger för att se utmärkelserna.
+    Tryck på låset under listan med utmärkelser för att växla mellan upplåsta och icke upplåsta utmärkelser.\n\n
+        När du har diggat eller blivit diggad av någon kan du sedan ge betyg på hur trevlig personen var
+        genom att trycka på tummen upp eller tummen ned.\n\n
+        Tryck på profilknappen i menyn för att se din profil.</string>
+
+    <string name="help_profile">I din profil kan du skriva lite information om dig själv.
+        Det är helt frivilligt att skriva in något.
+        När du diggar eller blir diggad kommer din profil jämföras med den andra personen.
+        Separera varje sak med ett kommatecken.</string>
+
 </resources>
