@@ -6,16 +6,13 @@
              tools:context="com.soctec.soctec.profile.ProfileActivity">
 
 
-    <TextView
+    <ImageView
         android:paddingTop="10dp"
         android:id="@+id/title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Profil"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        />
+        android:src="@drawable/profileHeader"/>
 
     <ScrollView
         android:id="@+id/scroller"

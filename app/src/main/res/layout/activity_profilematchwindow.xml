@@ -5,16 +5,13 @@
               android:layout_height="match_parent"
                 android:background="#dbfaaa">
 
-    <TextView
+    <ImageView
         android:id="@+id/match_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:paddingTop="10dp"
-        android:text="Matchande intressen"
-        android:textSize="30sp"
         android:layout_centerHorizontal="true"
-        android:textStyle="bold"
-        />
+        android:src="@drawable/matchHeader"/>
 
     <ListView
         android:layout_width="wrap_content"

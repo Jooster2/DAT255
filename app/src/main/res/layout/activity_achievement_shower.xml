@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="false"
-        android:src="@drawable/shower_head_text" />
+        android:src="@drawable/newAchievementHeader" />
 
     <ImageView
         android:layout_width="250dp"
