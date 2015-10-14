@@ -103,7 +103,7 @@ public class AchievementShowerActivity extends Activity
                 break;
 
             default:
-                mainImageBackView.setImageResource(R.drawable.ach_back_test); //ach_back_default
+                mainImageBackView.setImageResource(R.drawable.bronze_wreath); //ach_back_default
                 break;
         }
     }
