@@ -178,8 +178,7 @@ public class FileHandler
         File myFile = new File(context.getFilesDir(), fileName);
         try
         {
-            if(myFile.createNewFile())
-                return;
+            myFile.createNewFile();
 
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(myFile));
             oos.writeObject(obj);

@@ -285,10 +285,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public void checkAchievementChanges()
     {
         LinkedList<Achievement> newAchievements = stats.getLastCompleted();
-        for(Achievement achievement : newAchievements)
+        for(int i = newAchievements.size()-1; i >= 0; i--)
         {
             Intent showerIntent = new Intent(this, AchievementShowerActivity.class);
-            showerIntent.putExtra("AchievementObject", achievement);
+            showerIntent.putExtra("AchievementObject", newAchievements.get(i));
             showerIntent.putExtra("ScanCount", stats.getScanCount());
             startActivity(showerIntent);
         }
