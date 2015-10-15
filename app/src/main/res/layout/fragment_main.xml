@@ -30,10 +30,9 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/qr_image"
         android:id="@+id/main_rating_container"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
@@ -41,6 +40,8 @@
         android:background="@drawable/custum_border"
         android:layout_alignParentBottom="true"
         android:weightSum="100">
+
+        <!--android:layout_below="@+id/qr_image"-->
 
         <LinearLayout
             android:orientation="vertical"
@@ -55,8 +56,9 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Ditt betyg"
                 android:id="@+id/textView4"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_margin="5dp"
+                android:textColor="#3f873f"
+                android:textStyle="bold"/>
 
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
@@ -85,7 +87,10 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Hur var senaste mötet?"
-                android:id="@+id/textView" />
+                android:id="@+id/textView"
+                android:layout_margin="5dp"
+                android:textColor="#3f873f"
+                android:textStyle="bold"/>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -100,7 +105,9 @@
                     android:background="#FFFFFF"
                     android:src="@drawable/thumb_up_blackgreen"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"/>
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
 
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -109,7 +116,9 @@
                     android:background="#FFFFFF"
                     android:src="@drawable/thumb_down_blackred"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"/>
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
 
 
 
