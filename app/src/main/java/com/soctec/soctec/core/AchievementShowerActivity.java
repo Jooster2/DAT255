@@ -57,13 +57,6 @@ public class AchievementShowerActivity extends Activity
             }
             flavorText.setText(sb.toString());
         }
-
-        /*if (achievement.getCompletedDemands().size() > 0 && achievement.getType().equals("INF"))
-            flavorText.setText(achievement.getFlavorText() + " " +scanCount+
-                    " av " + achievement.getCompletedDemands().get(0).requirement);
-        else if (achievement.getDemands().size() > 0 && achievement.getType().equals("INF"))
-            flavorText.setText(achievement.getFlavorText() + " " + scanCount +
-                    " av " + achievement.getDemands().get(0).requirement);*/
         else
             flavorText.setText(achievement.getFlavorText());
 

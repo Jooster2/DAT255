@@ -289,14 +289,17 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
 
     /**
-     * Run whenever the WiFi state changes in ConnectionChecker.
-     * Reads the Icomera API, and determines if we are on a bus. If so, we start all
-     * LivingDemands, and then sends an event to unlocker, to check Achievements.
+     * Orders the APIHandler to read Icomera API
      */
     public void checkIcomera()
     {
         APIHandler.getInstance().readIcomera(this);
     }
+
+    /**
+     * Called by APIHandler when it has determined that we are on a bus
+     * @param icomeraID the ID read from Icomera API
+     */
     public void fromIcomera(String icomeraID)
     {
         FileHandler fH = FileHandler.getInstance();

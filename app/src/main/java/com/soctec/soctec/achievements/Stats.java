@@ -205,7 +205,7 @@ public class Stats implements Serializable
         return temp;
     }
 
-    public void removeOldScans ()
+    public void removeOldScans()
     {
         Iterator it = listRecentScans.iterator();
         while (it.hasNext())
@@ -218,9 +218,9 @@ public class Stats implements Serializable
                 break;
         }
     }
-    public boolean isScannedRecently (String lastScanned)
+    public boolean isScannedRecently(String lastScanned)
     {
-        for (UserPair pair :listRecentScans)
+        for (UserPair pair : listRecentScans)
         {
             if (pair.getScannedUser().equals(lastScanned))
                 return true;
@@ -239,8 +239,8 @@ public class Stats implements Serializable
     public class UserPair implements Serializable
     {
         private static final long serialVersionUID = 7L;
-        long scanTime;
-        String scannedUser;
+        private long scanTime;
+        private String scannedUser;
         public UserPair (long scanTime, String scannedUser)
         {
             this.scanTime = scanTime;
