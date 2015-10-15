@@ -1,7 +1,5 @@
 package com.soctec.soctec.achievements;
 
-import android.content.Context;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +24,7 @@ public class Stats implements Serializable
     private LinkedList <UserPair> listRecentScans;
     private long lastScannedTime;
     private boolean talkDone = false;
-    private boolean hasRated = true;
+    private boolean canNotRate = true;
 
     /**
      * Constructs an empty Stats object
@@ -43,12 +41,12 @@ public class Stats implements Serializable
 
     public boolean hasRated()
     {
-        return hasRated;
+        return canNotRate;
     }
 
-    public void setHasRated(boolean rate)
+    public void setCanNotRate(boolean rate)
     {
-        hasRated = rate;
+        canNotRate = rate;
     }
 
     public int getTimeTalked()

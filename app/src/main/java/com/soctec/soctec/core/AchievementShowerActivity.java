@@ -14,8 +14,8 @@ import com.soctec.soctec.utils.FileHandler;
 public class AchievementShowerActivity extends Activity
 {
 
-    ImageView mainImageBackView;
-    ImageView mainImageFrontView;
+    private ImageView mainImageBackView;
+    private ImageView mainImageFrontView;
     private Achievement achievement;
     private int gold = 50;
     private int silver = 30;
@@ -29,8 +29,6 @@ public class AchievementShowerActivity extends Activity
 
         achievement = (Achievement) getIntent().getSerializableExtra("AchievementObject");
         int scanCount = getIntent().getIntExtra("ScanCount", 0);
-        ImageView headImageView = (ImageView)findViewById(R.id.showerHeadView);
-        //headImageView.setImageResource(R.drawable.shower_head_text);
 
         mainImageBackView = (ImageView)findViewById(R.id.showerAchBack);
         setAchievementImageBackground();
@@ -67,18 +65,14 @@ public class AchievementShowerActivity extends Activity
         );
     }
 
+    /**
+     * Calculates the rank of the current achievement and returns it in form of an int.
+     * The rank is based on the points of the current achievement.
+     * Gold=3 Silver=2 Bronze=1 standard=0
+     * @return The calculated rank value.
+     */
     public int getAchievementRank()
     {
-        /*
-        Får info vilken grad achievementet har. Tex guld, silver, brons
-        Standard bakgrund=0 Brons=1 Silver=2 Guld=3
-
-        alt 1: Varje achivement har bestämd rank
-            return achievement.getRank();
-
-        alt 2: Rank baseras på antal poäng
-        */
-
         int points = achievement.getPoints();
 
         if(points >= gold)
@@ -91,23 +85,25 @@ public class AchievementShowerActivity extends Activity
             return 0;
     }
 
+    /**
+     * Sets the achievement background image. The image is based on the rank of the achievement.
+     */
     public void setAchievementImageBackground()
     {
-        //sätter olika bakgrunder beroende av rank
         int rank = getAchievementRank();
 
         switch (rank)
         {
             case 1:
-                mainImageBackView.setImageResource(R.drawable.gold_wreath); //ach_back_gold
+                mainImageBackView.setImageResource(R.drawable.gold_wreath);
                 break;
 
             case 2:
-                mainImageBackView.setImageResource(R.drawable.silver_wreath); //ach_back_silver
+                mainImageBackView.setImageResource(R.drawable.silver_wreath);
                 break;
 
             case 3:
-                mainImageBackView.setImageResource(R.drawable.bronze_wreath); //ach_back_bronze
+                mainImageBackView.setImageResource(R.drawable.bronze_wreath);
                 break;
 
             default:
@@ -116,6 +112,10 @@ public class AchievementShowerActivity extends Activity
         }
     }
 
+    /**
+     * Sets the Achievement front image.
+     * Uses the FileHandler to collect the right image for the current achievement.
+     */
     public void setAchievementImageFront()
     {
         FileHandler fileHandler = FileHandler.getInstance();
