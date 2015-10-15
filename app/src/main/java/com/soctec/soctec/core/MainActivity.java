@@ -1,7 +1,9 @@
 package com.soctec.soctec.core;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator = new AchievementCreator();
         unlocker = new AchievementUnlocker(this, stats, creator);
         creator.addObserver(unlocker);
-        int loaded = 0;//unlocker.loadUnlockable();
+        int loaded = unlocker.loadUnlockable();
         if(loaded == 0)
             creator.createFromFile();
 
@@ -248,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     public void updateRatingBar()
     {
-        ((MainFragment)mSectionsPagerAdapter.getFragment(0)).updateRatingBar();
+        ((MainFragment)mSectionsPagerAdapter.getFragment(1)).updateRatingBar();
     }
 
     /**
@@ -275,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         startActivity(matchIntent);
 
         //getFragment() must have position 0 for some reason
-        ((MainFragment)mSectionsPagerAdapter.getFragment(0)).enableRatingButtons();
+        ((MainFragment)mSectionsPagerAdapter.getFragment(1)).enableRatingButtons();
 
 
     }
@@ -506,34 +508,41 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter
     {
-        public FragmentManager fragmentManager;
+        private HashMap<Integer, WeakReference<Fragment>> fragmentReferences;
 
         public SectionsPagerAdapter(FragmentManager fm)
         {
             super(fm);
-            fragmentManager = fm;
-        }
-
-        public Fragment getFragment(int position)
-        {
-            return fragmentManager.getFragments().get(position);
+            fragmentReferences = new HashMap<>();
         }
 
         @Override
         public Fragment getItem(int position)
         {
-            // getItem is called to instantiate the fragment for the given page.
+            Fragment fragment;
             switch(position)
             {
                 case 0:
-                    return new ScanFragment();
+                    fragment = new ScanFragment();
+                    break;
                 case 1:
-                    return new MainFragment();
-                case 2:
-                    return new AchievementsFragment();
+                    fragment = new MainFragment();
+                    break;
+                default: //case 2
+                    fragment = new AchievementsFragment();
+                    break;
             }
-            return null;
+            fragmentReferences.put(position, new WeakReference<Fragment>(fragment));
+            return fragment;
         }
+
+        public Fragment getFragment(int id)
+        {
+            WeakReference<Fragment> reference = fragmentReferences.get(id);
+            return reference == null ? null : reference.get();
+        }
+
+
 
         @Override
         public int getCount()
