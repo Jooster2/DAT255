@@ -14,13 +14,14 @@ import java.util.Observable;
 /**
  * Demand used by Achievements to determine if it is earned or not
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.2
+ * @version 2.3
  */
 public class Demand extends Observable implements Runnable, Serializable
 {
     public static final int PERSON_SCAN = 1;
     public static final int BUS_RIDE = 2;
     public static final int API = 3;
+    public static final int TIME_TALKED = 4;
 
     private static final long serialVersionUID = 2L;
     public volatile boolean running;
@@ -47,7 +48,7 @@ public class Demand extends Observable implements Runnable, Serializable
     {
         running = false;
         this.type = type;
-        if(type == PERSON_SCAN && extraPrimary != null)
+        if((type == PERSON_SCAN || type == TIME_TALKED) && extraPrimary != null)
             this.requirement = calculateRequirement(requirement, extraPrimary, detail);
         else
             this.requirement = requirement;

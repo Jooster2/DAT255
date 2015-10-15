@@ -23,7 +23,7 @@ public class AchievementTest extends AndroidTestCase
      * trying to create one.
      * @throws Exception
      */
-    public void testCreateAchievement () throws Exception
+    public void testCreateAchievement() throws Exception
     {
         creator.addObserver(unlocker);
         creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
@@ -34,7 +34,7 @@ public class AchievementTest extends AndroidTestCase
      * Checks if the scancount gets increased when a scan has occured (A fake scan)
      * @throws Exception
      */
-    public void testScanCountInc () throws Exception
+    public void testScanCountInc() throws Exception
     {
         creator.addObserver(unlocker);
         creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
@@ -47,7 +47,7 @@ public class AchievementTest extends AndroidTestCase
      * Checks if the LastScanned-String object is the same as the one received from the "fake" scan.
      * @throws Exception
      */
-    public void testLastScanned () throws Exception
+    public void testLastScanned() throws Exception
     {
         creator.addObserver(unlocker);
         creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
@@ -58,7 +58,7 @@ public class AchievementTest extends AndroidTestCase
      * Checks if a list containing one achievement gets emptied when that achievement gets unlocked.
      * @throws Exception
      */
-    public void testUnlockAchievement () throws Exception
+    public void testUnlockAchievement() throws Exception
     {
         creator.addObserver(unlocker);
         creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
@@ -71,7 +71,7 @@ public class AchievementTest extends AndroidTestCase
      * Creates four fake achievements and checks if they end up in the unlockedAchievements-list.
      * @throws Exception
      */
-    public void testCreate4Achievements () throws Exception
+    public void testCreate4Achievements() throws Exception
     {
         creator.addObserver(unlocker);
         creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
@@ -87,10 +87,10 @@ public class AchievementTest extends AndroidTestCase
      * Tests the functionality of Infinite Achievements, both re-creation and increase in demand
      * @throws Exception
      */
-    public void testCreateInfiniteAchievements () throws Exception
+    public void testCreateInfiniteAchievements() throws Exception
     {
         creator.addObserver(unlocker);
-        creator.createTestAch("GOGO! Towards Infinity!, flavorText, 25, someimg3, SI0, INF, P_SCAN:0:2^c");
+        creator.createTestAch("GOGO! Towards Infinity!, flavorText, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals("SI0", stats.getAchievements().get(0).getId());
         assertEquals(1, unlocker.getUnlockableAchievements().size());
@@ -107,6 +107,41 @@ public class AchievementTest extends AndroidTestCase
     }
 
     /**
+     * Tests the functionality of an infinite "time talked" achievement
+     * Requires tweak in AchievementUnlocker.receiveEvent to work, or can be tested with
+     * Thread.sleep and double receiveEvent: event, sleep(2.5s), event again (content can be null
+     * if this is tried)
+     * @throws Exception
+     */
+    public void testTimeTalkedAchievements() throws Exception
+    {
+        creator.addObserver(unlocker);
+        creator.createTestAch("MaratonSnackaren!, Du har pratat, 25, gold_trophy, TI0, INF, T_TALK:1:a*2");
+        unlocker.receiveEvent(4, "6");
+        assertEquals("TI0", stats.getAchievements().get(0).getId());
+    }
+
+    /**
+     * Tests the functionality on the "do-not-allow-multiple-consecutive-scans-on-the-same-person"
+     * functionality in Stats. Requires tweaking of the value on line 213 in Stats,
+     * set it to something below 1000.
+     * @throws Exception
+     */
+    public void testDoubleScanNegated() throws Exception
+    {
+        creator.addObserver(unlocker);
+        unlocker.receiveEvent(1, "JOCKE");
+        assertEquals(1, stats.getScanCount());
+        unlocker.receiveEvent(1, "JOCKE");
+        assertEquals(1, stats.getScanCount());
+        try{ Thread.sleep(2500); } catch(InterruptedException e) {e.printStackTrace(); }
+        stats.removeOldScans();
+        assertEquals(false, stats.isScannedRecently("JOCKE"));
+        unlocker.receiveEvent(1, "JOCKE");
+        assertEquals(2, stats.getScanCount());
+    }
+
+    /**
      * Tests the functionality of CollectionAchievements.
      * Requires tweak in AchievementCreator.createAchievement to work, see comments in code there.
      * @throws Exception
@@ -115,7 +150,7 @@ public class AchievementTest extends AndroidTestCase
     {
         creator.addObserver(unlocker);
         creator.createTestAch("Pure Electric!, You have gone on all three electric buses, "+
-                "30, someimg, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3");
+                "30, gold_trophy, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3");
         assertEquals(3, unlocker.getUnlockableAchievements().get(0).getDemands().size());
         unlocker.receiveEvent(2, "E_BUS1");
         unlocker.receiveEvent(2, "E_BUS3");

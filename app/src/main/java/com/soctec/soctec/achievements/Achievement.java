@@ -9,7 +9,7 @@ import java.util.Iterator;
 /**
  * Class for creating Achievements with certain properties
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.2
+ * @version 2.3
  */
 public class Achievement implements Serializable
 {
@@ -100,6 +100,7 @@ public class Achievement implements Serializable
         {
             Demand element = it.next();
             Log.i("icomera", "Requirement: " + element.requirement);
+            //Standard check, correct type, and correct value?
             if(element.type == demandType &&
                     element.requirement.equals(demandContent))
             {
@@ -108,6 +109,17 @@ public class Achievement implements Serializable
                 completedDemands.add(element);
                 return true;
             }
+            //Extra check for TIME_TALKED type demands, because they are very rarely equal
+            else if((demandType == Demand.TIME_TALKED) &&
+                    (element.type == demandType) &&
+                    (Integer.parseInt(demandContent) >= Integer.parseInt(element.requirement)))
+            {
+                Log.i("icomera", "demand equaled");
+                it.remove();
+                completedDemands.add(element);
+                return true;
+            }
+
         }
         return false;
     }

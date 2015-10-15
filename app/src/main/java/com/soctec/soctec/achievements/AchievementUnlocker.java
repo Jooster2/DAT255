@@ -16,7 +16,7 @@ import java.util.Observer;
 /**
  * Handles created achievements that are not yet completed, checks for completion
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.1
+ * @version 2.2
  */
 public class AchievementUnlocker implements Observer
 {
@@ -148,13 +148,23 @@ public class AchievementUnlocker implements Observer
         switch(type)
         {
             case Demand.PERSON_SCAN:
-                stats.setLastScanned(content);
-                stats.incScanCount();
-                didUnlock = checkUnlockables(Demand.PERSON_SCAN,
-                        String.valueOf(stats.getScanCount()));
+                if(!stats.setLastScanned(content))
+                {
+                    stats.incScanCount();
+                    didUnlock = checkUnlockables(Demand.PERSON_SCAN,
+                            String.valueOf(stats.getScanCount()));
+                }
+                else
+                {
+                    //To make the JUnit tests work, set the second argument to 'content' instead
+                    receiveEvent(Demand.TIME_TALKED, String.valueOf(stats.getTimeTalked()));
+                }
                 break;
             case Demand.BUS_RIDE:
                 didUnlock = checkUnlockables(Demand.BUS_RIDE, content);
+                break;
+            case Demand.TIME_TALKED:
+                didUnlock = checkUnlockables(Demand.TIME_TALKED, content);
                 break;
         }
         if(didUnlock)

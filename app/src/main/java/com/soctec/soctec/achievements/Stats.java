@@ -7,7 +7,7 @@ import java.util.LinkedList;
 /**
  * Stats contains information about game progress
  * @author Joakim Schmidt
- * @version 1.0
+ * @version 1.2
  */
 public class Stats implements Serializable
 {
@@ -23,7 +23,6 @@ public class Stats implements Serializable
     private ArrayList<Achievement> completedAchievements;
     private LinkedList <UserPair> listRecentScans;
     private long lastScannedTime;
-    private boolean talkDone = false;
     private boolean canNotRate = true;
 
     /**
@@ -135,27 +134,24 @@ public class Stats implements Serializable
      * Calulates time talked if argument and last scanned User Code are equal.
      * @param newScan newly scanned User Code
      */
-    public void setLastScanned(String newScan)
+    public boolean setLastScanned(String newScan)
     {
         removeOldScans();
-
-        if(lastScanned.equals(newScan) && talkDone == false && lastScannedTime != 0)
+        long systemTime = System.currentTimeMillis();
+        //Must be saved here, because the else{addRecent} messes with it
+        boolean scannedRecently = isScannedRecently(newScan);
+        if(lastScanned.equals(newScan))
         {
-            timeTalked += (System.currentTimeMillis() - lastScannedTime) / 1000;
-            talkDone = true;
-            lastScannedTime = System.currentTimeMillis();
+            timeTalked += (systemTime - lastScannedTime) / 1000;
+            lastScannedTime = systemTime;
         }
-        else if(!lastScanned.equals(newScan))
+        else
         {
-            lastScannedTime = System.currentTimeMillis();
             lastScanned = newScan;
-            talkDone = false;
+            lastScannedTime = systemTime;
+            addRecentScan(systemTime, newScan);
         }
-        else if (lastScanned.equals(newScan) && talkDone == true)
-        {
-            timeTalked+= (System.currentTimeMillis() - lastScannedTime) / 1000;
-        }
-        addRecentScan(System.currentTimeMillis(), newScan);
+        return scannedRecently;
     }
 
     /**
@@ -220,9 +216,9 @@ public class Stats implements Serializable
     }
     public boolean isScannedRecently(String lastScanned)
     {
-        for (UserPair pair : listRecentScans)
+        for(UserPair pair : listRecentScans)
         {
-            if (pair.getScannedUser().equals(lastScanned))
+            if(pair.getScannedUser().equals(lastScanned))
                 return true;
         }
         return false;
@@ -231,7 +227,7 @@ public class Stats implements Serializable
     public void addRecentScan(long lastScannedTime, String lastScanned)
     {
         if (!isScannedRecently(lastScanned))
-            listRecentScans.addLast (new UserPair(lastScannedTime, lastScanned));
+            listRecentScans.addLast(new UserPair(lastScannedTime, lastScanned));
     }
 
 
@@ -241,7 +237,7 @@ public class Stats implements Serializable
         private static final long serialVersionUID = 7L;
         private long scanTime;
         private String scannedUser;
-        public UserPair (long scanTime, String scannedUser)
+        public UserPair(long scanTime, String scannedUser)
         {
             this.scanTime = scanTime;
             this.scannedUser = scannedUser;

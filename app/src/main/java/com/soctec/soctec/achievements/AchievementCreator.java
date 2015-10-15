@@ -7,7 +7,7 @@ import java.util.Observable;
 /**
  * An AchievementCreator creates Achievement objects on request.
  * @author Joakim Schmidt
- * @version 2.1
+ * @version 2.2
  */
 public class AchievementCreator extends Observable
 {
@@ -30,6 +30,7 @@ public class AchievementCreator extends Observable
             case "P_SCAN": return Demand.PERSON_SCAN;
             case "B_RIDE": return Demand.BUS_RIDE;
             case "API": return Demand.API;
+            case "T_TALK": return Demand.TIME_TALKED;
             default: return Integer.parseInt(type);
         }
     }

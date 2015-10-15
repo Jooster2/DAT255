@@ -8,6 +8,7 @@
 
         <!--Infinite Achievements-->
         <item>Wow! fortsätt kämpa!, Du har skannat, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c</item>
+        <item>MaratonSnackaren!, Du har pratat, 25, gold_trophy, TI0, INF, T_TALK:5:a*2</item>
 
         <!--Collection Achievements-->
         <item>Miljövän!, Du har åkt med samtliga elbussar, 50, gold_bus, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3</item>
