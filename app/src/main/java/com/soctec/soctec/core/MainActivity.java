@@ -1,7 +1,5 @@
 package com.soctec.soctec.core;
 
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -28,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
@@ -260,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
      */
     public void receiveDataFromPeer(String idFromPeer, ArrayList<ArrayList<String>> profileFromPeer)
     {
-        stats.setHasRated(false);
+        stats.setCanNotRate(false);
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(100);
 

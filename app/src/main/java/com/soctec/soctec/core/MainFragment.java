@@ -1,25 +1,19 @@
 package com.soctec.soctec.core;
 
 
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Stats;
-import com.soctec.soctec.network.ConnectionChecker;
 import com.soctec.soctec.network.NetworkHandler;
 
 /**
@@ -32,21 +26,18 @@ public class MainFragment extends Fragment
 {
     private int ratingUpdateFreq = 3; // Defines the update frequency of the progressbar
     ProgressBar progressBar;
-    ImageButton yesButton;
-    ImageButton noButton;
-    Stats stats;
-
-
+    private ImageButton yesButton;
+    private ImageButton noButton;
+    private Stats stats;
     private GestureDetector gestureDetector;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_main, container, false );
-
         MainActivity main = (MainActivity)getActivity();
         stats = main.getStats();
-
 
         return view;
     }
@@ -59,17 +50,17 @@ public class MainFragment extends Fragment
     {
         progressBar = (ProgressBar)getView().findViewById(R.id.rating_progress_bar);
 
+
         yesButton = (ImageButton) getView().findViewById(R.id.pos_button);
         yesButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         sendRatingToServer(true);
                         disableRatingButtons();
-                        stats.setHasRated(true);
+                        stats.setCanNotRate(true);
                     }
                 }
         );
-
 
         noButton = (ImageButton) getView().findViewById(R.id.neg_button);
         noButton.setOnClickListener(
@@ -77,7 +68,7 @@ public class MainFragment extends Fragment
                     public void onClick(View v) {
                         sendRatingToServer(false);
                         disableRatingButtons();
-                        stats.setHasRated(true);
+                        stats.setCanNotRate(true);
                     }
                 }
         );
@@ -85,16 +76,19 @@ public class MainFragment extends Fragment
 
         if(stats.hasRated())
         {
-            enableRatingButtons();
+            disableRatingButtons();
         }
         else
         {
-            disableRatingButtons();
+            enableRatingButtons();
         }
+
         ((MainActivity)getActivity()).startReceiver();
     }
 
-
+    /**
+     * Enables the rating buttons and sets the "enabled"-image design for the button.
+     */
     public void enableRatingButtons()
     {
         yesButton.setEnabled(true);
@@ -102,6 +96,10 @@ public class MainFragment extends Fragment
         yesButton.setImageResource(R.drawable.thumb_up_blackgreen);
         noButton.setImageResource(R.drawable.thumb_down_blackred);
     }
+
+    /**
+     * Disables the rating buttons and sets the "disabled"-image design for the button.
+     */
     public void disableRatingButtons()
     {
         yesButton.setEnabled(false);
@@ -110,12 +108,16 @@ public class MainFragment extends Fragment
         noButton.setImageResource(R.drawable.thumb_down_grey);
     }
 
+    /**
+     * Updates the progress of the rating bar.
+     * Only updates the rating bar every "ratingUpdateFreq"-time based on the number of ratings.
+     */
     public void updateRatingBar()
     {
         float rating = stats.getRating();
         float ratingPercent = rating*100;
 
-        if (stats.getTimesRated() % ratingUpdateFreq == 0) //just show new rating every "ratingUpdateFreq" time
+        if ((stats.getTimesRated()+1) % ratingUpdateFreq == 0)
         {
             progressBar.setProgress((int) ratingPercent);
         }
@@ -132,9 +134,4 @@ public class MainFragment extends Fragment
                 positiveRating);
     }
 }
-
-
-//TODO ny update beroede på hur vi tar in data från server
-//TODO Ny grafik: "Utmärkelse!", Grön (y), Röd (n), Blek (y), Blek (n), Profil, utmärkelse
-
 
