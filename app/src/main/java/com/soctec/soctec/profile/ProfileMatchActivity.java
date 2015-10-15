@@ -185,7 +185,7 @@ public class ProfileMatchActivity extends Activity
             case 8:
                 return "nyheterna";
             case 9:
-                return "dignum";
+                return "Dignum";
             default:
                 return "något annat";
         }
