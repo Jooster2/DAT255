@@ -1,5 +1,6 @@
 package com.soctec.soctec.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Locale;
