@@ -142,6 +142,24 @@ public class AchievementTest extends AndroidTestCase
     }
 
     /**
+     * Tests SIN-Achievements, with T_TIME-Demands. Double receiveEvent calls are for recursivity
+     * which is how it is supposed to happen naturally. Stats.setLongestTalkStreak() must be
+     * tweaked for test to work.
+     * @throws Exception
+     */
+    public void testLongestTalkStreak() throws Exception
+    {
+        creator.addObserver(unlocker);
+        creator.createTestAch("Långa möten, Du har pratat 5min med samma person, 50, gold_ribbon, S3, SIN, T_TALK:300");
+        unlocker.receiveEvent(1, "JOCKE");
+        unlocker.receiveEvent(1, "JOCKE");
+        assertEquals(0, stats.getAchievements().size());
+        stats.setLongestTalkStreak(400);
+        unlocker.receiveEvent(1, "JOCKE");
+        assertEquals("S3", stats.getAchievements().get(0).getId());
+    }
+
+    /**
      * Tests the functionality of CollectionAchievements.
      * Requires tweak in AchievementCreator.createAchievement to work, see comments in code there.
      * @throws Exception

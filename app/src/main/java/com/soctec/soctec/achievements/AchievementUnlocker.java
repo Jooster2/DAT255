@@ -16,7 +16,7 @@ import java.util.Observer;
 /**
  * Handles created achievements that are not yet completed, checks for completion
  * @author Carl-Henrik Hult, Joakim Schmidt
- * @version 2.2
+ * @version 2.3
  */
 public class AchievementUnlocker implements Observer
 {
@@ -158,6 +158,7 @@ public class AchievementUnlocker implements Observer
                 {
                     //To make the JUnit tests work, set the second argument to 'content' instead
                     receiveEvent(Demand.TIME_TALKED, String.valueOf(stats.getTimeTalked()));
+                    receiveEvent(Demand.TIME_TALKED, String.valueOf(stats.getLongestTalkStreak()));
                 }
                 break;
             case Demand.BUS_RIDE:

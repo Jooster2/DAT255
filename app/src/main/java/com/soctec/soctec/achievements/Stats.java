@@ -7,7 +7,7 @@ import java.util.LinkedList;
 /**
  * Stats contains information about game progress
  * @author Joakim Schmidt
- * @version 1.2
+ * @version 1.3
  */
 public class Stats implements Serializable
 {
@@ -18,6 +18,7 @@ public class Stats implements Serializable
     private int ratingPos;
     private int ratingNeg;
     private int timeTalked;
+    private int longestTalkStreak;
     private String lastScanned;
     private LinkedList<Achievement> lastCompletedAchievements;
     private ArrayList<Achievement> completedAchievements;
@@ -31,6 +32,7 @@ public class Stats implements Serializable
     public Stats()
     {
         lastScannedTime = 0;
+        longestTalkStreak = 0;
         lastScanned = "";
         lastCompletedAchievements = new LinkedList<>();
         completedAchievements = new ArrayList<>();
@@ -142,7 +144,10 @@ public class Stats implements Serializable
         boolean scannedRecently = isScannedRecently(newScan);
         if(lastScanned.equals(newScan))
         {
-            timeTalked += (systemTime - lastScannedTime) / 1000;
+            int thisTalkTime = (int)(systemTime - lastScannedTime) / 1000;
+            timeTalked += thisTalkTime;
+            if(thisTalkTime > longestTalkStreak)
+                longestTalkStreak = thisTalkTime;
             lastScannedTime = systemTime;
         }
         else
@@ -179,6 +184,25 @@ public class Stats implements Serializable
     private void addPoints(int pts)
     {
         points += pts;
+    }
+
+    /**
+     * Returns the longest time the user has talked to another user in one go
+     * @return int of the time talked
+     */
+    public int getLongestTalkStreak()
+    {
+        return longestTalkStreak;
+    }
+
+    /**
+     * Used only for testing purposes
+     * @param time time to set
+     */
+    public void setLongestTalkStreak(int time)
+    {
+        //Uncomment for testing purposes
+        //longestTalkStreak = time;
     }
 
     /**
