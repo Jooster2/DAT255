@@ -179,14 +179,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //mViewPager.setCurrentItem(1);
     }
 
-    @Override
-    protected void onDestroy()
-    {
-        new File(this.getApplicationContext().getFilesDir(),"unlockableAchievements").delete();
-        new File(this.getApplicationContext().getFilesDir(),"stats.sav").delete();
-        super.onDestroy();
-    }
-
     /**
      * Starts NetworkHandler and registers connectionChecker as receiver
      */
