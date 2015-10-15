@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.view.View;
 import android.widget.ListView;
@@ -156,10 +157,51 @@ public class ProfileMatchActivity extends Activity
             }
             showList.add(temp.toString());
         }
+        if(showList.isEmpty())
+        {
+            showList.add("Ni verkar inte ha några gemensamma intressen att diskutera.," +
+                                 "\n\nTesta att prata om " + getRandomWord() + " istället!");
+        }
 
         ProfileMatchAdapter matchAdapter = new ProfileMatchAdapter(this, showList);
         myListView.setAdapter(matchAdapter);
     }
+
+    private String getRandomWord()
+    {
+        switch(new Random().nextInt(11))
+        {
+            case 0:
+                return "bussar";
+            case 1:
+                return "vädret";
+            case 2:
+                return "Västtrafik";
+            case 3:
+                return "Electricity";
+            case 4:
+                return "kvantfysik";
+            case 5:
+                return "din favoritfärg";
+            case 6:
+                return "bläckfiskar";
+            case 7:
+                return "er gemensamma släkting";
+            case 8:
+                return "nyheterna";
+            case 9:
+                return "Dignum";
+            default:
+                return "något annat";
+        }
+    }
+
+    /**
+     * Used only for testing
+     * @param thisDevice Profile from this device
+     * @param otherDevice Profile from other device
+     * @return Th list of matching items
+     */
     public ArrayList <String> match2 (ArrayList <ArrayList <String>> thisDevice, ArrayList <ArrayList<String>> otherDevice)
     {
         ArrayList <String> nameResult = new ArrayList<>();

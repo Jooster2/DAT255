@@ -36,7 +36,7 @@ public class ProfileActivity extends Activity
         //TODO add more
 
         createListFromFile();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     /**

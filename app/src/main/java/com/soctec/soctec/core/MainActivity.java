@@ -438,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             int screenWidth = displaymetrics.widthPixels;
             actionBar.getTabAt(i).getCustomView().getLayoutParams().width =
                     (screenWidth/3) -
-                    (2*Math.round(16 * (displaymetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
+                    (2*Math.round(17 * (displaymetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)));
         }
     }
 
