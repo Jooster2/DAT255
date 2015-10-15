@@ -45,14 +45,29 @@ public class AchievementShowerActivity extends Activity
         pointsView.setText("Detta ger "+ achievement.getPoints() +" poäng!");
 
         TextView flavorText = (TextView)findViewById(R.id.flavorTextView);
-        if (achievement.getCompletedDemands().size() > 0 && achievement.getType().equals("INF"))
+        if(achievement.getType().equals("INF"))
+        {
+            StringBuilder sb = new StringBuilder(achievement.getFlavorText() + " ");
+            if(achievement.getCompletedDemands().size() > 0)
+            {
+                sb.append(achievement.getCompletedDemands().get(0).requirement +
+                        " av " + achievement.getCompletedDemands().get(0).requirement);
+            }
+            else
+            {
+                sb.append(scanCount + " av " + achievement.getDemands().get(0).requirement);
+            }
+            flavorText.setText(sb.toString());
+        }
+
+        /*if (achievement.getCompletedDemands().size() > 0 && achievement.getType().equals("INF"))
             flavorText.setText(achievement.getFlavorText() + " " +scanCount+
-                                       " av " + achievement.getCompletedDemands().get(0).requirement + ",");
+                    " av " + achievement.getCompletedDemands().get(0).requirement);
         else if (achievement.getDemands().size() > 0 && achievement.getType().equals("INF"))
             flavorText.setText(achievement.getFlavorText() + " " + scanCount +
-                    " av " + achievement.getDemands().get(0).requirement);
+                    " av " + achievement.getDemands().get(0).requirement);*/
         else
-        flavorText.setText(achievement.getFlavorText());
+            flavorText.setText(achievement.getFlavorText());
 
 
         Button closeButton = (Button)findViewById(R.id.showerCloseButton);

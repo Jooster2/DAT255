@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 
+import android.view.View;
 import android.widget.ListView;
 
 import com.soctec.soctec.R;
@@ -39,6 +40,10 @@ public class ProfileMatchActivity extends Activity
     @Override
     public void onPause() {
         super.onPause();
+    }
+    public void onFinishedClick(View v)
+    {
+        this.finish();
     }
 
     /**

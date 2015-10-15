@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         creator = new AchievementCreator();
         unlocker = new AchievementUnlocker(this, stats, creator);
         creator.addObserver(unlocker);
-        int loaded = unlocker.loadUnlockable();
+        int loaded = 0;//unlocker.loadUnlockable();
         if(loaded == 0)
             creator.createFromFile();
 
@@ -182,8 +182,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     @Override
     protected void onDestroy()
     {
-        //new File(getFilesDir(),"unlockableAchievements").delete();
-        //new File(getFilesDir(),"stats.sav").delete();
+        new File(this.getApplicationContext().getFilesDir(),"unlockableAchievements").delete();
+        new File(this.getApplicationContext().getFilesDir(),"stats.sav").delete();
         super.onDestroy();
     }
 

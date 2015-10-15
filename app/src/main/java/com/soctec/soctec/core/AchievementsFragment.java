@@ -18,15 +18,13 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
-import com.soctec.soctec.achievements.Stats;
-import com.soctec.soctec.core.AchievementsAdapter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class AchievementsFragment extends Fragment
 {
-    ImageButton unlocked, locked;
+    ImageButton unlockedButton, lockedButton;
     ViewSwitcher viewSwitcher;
     View view;
     MainActivity main;
@@ -37,11 +35,11 @@ public class AchievementsFragment extends Fragment
     {
         view = inflater.inflate(R.layout.fragment_achievements, container, false);
 
-        unlocked = (ImageButton) view.findViewById(R.id.unlocked);
-        locked = (ImageButton) view.findViewById(R.id.locked);
+        unlockedButton = (ImageButton) view.findViewById(R.id.unlocked);
+        lockedButton = (ImageButton) view.findViewById(R.id.locked);
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.viewSwitcher);
 
-        unlocked.setOnClickListener(new View.OnClickListener()
+        unlockedButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -50,7 +48,7 @@ public class AchievementsFragment extends Fragment
             }
         });
 
-        locked.setOnClickListener(new View.OnClickListener()
+        lockedButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -94,7 +92,7 @@ public class AchievementsFragment extends Fragment
                 sb.append(achi.getFlavorText() + ",");
             }
             sb.append(achi.getImageName());
-            unlockedList.addFirst(sb.toString());
+            unlockedList.addLast(sb.toString());
         }
         unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
 
@@ -106,7 +104,7 @@ public class AchievementsFragment extends Fragment
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id)
             {
-                Achievement achi = unlocked.get((int)id);
+                Achievement achi = unlocked.get((unlocked.size()-1) - (int)id);
                 Intent showerIntent = new Intent(main, AchievementShowerActivity.class);
                 showerIntent.putExtra("AchievementObject", achi);
                 startActivity(showerIntent);
@@ -119,21 +117,7 @@ public class AchievementsFragment extends Fragment
         for(Achievement achi : locked)
         {
             StringBuilder sb = new StringBuilder();
-            sb.append(achi.getName() + ",");
-            if (achi.getCompletedDemands().size() > 0 && achi.getType().equals("INF"))
-            {
-                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
-                        " av " + achi.getCompletedDemands().get(0).requirement + ",");
-            }
-            else if(achi.getDemands().size() > 0 && achi.getType().equals("INF"))
-            {
-                sb.append(achi.getFlavorText() + " " + main.getStats().getScanCount() +
-                        " av " + achi.getDemands().get(0).requirement + ",");
-            }
-            else
-            {
-                sb.append(achi.getFlavorText() + ",");
-            }
+            sb.append("Låst Utmärkelse,,");
             sb.append(achi.getImageName());
             lockedList.addFirst(sb.toString());
         }
@@ -141,19 +125,6 @@ public class AchievementsFragment extends Fragment
         lockedAchievementListView = (ListView) view.findViewById(R.id.listlocked);
         AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList);
         lockedAchievementListView.setAdapter(lockedAdapter);
-
-        lockedAchievementListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id)
-            {
-                Achievement achi = locked.get((int) id);
-                Intent showerIntent = new Intent(main, AchievementShowerActivity.class);
-                showerIntent.putExtra("AchievementObject", achi);
-                startActivity(showerIntent);
-            }
-        });
     }
 
             public void setPoints(int points)

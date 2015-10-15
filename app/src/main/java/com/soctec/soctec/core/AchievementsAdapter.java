@@ -39,7 +39,7 @@ public class AchievementsAdapter extends ArrayAdapter
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView flavorText = (TextView) rowView.findViewById(R.id.context);
 
-        String fullString = itemNames.get(position);
+        String fullString = itemNames.get((itemNames.size()-1) - position);
         String [] strings = fullString.split(",");
 
         titleText.setText(strings[0]);

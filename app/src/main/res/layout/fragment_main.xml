@@ -7,16 +7,6 @@
     android:background="#dbfaaa"
     android:nestedScrollingEnabled="false">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Swipa vänster för att digga någon annan!"
-        android:id="@+id/underMainTitle"
-        android:textIsSelectable="true"
-        android:textSize="15dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
     <ImageView
         android:layout_width="220dp"
         android:layout_height="220dp"
@@ -24,7 +14,6 @@
         android:src="@mipmap/qrcode"
         android:adjustViewBounds="false"
         android:layout_marginTop="15dp"
-        android:layout_below="@id/underMainTitle"
         android:layout_centerHorizontal="true"/>
 
 
