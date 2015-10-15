@@ -96,7 +96,7 @@ public class AchievementsFragment extends Fragment
         }
         unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
 
-        AchievementsAdapter unlockedAdapter = new AchievementsAdapter(getActivity(), unlockedList, false);//todo ändrat
+        AchievementsAdapter unlockedAdapter = new AchievementsAdapter(getActivity(), unlockedList, false);
         unlockedAchievementListView.setAdapter(unlockedAdapter);
         unlockedAchievementListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -123,7 +123,7 @@ public class AchievementsFragment extends Fragment
         }
 
         lockedAchievementListView = (ListView) view.findViewById(R.id.listlocked);
-        AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList, true);//todo ändrat
+        AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList, true);
         lockedAchievementListView.setAdapter(lockedAdapter);
     }
 

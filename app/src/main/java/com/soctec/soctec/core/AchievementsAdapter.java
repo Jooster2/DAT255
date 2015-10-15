@@ -21,15 +21,15 @@ public class AchievementsAdapter extends ArrayAdapter
 
     private final Activity context;
     LinkedList<String> itemNames;
-    private boolean locked;//todo ändrat
+    private boolean locked;
 
-    public AchievementsAdapter(Activity context, LinkedList<String> itemNames, boolean locked)//todo ändrat
+    public AchievementsAdapter(Activity context, LinkedList<String> itemNames, boolean locked)
     {
         super(context, R.layout.row_achievements, itemNames);
         // TODO Auto-generated constructor stub (why is this TODO?)
         this.itemNames = itemNames;
         this.context=context;
-        this.locked=locked;//todo ändrat
+        this.locked=locked;
     }
 
     public View getView(int position,View view,ViewGroup parent)
@@ -49,7 +49,6 @@ public class AchievementsAdapter extends ArrayAdapter
         FileHandler fh = FileHandler.getInstance();
         imageView.setImageResource(fh.getResourceID(strings[2], "drawable"));
 
-        //todo ändrat
         if(locked == true)
         imageView.setColorFilter(Color.GRAY);
 
