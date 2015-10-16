@@ -100,15 +100,11 @@ public class Achievement implements Serializable
         {
             Demand element = it.next();
             Log.i("icomera", "Requirement: " + element.requirement);
-            boolean timeType = false;
+            boolean isTimeType = false;
             for(int i : Demand.TIME_TYPES)
-                if(demandType == i)
-                {
-                    timeType = true;
-                    break;
-                }
+                    isTimeType |= demandType == i;
             //Standard check, correct type, and correct value?
-            if(!timeType &&
+            if(!isTimeType &&
                     element.type == demandType &&
                     element.requirement.equals(demandContent))
             {
@@ -118,7 +114,7 @@ public class Achievement implements Serializable
                 return true;
             }
             //Check for TIME_TYPES Demands, because they are very rarely equal
-            else if(timeType &&
+            else if(isTimeType &&
                     element.type == demandType &&
                     Integer.parseInt(demandContent) >= Integer.parseInt(element.requirement))
             {
