@@ -45,20 +45,36 @@ public class AchievementShowerActivity extends Activity
         TextView flavorText = (TextView)findViewById(R.id.flavorTextView);
         if(achievement.getType().equals("INF"))
         {
-            StringBuilder sb = new StringBuilder(achievement.getFlavorText() + " ");
+            StringBuilder sb = new StringBuilder(achievement.getFlavorText());
             if(achievement.getCompletedDemands().size() > 0)
             {
-                sb.append(achievement.getCompletedDemands().get(0).requirement +
-                        " av " + achievement.getCompletedDemands().get(0).requirement);
+                for(int i=0; i<2; i++)
+                    sb.replace(sb.indexOf("#"), sb.indexOf("#")+1,
+                        achievement.getCompletedDemands().get(0).requirement);
+
+                /*sb.append(achievement.getCompletedDemands().get(0).requirement +
+                        " av " + achievement.getCompletedDemands().get(0).requirement);*/
             }
+            //Else is not necessary while locked achievements are "invisible"
             else
             {
-                sb.append(scanCount + " av " + achievement.getDemands().get(0).requirement);
+                sb.replace(sb.indexOf("#"), sb.indexOf("#")+1, String.valueOf(scanCount));
+                sb.replace(sb.indexOf("#"), sb.indexOf("#")+1, achievement.getDemands().get(0).requirement);
+                //sb.append(scanCount + " av " + achievement.getDemands().get(0).requirement);
             }
             flavorText.setText(sb.toString());
         }
         else
-            flavorText.setText(achievement.getFlavorText());
+        {
+            StringBuilder sb = new StringBuilder(achievement.getFlavorText());
+            if(achievement.getCompletedDemands().size() > 0)
+            {
+                for(int i=0; i<2; i++)
+                    sb.replace(sb.indexOf("#"), sb.indexOf("#")+1,
+                            achievement.getCompletedDemands().get(0).requirement);
+            }
+            flavorText.setText(sb.toString());
+        }
 
 
         Button closeButton = (Button)findViewById(R.id.showerCloseButton);

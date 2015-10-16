@@ -30,7 +30,10 @@ public class AchievementCreator extends Observable
             case "P_SCAN": return Demand.PERSON_SCAN;
             case "B_RIDE": return Demand.BUS_RIDE;
             case "API": return Demand.API;
-            case "T_TALK": return Demand.TIME_TALKED;
+            case "TT_TALK": return Demand.TOTAL_TIME_TALKED;
+            case "LT_TALK": return Demand.LONGEST_TALK_STREAK;
+            case "CT_TALK": return Demand.CURRENT_TALK_STREAK;
+
             default: return Integer.parseInt(type);
         }
     }

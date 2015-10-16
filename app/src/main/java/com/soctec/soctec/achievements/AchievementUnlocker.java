@@ -32,17 +32,30 @@ public class AchievementUnlocker implements Observer
     /**
      * Constructor that initiates the unlockableAchievements list, saves a reference to Stats and
      * AchievementCreator.
+     * @param main
      * @param stats
-     * @param creator
      */
-    public AchievementUnlocker(MainActivity main, Stats stats, AchievementCreator creator)
+    public AchievementUnlocker(MainActivity main, Stats stats)
     {
         unlockableAchievements = new ArrayList<>();
         recentlyUnlocked = new ArrayList<>();
         this.main = main;
         this.stats = stats;
-        this.creator = creator;
+        creator = new AchievementCreator();
+        creator.addObserver(this);
         livingDemands = new HashMap<>();
+        if(!MainActivity.TESTING)
+            loadUnlockable();
+        creator.createFromFile();
+    }
+
+    /**
+     * Only for testing purposes
+     * @param achi
+     */
+    public void createTestAch(String achi)
+    {
+        creator.createTestAch(achi);
     }
 
     /**
@@ -153,19 +166,30 @@ public class AchievementUnlocker implements Observer
                     stats.incScanCount();
                     didUnlock = checkUnlockables(Demand.PERSON_SCAN,
                             String.valueOf(stats.getScanCount()));
+                    receiveEvent(Demand.LONGEST_TALK_STREAK,
+                            String.valueOf(stats.getLongestTalkStreak()));
+                    receiveEvent(Demand.CURRENT_TALK_STREAK,
+                            String.valueOf(stats.getCurrentTalkStreak()));
                 }
                 else
                 {
                     //To make the JUnit tests work, set the second argument to 'content' instead
-                    receiveEvent(Demand.TIME_TALKED, String.valueOf(stats.getTimeTalked()));
-                    receiveEvent(Demand.TIME_TALKED, String.valueOf(stats.getLongestTalkStreak()));
+                    receiveEvent(Demand.TOTAL_TIME_TALKED,
+                            String.valueOf(stats.getTimeTalked()));
+
                 }
                 break;
             case Demand.BUS_RIDE:
                 didUnlock = checkUnlockables(Demand.BUS_RIDE, content);
                 break;
-            case Demand.TIME_TALKED:
-                didUnlock = checkUnlockables(Demand.TIME_TALKED, content);
+            case Demand.TOTAL_TIME_TALKED:
+                didUnlock = checkUnlockables(Demand.TOTAL_TIME_TALKED, content);
+                break;
+            case Demand.LONGEST_TALK_STREAK:
+                didUnlock = checkUnlockables(Demand.LONGEST_TALK_STREAK, content);
+                break;
+            case Demand.CURRENT_TALK_STREAK:
+                didUnlock = checkUnlockables(Demand.CURRENT_TALK_STREAK, content);
                 break;
         }
         if(didUnlock)
@@ -240,13 +264,16 @@ public class AchievementUnlocker implements Observer
         if(data instanceof Achievement)
         {
             Achievement achievement = (Achievement)data;
-            unlockableAchievements.add(achievement);
-            if(achievement.getType().equals("API"))
+            if(!unlockableAchievements.contains(achievement))
             {
-                for(Demand demand : achievement.getDemands())
+                unlockableAchievements.add(achievement);
+                if(achievement.getType().equals("API"))
                 {
-                    if(demand.type == Demand.API)
-                        registerLivingDemand(achievement, demand);
+                    for(Demand demand : achievement.getDemands())
+                    {
+                        if(demand.type == Demand.API)
+                            registerLivingDemand(achievement, demand);
+                    }
                 }
             }
         }

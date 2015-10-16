@@ -51,12 +51,13 @@ import com.soctec.soctec.utils.FileHandler;
  */
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
+    public static final boolean TESTING = true;
+
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     ConnectionChecker connectionChecker = null;
 
     private Stats stats;
-    private AchievementCreator creator;
     private AchievementUnlocker unlocker;
 
     private static int REQUEST_CODE = 0;
@@ -81,15 +82,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         Profile.initProfile();
 
         //Initialize the Achievement engine
-        stats = (Stats)FileHandler.getInstance().readObject("stats.sav");
+        if(!TESTING)
+            stats = (Stats)FileHandler.getInstance().readObject("stats.sav");
         if (stats == null)
             stats = new Stats();
-        creator = new AchievementCreator();
-        unlocker = new AchievementUnlocker(this, stats, creator);
-        creator.addObserver(unlocker);
-        int loaded = unlocker.loadUnlockable();
-        if(loaded == 0)
-            creator.createFromFile();
+        unlocker = new AchievementUnlocker(this, stats);
 
         //Initialize networkHandler. Start server thread
         NetworkHandler.getInstance().setMyActivity(this);

@@ -1,5 +1,7 @@
 package com.soctec.soctec.achievements;
 
+import com.soctec.soctec.core.MainActivity;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,6 +21,7 @@ public class Stats implements Serializable
     private int ratingNeg;
     private int timeTalked;
     private int longestTalkStreak;
+    private int currentTalkStreak;
     private String lastScanned;
     private LinkedList<Achievement> lastCompletedAchievements;
     private ArrayList<Achievement> completedAchievements;
@@ -33,6 +36,7 @@ public class Stats implements Serializable
     {
         lastScannedTime = 0;
         longestTalkStreak = 0;
+        currentTalkStreak = 0;
         lastScanned = "";
         lastCompletedAchievements = new LinkedList<>();
         completedAchievements = new ArrayList<>();
@@ -146,14 +150,16 @@ public class Stats implements Serializable
         {
             int thisTalkTime = (int)(systemTime - lastScannedTime) / 1000;
             timeTalked += thisTalkTime;
-            if(thisTalkTime > longestTalkStreak)
-                longestTalkStreak = thisTalkTime;
+            currentTalkStreak += thisTalkTime;
+            if(currentTalkStreak > longestTalkStreak)
+                longestTalkStreak = currentTalkStreak;
             lastScannedTime = systemTime;
         }
         else
         {
             lastScanned = newScan;
             lastScannedTime = systemTime;
+            currentTalkStreak = 0;
             addRecentScan(systemTime, newScan);
         }
         return scannedRecently;
@@ -195,14 +201,19 @@ public class Stats implements Serializable
         return longestTalkStreak;
     }
 
+    public int getCurrentTalkStreak()
+    {
+        return currentTalkStreak;
+    }
+
     /**
      * Used only for testing purposes
      * @param time time to set
      */
     public void setLongestTalkStreak(int time)
     {
-        //Uncomment for testing purposes
-        //longestTalkStreak = time;
+        if(MainActivity.TESTING)
+            longestTalkStreak = time;
     }
 
     /**
@@ -227,12 +238,15 @@ public class Stats implements Serializable
 
     public void removeOldScans()
     {
+        int resetTime = 7200000;
+        if(MainActivity.TESTING)
+            resetTime = 1000;
         Iterator it = listRecentScans.iterator();
         while (it.hasNext())
         {
             UserPair element = (UserPair) it.next();
             //two hours :7200000
-            if((System.currentTimeMillis() - element.getScanTime()) >= 60000)
+            if((System.currentTimeMillis() - element.getScanTime()) >= resetTime)
                 it.remove();
             else
                 break;

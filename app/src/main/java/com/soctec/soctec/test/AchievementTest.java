@@ -15,8 +15,7 @@ public class AchievementTest extends AndroidTestCase
 {
     MainActivity main = new MainActivity();
     Stats stats = new Stats();
-    AchievementCreator creator = new AchievementCreator();
-    AchievementUnlocker unlocker = new AchievementUnlocker(main, stats, creator);
+    AchievementUnlocker unlocker = new AchievementUnlocker(main, stats);
 
     /**
      * Tests if its possible to create an Achievement by checking the unlockedAchievements-list after
@@ -25,8 +24,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testCreateAchievement() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         assertEquals( 1, unlocker.getUnlockableAchievements().size());
     }
 
@@ -36,8 +34,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testScanCountInc() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(stats.getScanCount(), 1);
 
@@ -49,8 +46,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testLastScanned() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals("JOCKE", stats.getlastScanned());
     }
@@ -60,8 +56,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testUnlockAchievement() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, unlocker.getUnlockableAchievements().size());
     }
@@ -73,11 +68,10 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testCreate4Achievements() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
-        creator.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
+        unlocker.createTestAch("First Scan!, flavorText, 50, someimg, S1, SIN, P_SCAN:1");
         assertEquals(4, unlocker.getUnlockableAchievements().size());
 
         //TODO : Write more tests, what kind of tests?
@@ -89,8 +83,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testCreateInfiniteAchievements() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("GOGO! Towards Infinity!, flavorText, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c");
+        unlocker.createTestAch("GOGO! Towards Infinity!, flavorText, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals("SI0", stats.getAchievements().get(0).getId());
         assertEquals(1, unlocker.getUnlockableAchievements().size());
@@ -115,8 +108,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testTimeTalkedAchievements() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("MaratonSnackaren!, Du har pratat, 25, gold_trophy, TI0, INF, T_TALK:1:a*2");
+        unlocker.createTestAch("MaratonSnackaren!, Du har pratat, 25, gold_trophy, TI0, INF, T_TALK:1:a*2");
         unlocker.receiveEvent(4, "6");
         assertEquals("TI0", stats.getAchievements().get(0).getId());
     }
@@ -129,7 +121,6 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testDoubleScanNegated() throws Exception
     {
-        creator.addObserver(unlocker);
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(1, stats.getScanCount());
         unlocker.receiveEvent(1, "JOCKE");
@@ -149,8 +140,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testLongestTalkStreak() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("Långa möten, Du har pratat 5min med samma person, 50, gold_ribbon, S3, SIN, T_TALK:300");
+        unlocker.createTestAch("Långa möten, Du har pratat 5min med samma person, 50, gold_ribbon, S3, SIN, T_TALK:300");
         unlocker.receiveEvent(1, "JOCKE");
         unlocker.receiveEvent(1, "JOCKE");
         assertEquals(0, stats.getAchievements().size());
@@ -166,8 +156,7 @@ public class AchievementTest extends AndroidTestCase
      */
     public void testCollectionAchievements() throws Exception
     {
-        creator.addObserver(unlocker);
-        creator.createTestAch("Pure Electric!, You have gone on all three electric buses, "+
+        unlocker.createTestAch("Pure Electric!, You have gone on all three electric buses, "+
                 "30, gold_trophy, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3");
         assertEquals(3, unlocker.getUnlockableAchievements().get(0).getDemands().size());
         unlocker.receiveEvent(2, "E_BUS1");

@@ -21,7 +21,14 @@ public class Demand extends Observable implements Runnable, Serializable
     public static final int PERSON_SCAN = 1;
     public static final int BUS_RIDE = 2;
     public static final int API = 3;
-    public static final int TIME_TALKED = 4;
+    public static final int TOTAL_TIME_TALKED = 4;
+    public static final int LONGEST_TALK_STREAK = 5;
+    public static final int CURRENT_TALK_STREAK = 6;
+
+    public static final int[] TIME_TYPES = {
+            TOTAL_TIME_TALKED,
+            LONGEST_TALK_STREAK,
+            CURRENT_TALK_STREAK};
 
     private static final long serialVersionUID = 2L;
     public volatile boolean running;
@@ -48,13 +55,15 @@ public class Demand extends Observable implements Runnable, Serializable
     {
         running = false;
         this.type = type;
-        if((type == PERSON_SCAN || type == TIME_TALKED) && extraPrimary != null)
+        Log.i("calcdemand", String.valueOf(type));
+        if((type == PERSON_SCAN || type == TOTAL_TIME_TALKED || type == LONGEST_TALK_STREAK) && extraPrimary != null)
             this.requirement = calculateRequirement(requirement, extraPrimary, detail);
         else
             this.requirement = requirement;
         this.extraPrimary = extraPrimary;
         this.extraSecondary = extraSecondary;
         this.detail = detail;
+        Log.i("calcdemand", this.requirement);
     }
 
     /**
