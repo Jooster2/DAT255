@@ -3,7 +3,7 @@
     <string-array name="Achievements">
         <!--Singular Achievements-->
         <item>Du diggar någon!, Du har scannat en person, 50, gold_ribbon, S1, SIN, P_SCAN:1</item>
-        <item>En till?!, Du har skannat två personer, 30, gold_trophy, S2, SIN, P_SCAN:2</item>
+        <item>En till?!, Du har skannat två personer, 30, gold_ribbon, S2, SIN, P_SCAN:2</item>
 
 
         <!--Infinite Achievements-->
