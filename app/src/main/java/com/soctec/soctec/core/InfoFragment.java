@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-
 import com.soctec.soctec.utils.FileHandler;
-
 import java.io.File;
 
 /**
@@ -16,6 +14,9 @@ import java.io.File;
 
 public class InfoFragment extends DialogFragment
 {
+    /**
+     * Creates the dialog window with a button and a title, and which text the window shall display.
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {

@@ -1,8 +1,5 @@
 package com.soctec.soctec.core;
 
-/**
- * Created by Jeppe on 2015-10-07.
- */
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -16,6 +13,10 @@ import com.soctec.soctec.utils.FileHandler;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+/**
+ * Created by Jeppe on 2015-10-07.
+ */
+
 public class AchievementsAdapter extends ArrayAdapter
 {
 
@@ -23,6 +24,12 @@ public class AchievementsAdapter extends ArrayAdapter
     LinkedList<String> itemNames;
     private boolean locked;//todo ändrat
 
+    /**
+     *  Constructor that sets up the items in the list view and what they contain.
+     * @param context  Context text below the item name.
+     * @param itemNames Name of the items.
+     * @param locked If the achivement in the list is still locked, it will show with a grey color.
+     */
     public AchievementsAdapter(Activity context, LinkedList<String> itemNames, boolean locked)//todo ändrat
     {
         super(context, R.layout.row_achievements, itemNames);
