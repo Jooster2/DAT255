@@ -51,7 +51,7 @@ import com.soctec.soctec.utils.FileHandler;
  */
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
-    public static final boolean TESTING = true;
+    public static final boolean TESTING = false;
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
