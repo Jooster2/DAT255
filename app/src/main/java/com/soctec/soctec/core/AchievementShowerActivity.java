@@ -48,9 +48,15 @@ public class AchievementShowerActivity extends Activity
             StringBuilder sb = new StringBuilder(achievement.getFlavorText());
             if(achievement.getCompletedDemands().size() > 0)
             {
-                for(int i=0; i<2; i++)
-                    sb.replace(sb.indexOf("#"), sb.indexOf("#")+1,
-                        achievement.getCompletedDemands().get(0).requirement);
+                while(sb.toString().contains("#"))
+                {
+                    String requirement;
+                    if(achievement.getId().contains("T"))
+                        requirement = achievement.getCompletedDemands().get(0).getMinuteRequirement();
+                    else
+                        requirement = achievement.getCompletedDemands().get(0).requirement;
+                    sb.replace(sb.indexOf("#"), sb.indexOf("#") + 1, requirement);
+                }
 
                 /*sb.append(achievement.getCompletedDemands().get(0).requirement +
                         " av " + achievement.getCompletedDemands().get(0).requirement);*/
@@ -69,9 +75,15 @@ public class AchievementShowerActivity extends Activity
             StringBuilder sb = new StringBuilder(achievement.getFlavorText());
             if(achievement.getCompletedDemands().size() > 0)
             {
-                for(int i=0; i<2; i++)
-                    sb.replace(sb.indexOf("#"), sb.indexOf("#")+1,
-                            achievement.getCompletedDemands().get(0).requirement);
+                while(sb.toString().contains("#"))
+                {
+                    String requirement;
+                    if(achievement.getId().contains("T"))
+                        requirement = achievement.getCompletedDemands().get(0).getMinuteRequirement();
+                    else
+                        requirement = achievement.getCompletedDemands().get(0).requirement;
+                    sb.replace(sb.indexOf("#"), sb.indexOf("#") + 1, requirement);
+                }
             }
             flavorText.setText(sb.toString());
         }

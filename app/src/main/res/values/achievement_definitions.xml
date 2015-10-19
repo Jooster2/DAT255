@@ -4,12 +4,12 @@
         <!--Singular Achievements-->
         <item>Du diggar någon!, Du har scannat en person, 50, gold_ribbon, S1, SIN, P_SCAN:1</item>
         <item>En till?!, Du har skannat två personer, 30, gold_ribbon, S2, SIN, P_SCAN:2</item>
-        <item>Långa möten är bra möten!, Du har pratat över # min med samma person, 50, gold_ribbon, S3, SIN, CT_TALK:10</item>
+        <item>Långa möten är bra möten!, Du har pratat över # min med samma person, 50, gold_ribbon, T3, SIN, CT_TALK:300</item>
 
 
         <!--Infinite Achievements-->
         <item>Wow! fortsätt kämpa!, Du har skannat # av # personer, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c</item>
-        <item>MaratonSnackaren!, Du har pratat totalt # av # minuter, 25, gold_trophy, TI0, INF, TT_TALK:10:a*2</item>
+        <item>MaratonSnackaren!, Du har pratat totalt # av # minuter, 25, gold_trophy, TI0, INF, TT_TALK:1800:c*a+a</item>
         <item>Nytt rekord!, Du har slagit ditt tidsrekord, 5, gold_trophy, LI0, INF, LT_TALK:10:a+1</item>
 
         <!--Collection Achievements-->

@@ -66,6 +66,11 @@ public class Demand extends Observable implements Runnable, Serializable
         Log.i("calcdemand", this.requirement);
     }
 
+    public String getMinuteRequirement()
+    {
+        return String.valueOf(Integer.parseInt(requirement)/60);
+    }
+
     /**
      * An extremely simple parser for calculating equations. Supports ^,*,/,+,- but not parenthesis
      * @param requirement the base of the equation

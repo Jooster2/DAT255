@@ -102,11 +102,7 @@ public class Achievement implements Serializable
             Log.i("icomera", "Requirement: " + element.requirement);
             boolean timeType = false;
             for(int i : Demand.TIME_TYPES)
-                if(demandType == i)
-                {
-                    timeType = true;
-                    break;
-                }
+                timeType |= i == demandType;
             //Standard check, correct type, and correct value?
             if(!timeType &&
                     element.type == demandType &&
