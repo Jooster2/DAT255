@@ -1,9 +1,5 @@
 package com.soctec.soctec.core;
 
-/**
- * Created by Jeppe on 2015-09-22.
- */
-
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -18,9 +14,12 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+/**
+ * Created by Jeppe on 2015-09-22.
+ */
 
 public class AchievementsFragment extends Fragment
 {
@@ -28,6 +27,10 @@ public class AchievementsFragment extends Fragment
     ViewSwitcher viewSwitcher;
     View view;
     MainActivity main;
+
+    /**
+     * Creates and sets up the fragment, buttons, and view switcher.
+     */
 
     @Nullable
     @Override
@@ -66,6 +69,12 @@ public class AchievementsFragment extends Fragment
         main = (MainActivity)getActivity();
         main.updateAchievementFragment();
     }
+
+    /**
+     * Refreshes the locked and unlocked achievements in the list view.
+     * @param locked The locked achievements will be stored in this Arraylist.
+     * @param unlocked The unlocked achievements will be stored in this Arraylist.
+     */
 
     public void refreshAchievements(final ArrayList<Achievement> locked, final ArrayList<Achievement> unlocked)
     {
@@ -146,6 +155,10 @@ public class AchievementsFragment extends Fragment
         lockedAchievementListView.setAdapter(lockedAdapter);
     }
 
+    /**
+     * Displays the total of points the user have gathered.
+     * @param points Points the user have gathered is stored in this variable.
+     */
             public void setPoints(int points)
             {
                 TextView textView = (TextView) view.findViewById(R.id.pointsAchi);

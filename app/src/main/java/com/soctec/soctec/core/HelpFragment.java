@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-
 import com.soctec.soctec.utils.FileHandler;
 
 /**
@@ -17,6 +16,10 @@ public class HelpFragment extends DialogFragment
 {
     String toDisplay = "";
 
+    /**
+     * Manages what text the dialog fragment shall show when called upon.
+     * @param messageType Different types of messages, first startup and post first startup.
+     */
     public void show(FragmentManager fm, String tag, int messageType)
     {
         if(messageType == 0)
@@ -44,6 +47,9 @@ public class HelpFragment extends DialogFragment
         super.show(fm, tag);
     }
 
+    /**
+     * Creates the dialog window with a button and a title.
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
