@@ -120,6 +120,12 @@ public class Achievement implements Serializable
             {
                 Log.i("icomera", "demand equaled");
                 it.remove();
+                if(demandType == Demand.LONGEST_TALK_STREAK)
+                {
+                    Log.i("recreation", "Setting up for recreation: " + element.requirement);
+                    element.requirement = demandContent;
+                    Log.i("recreation", "Set to: " + element.requirement);
+                }
                 completedDemands.add(element);
                 return true;
             }
@@ -210,6 +216,36 @@ public class Achievement implements Serializable
                 data.add(demand.type + ":" + demand.requirement);
         }
         return data.toArray(new String[data.size()]);
+    }
+
+    @Override
+    public boolean equals(Object otherObject)
+    {
+        boolean isEqual = false;
+        if(otherObject instanceof Achievement && otherObject != null)
+        {
+            Achievement other = (Achievement)otherObject;
+            isEqual |= this.id.equals(other.id);
+            if(this.type.equals("INF"))
+            {
+                isEqual |= (getIDNumber(this.id) < getIDNumber(other.id) &&
+                        getIDName(this.id).equals(getIDName(other.id)));
+            }
+
+        }
+        return isEqual;
+    }
+
+    private int getIDNumber(String ID)
+    {
+        String[] splitted = ID.split("(?=[^a-zA-Z])", 2);
+        return Integer.parseInt(splitted[1]);
+    }
+
+    private String getIDName(String ID)
+    {
+        String[] splitted = ID.split("(?=[^a-zA-Z])", 2);
+        return splitted[0];
     }
 
 }

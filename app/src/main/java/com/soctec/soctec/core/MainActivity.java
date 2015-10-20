@@ -1,6 +1,5 @@
 package com.soctec.soctec.core;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +31,6 @@ import android.widget.ImageView;
 
 import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
-import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
 import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.network.ConnectionChecker;
@@ -208,9 +206,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     @Override
     protected void onStop()
     {
-        super.onStop();
+
         unlocker.saveUnlockable();
         FileHandler.getInstance().writeObject("stats.sav", stats);
+        super.onStop();
     }
 
     /**
@@ -265,8 +264,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         matchIntent.putExtras(b);
         startActivity(matchIntent);
 
-        //getFragment() must have position 0 for some reason
-        ((MainFragment)mSectionsPagerAdapter.getFragment(1)).enableRatingButtons();
+        //Activate rating thumbs
+        if(unlocker.wasLegalScan())
+            ((MainFragment)mSectionsPagerAdapter.getFragment(1)).enableRatingButtons();
 
 
     }

@@ -4,6 +4,7 @@ package com.soctec.soctec.core;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ public class MainFragment extends Fragment
         yesButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
+                        Log.i("rating", "Sending true to server");
                         sendRatingToServer(true);
                         disableRatingButtons();
                         stats.setCanNotRate(true);
@@ -66,6 +68,7 @@ public class MainFragment extends Fragment
         noButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
+                        Log.i("rating", "Sending false to server");
                         sendRatingToServer(false);
                         disableRatingButtons();
                         stats.setCanNotRate(true);
@@ -76,10 +79,12 @@ public class MainFragment extends Fragment
 
         if(stats.hasRated())
         {
+            Log.i("rating", "Disabling buttons onViewCreated");
             disableRatingButtons();
         }
         else
         {
+            Log.i("rating", "Enabling buttons onViewCreated");
             enableRatingButtons();
         }
 
@@ -91,6 +96,7 @@ public class MainFragment extends Fragment
      */
     public void enableRatingButtons()
     {
+        Log.i("rating", "Enabling buttons");
         yesButton.setEnabled(true);
         noButton.setEnabled(true);
         yesButton.setImageResource(R.drawable.thumb_up_blackgreen);
@@ -102,6 +108,7 @@ public class MainFragment extends Fragment
      */
     public void disableRatingButtons()
     {
+        Log.i("rating", "Disabling buttons");
         yesButton.setEnabled(false);
         noButton.setEnabled(false);
         yesButton.setImageResource(R.drawable.thumb_up_grey);

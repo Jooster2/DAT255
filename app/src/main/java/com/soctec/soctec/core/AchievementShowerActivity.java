@@ -64,8 +64,8 @@ public class AchievementShowerActivity extends Activity
             //Else is not necessary while locked achievements are "invisible"
             else
             {
-                sb.replace(sb.indexOf("#"), sb.indexOf("#")+1, String.valueOf(scanCount));
-                sb.replace(sb.indexOf("#"), sb.indexOf("#")+1, achievement.getDemands().get(0).requirement);
+                sb.replace(sb.indexOf("#"), sb.indexOf("#") + 1, String.valueOf(scanCount));
+                sb.replace(sb.indexOf("#"), sb.indexOf("#") + 1, achievement.getDemands().get(0).requirement);
                 //sb.append(scanCount + " av " + achievement.getDemands().get(0).requirement);
             }
             flavorText.setText(sb.toString());

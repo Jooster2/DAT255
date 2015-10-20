@@ -75,28 +75,47 @@ public class AchievementsFragment extends Fragment
 
         for (Achievement achi : unlocked)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.append(achi.getName() + ",");
-            if (achi.getCompletedDemands().size() > 0 && achi.getType().equals("INF"))
+            StringBuilder sb = new StringBuilder(achi.getName() + "," + achi.getFlavorText());
+            if(achi.getType().equals("INF"))
             {
-                sb.append(achi.getFlavorText() + " " + achi.getCompletedDemands().get(0).requirement +
-                        " av " + achi.getCompletedDemands().get(0).requirement + ",");
-            }
-            else if(achi.getDemands().size() > 0 && achi.getType().equals("INF"))
-            {
-                sb.append(achi.getFlavorText() + " " + achi.getCompletedDemands().get(0).requirement +
-                        " av " + achi.getDemands().get(0).requirement + ",");
+
+                if(achi.getCompletedDemands().size() > 0)
+                {
+                    while(sb.toString().contains("#"))
+                    {
+                        String requirement;
+                        if(achi.getId().contains("T"))
+                            requirement = achi.getCompletedDemands().get(0).getMinuteRequirement();
+                        else
+                            requirement = achi.getCompletedDemands().get(0).requirement;
+                        sb.replace(sb.indexOf("#"), sb.indexOf("#") + 1, requirement);
+                    }
+
+                }
+                //Else is not necessary while locked achievements are "invisible"
             }
             else
             {
-                sb.append(achi.getFlavorText() + ",");
+                if(achi.getCompletedDemands().size() > 0)
+                {
+                    while(sb.toString().contains("#"))
+                    {
+                        String requirement;
+                        if(achi.getId().contains("T"))
+                            requirement = achi.getCompletedDemands().get(0).getMinuteRequirement();
+                        else
+                            requirement = achi.getCompletedDemands().get(0).requirement;
+                        sb.replace(sb.indexOf("#"), sb.indexOf("#") + 1, requirement);
+                    }
+                }
             }
+            sb.append(",");
             sb.append(achi.getImageName());
             unlockedList.addLast(sb.toString());
         }
         unlockedAchievementListView = (ListView)view.findViewById(R.id.listunlocked);
 
-        AchievementsAdapter unlockedAdapter = new AchievementsAdapter(getActivity(), unlockedList, false);//todo ändrat
+        AchievementsAdapter unlockedAdapter = new AchievementsAdapter(getActivity(), unlockedList, false);
         unlockedAchievementListView.setAdapter(unlockedAdapter);
         unlockedAchievementListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -123,7 +142,7 @@ public class AchievementsFragment extends Fragment
         }
 
         lockedAchievementListView = (ListView) view.findViewById(R.id.listlocked);
-        AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList, true);//todo ändrat
+        AchievementsAdapter lockedAdapter = new AchievementsAdapter(getActivity(), lockedList, true);
         lockedAchievementListView.setAdapter(lockedAdapter);
     }
 

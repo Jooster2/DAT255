@@ -1,5 +1,7 @@
 package com.soctec.soctec.achievements;
 
+import android.util.Log;
+
 import com.soctec.soctec.utils.FileHandler;
 
 import java.util.ArrayList;
@@ -123,6 +125,7 @@ public class AchievementCreator extends Observable
         // data[4] is ID
         if(achievement.getType().equals("INF"))
             data[4] = incID(data[4]);
+        Log.i("recreation", "Recreating: " + data[4] + " " + data[6]);
         Achievement achi = createAchievement(data);
         setChanged();
         notifyObservers(achi);
@@ -150,4 +153,5 @@ public class AchievementCreator extends Observable
         String[] splitted = ID.split("(?=[^a-zA-Z])", 2);
         return Integer.parseInt(splitted[1]);
     }
+
 }

@@ -28,6 +28,7 @@ public class AchievementUnlocker implements Observer
     private Stats stats;
     private AchievementCreator creator;
     private HashMap<Demand, Achievement> livingDemands;
+    private boolean legalScan;
 
     /**
      * Constructor that initiates the unlockableAchievements list, saves a reference to Stats and
@@ -37,13 +38,15 @@ public class AchievementUnlocker implements Observer
      */
     public AchievementUnlocker(MainActivity main, Stats stats)
     {
-        unlockableAchievements = new ArrayList<>();
-        recentlyUnlocked = new ArrayList<>();
         this.main = main;
         this.stats = stats;
+        legalScan = false;
+        unlockableAchievements = new ArrayList<>();
+        recentlyUnlocked = new ArrayList<>();
+        livingDemands = new HashMap<>();
         creator = new AchievementCreator();
         creator.addObserver(this);
-        livingDemands = new HashMap<>();
+
         if(!MainActivity.TESTING)
             loadUnlockable();
         creator.createFromFile();
@@ -161,21 +164,27 @@ public class AchievementUnlocker implements Observer
         switch(type)
         {
             case Demand.PERSON_SCAN:
+                //New user was scanned
                 if(!stats.setLastScanned(content))
                 {
+                    doRecreate();
                     stats.incScanCount();
+                    legalScan = true;
                     didUnlock = checkUnlockables(Demand.PERSON_SCAN,
                             String.valueOf(stats.getScanCount()));
+
+                }
+                //The same user was scanned again
+                else
+                {
+                    //To make the JUnit tests work, set the second argument to 'content' instead
+                    legalScan = false;
+                    receiveEvent(Demand.TOTAL_TIME_TALKED,
+                            String.valueOf(stats.getTimeTalked()));
                     receiveEvent(Demand.LONGEST_TALK_STREAK,
                             String.valueOf(stats.getLongestTalkStreak()));
                     receiveEvent(Demand.CURRENT_TALK_STREAK,
                             String.valueOf(stats.getCurrentTalkStreak()));
-                }
-                else
-                {
-                    //To make the JUnit tests work, set the second argument to 'content' instead
-                    receiveEvent(Demand.TOTAL_TIME_TALKED,
-                            String.valueOf(stats.getTimeTalked()));
 
                 }
                 break;
@@ -186,7 +195,7 @@ public class AchievementUnlocker implements Observer
                 didUnlock = checkUnlockables(Demand.TOTAL_TIME_TALKED, content);
                 break;
             case Demand.LONGEST_TALK_STREAK:
-                didUnlock = checkUnlockables(Demand.LONGEST_TALK_STREAK, content);
+                checkUnlockables(Demand.LONGEST_TALK_STREAK, content);
                 break;
             case Demand.CURRENT_TALK_STREAK:
                 didUnlock = checkUnlockables(Demand.CURRENT_TALK_STREAK, content);
@@ -243,6 +252,11 @@ public class AchievementUnlocker implements Observer
         recentlyUnlocked.clear();
     }
 
+    public boolean wasLegalScan()
+    {
+        return legalScan;
+    }
+
     /**
      * Returns the unlockableAcievments list.
      * @return  unlockableAchievements
@@ -264,7 +278,8 @@ public class AchievementUnlocker implements Observer
         if(data instanceof Achievement)
         {
             Achievement achievement = (Achievement)data;
-            if(!unlockableAchievements.contains(achievement))
+            if(!unlockableAchievements.contains(achievement) &&
+                    !stats.getAchievements().contains(achievement))
             {
                 unlockableAchievements.add(achievement);
                 if(achievement.getType().equals("API"))
