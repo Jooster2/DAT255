@@ -159,9 +159,9 @@ public class AchievementsFragment extends Fragment
      * Displays the total of points the user have gathered.
      * @param points Points the user have gathered is stored in this variable.
      */
-            public void setPoints(int points)
-            {
+    public void setPoints(int points)
+    {
                 TextView textView = (TextView) view.findViewById(R.id.pointsAchi);
                 textView.setText("Dina poäng: " + points);
-            }
-        }
+    }
+}

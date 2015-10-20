@@ -22,23 +22,23 @@ public class AchievementsAdapter extends ArrayAdapter
 
     private final Activity context;
     LinkedList<String> itemNames;
-    private boolean locked;//todo ändrat
+    private boolean locked;
 
     /**
-     *  Constructor that sets up the items in the list view and what they contain.
+     * Constructor that sets up the items in the list view and what they contain.
      * @param context  Context text below the item name.
      * @param itemNames Name of the items.
      * @param locked If the achivement in the list is still locked, it will show with a grey color.
      */
-    public AchievementsAdapter(Activity context, LinkedList<String> itemNames, boolean locked)//todo ändrat
+    public AchievementsAdapter(Activity context, LinkedList<String> itemNames, boolean locked)
     {
         super(context, R.layout.row_achievements, itemNames);
-        // TODO Auto-generated constructor stub (why is this TODO?)
         this.itemNames = itemNames;
         this.context=context;
-        this.locked=locked;//todo ändrat
+        this.locked=locked;
     }
 
+    @Override
     public View getView(int position,View view,ViewGroup parent)
     {
         LayoutInflater inflater=context.getLayoutInflater();
@@ -56,7 +56,6 @@ public class AchievementsAdapter extends ArrayAdapter
         FileHandler fh = FileHandler.getInstance();
         imageView.setImageResource(fh.getResourceID(strings[2], "drawable"));
 
-        //todo ändrat
         if(locked == true)
         imageView.setColorFilter(Color.GRAY);
 
