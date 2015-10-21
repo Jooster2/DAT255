@@ -9,7 +9,9 @@ import android.support.v4.app.DialogFragment;
 import com.soctec.soctec.utils.FileHandler;
 
 /**
- * Created by Jeppe on 2015-10-12.
+ * Specialized DialogFragment for displaying "help"
+ * @author Jesper Kjellqvist
+ * @version 1.0
  */
 
 public class HelpFragment extends DialogFragment

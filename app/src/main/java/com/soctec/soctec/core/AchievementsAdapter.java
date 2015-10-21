@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * Created by Jeppe on 2015-10-07.
+ * Adapter for displaying several properties from an
+ * {@link com.soctec.soctec.achievements.Achievement} in a single ListView slot
+ * @author Jesper Kjellqvist
+ * @version 1.1
  */
 
 public class AchievementsAdapter extends ArrayAdapter

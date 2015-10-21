@@ -31,10 +31,10 @@ public class AchievementUnlocker implements Observer
     private boolean legalScan;
 
     /**
-     * Constructor that initiates the unlockableAchievements list, saves a reference to Stats and
-     * AchievementCreator.
-     * @param main
-     * @param stats
+     * Constructor that initiates the unlockableAchievements list, sets up the AchievementCreator
+     * and saves a reference to Stats and MainActivity
+     * @param main used to call runOnUiThread()
+     * @param stats stats object created in MainActivity
      */
     public AchievementUnlocker(MainActivity main, Stats stats)
     {
@@ -50,74 +50,6 @@ public class AchievementUnlocker implements Observer
         if(!MainActivity.TESTING)
             loadUnlockable();
         creator.createFromFile();
-    }
-
-    /**
-     * Only for testing purposes
-     * @param achi
-     */
-    public void createTestAch(String achi)
-    {
-        creator.createTestAch(achi);
-    }
-
-    /**
-     * Registers a new Demand as running, and starts it in a thread
-     * @param owner the Achievement the Demand belongs to
-     * @param demand the Demand
-     */
-    public void registerLivingDemand(Achievement owner, Demand demand)
-    {
-        livingDemands.put(demand, owner);
-        demand.addObserver(this);
-    }
-
-    /**
-     * Starts all Living Demands in their own Threads
-     */
-    public void startLivingDemands()
-    {
-        for(Demand demand : livingDemands.keySet())
-        {
-            Thread demandThread = new Thread(demand);
-            demandThread.start();
-        }
-    }
-
-    /**
-     * Stops all Living Demand-threads
-     */
-    public void stopLivingDemands()
-    {
-        for(Demand demand : livingDemands.keySet())
-            demand.shutdown();
-    }
-
-    /**
-     * Checks Living Demands for completion. This method always runs on
-     * MainActivity's UI Thread.
-     * @param demand
-     * @param value
-     */
-    public void checkLivingDemand(Demand demand, String value)
-    {
-        boolean didUnlock = false;
-        Achievement achievement = livingDemands.get(demand);
-        if(achievement.checkDemands(demand.type, value))
-        {
-            demand.shutdown();
-            livingDemands.remove(demand);
-            if(achievement.isCompleted())
-            {
-                unlockableAchievements.remove(achievement);
-                stats.addCompletedAchievement(achievement);
-                didUnlock = true;
-            }
-        }
-        if(didUnlock)
-            main.checkAchievementChanges();
-
-
     }
 
     /**
@@ -209,9 +141,67 @@ public class AchievementUnlocker implements Observer
     }
 
     /**
+     * Registers a new Demand as running, and starts it in a thread
+     * @param owner the Achievement the Demand belongs to
+     * @param demand the Demand
+     */
+    public void registerLivingDemand(Achievement owner, Demand demand)
+    {
+        livingDemands.put(demand, owner);
+        demand.addObserver(this);
+    }
+
+    /**
+     * Starts all Living Demands in their own Threads
+     */
+    public void startLivingDemands()
+    {
+        for(Demand demand : livingDemands.keySet())
+        {
+            Thread demandThread = new Thread(demand);
+            demandThread.start();
+        }
+    }
+
+    /**
+     * Stops all Living Demand-Threads
+     */
+    public void stopLivingDemands()
+    {
+        for(Demand demand : livingDemands.keySet())
+            demand.shutdown();
+    }
+
+    /**
+     * Checks Living Demands for completion (See checkUnlockables for more info).
+     * This method always runs on MainActivity's UI Thread.
+     * @param demand the Demand to check
+     * @param value the value that is compared to the Demands requirement
+     */
+    public void checkLivingDemand(Demand demand, String value)
+    {
+        boolean didUnlock = false;
+        Achievement achievement = livingDemands.get(demand);
+        if(achievement.checkDemands(demand.type, value))
+        {
+            demand.shutdown();
+            livingDemands.remove(demand);
+            if(achievement.isCompleted())
+            {
+                unlockableAchievements.remove(achievement);
+                stats.addCompletedAchievement(achievement);
+                didUnlock = true;
+            }
+        }
+        if(didUnlock)
+            main.checkAchievementChanges();
+    }
+
+    /**
      * Does a check of Demands of all Achievements in unlockableAchievements and removes
      * the Demands that met the requirements specified in parameters. If a Demand is removed,
-     * does a check if that Achievement is completed.
+     * does a check if the owning Achievement is completed.
+     * Any completed Achievement is added to the recentlyUnlocked list.
      * @param type the type of Demand
      * @param content the requirement of the Demand
      * @return true if an Achievement was unlocked
@@ -252,6 +242,10 @@ public class AchievementUnlocker implements Observer
         recentlyUnlocked.clear();
     }
 
+    /**
+     * Returns whether the last scan made was legal, i.e: the person was not scanned recently before
+     * @return true if recently scanned
+     */
     public boolean wasLegalScan()
     {
         return legalScan;
@@ -267,9 +261,9 @@ public class AchievementUnlocker implements Observer
     }
 
     /**
-     * Receives data from classes that it observes, and if  that data is class {@link Achievement}
+     * Receives data from classes that it observes, if that data is class {@link Achievement}
      * the method adds data to {@link AchievementUnlocker unlockableAchievements} -list.
-     * @param observable    Is in this case AchievementCreator.
+     * @param observable is either AchievementCreator or Demand
      * @param data  Is data received from classes that {@link AchievementUnlocker} observes.
      */
     @Override
@@ -307,5 +301,14 @@ public class AchievementUnlocker implements Observer
                 }
             });
         }
+    }
+
+    /**
+     * Only for testing purposes
+     * @param achi definition of Achievement to create
+     */
+    public void createTestAch(String achi)
+    {
+        creator.createTestAch(achi);
     }
 }

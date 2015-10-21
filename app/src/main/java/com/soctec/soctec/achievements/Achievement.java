@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 /**
- * Class for creating Achievements with certain properties
+ * Achievements can be configured many different ways and contains Demands which must be
+ * completed to complete the Achievement.
  * @author Carl-Henrik Hult, Joakim Schmidt
  * @version 2.3
  */
@@ -25,11 +26,11 @@ public class Achievement implements Serializable
 
 
     /**
-     * @param name The name of the achievement.
-     * @param points The points that the achievement is worth.
-     * @param imageName The filename/name of the image that goes with the achievement.
-     * @param id An internal ID
-     * @param type the type of the achievement (SIN/INF)
+     * @param name The name of the achievement
+     * @param points Amount of points that the achievement is worth
+     * @param imageName The filename of the image that goes with the achievement
+     * @param id An internal ID, must be unique
+     * @param type the type of the achievement (SIN/INF/COL/API)
      */
     public Achievement(String name, String flavorText, int points, String imageName, String id, String type)
     {
@@ -44,13 +45,13 @@ public class Achievement implements Serializable
     }
 
     /**
-     * Method used by {@link AchievementCreator createCounterAchievement(String[] data)} to create
-     * a demand for an achievement.
+     * Method used by {@link AchievementCreator} to create a {@link Demand} for the achievement
      * @param type type of demand
-     * @param requirement requirement for unlocking
+     * @param requirement requirement for completion
      * @param extraPrimary extra data for constructing demand (equations, sensors etc)
      * @param extraSecondary extra data for constructing demand (mostly Vin Number)
-     * @param detail numerical extra, mostly used for equations and API type demands
+     * @param detail numerical extra, mostly used API type demands
+     * @see {@link Demand} for different types
      */
     public void createDemand(int type, String requirement, String extraPrimary,
                              String extraSecondary, int detail)
@@ -88,7 +89,7 @@ public class Achievement implements Serializable
     }
 
     /**
-     * Checks and removes Demands that meet the requirements specified in parameters
+     * Checks and removes a single Demand that meet the requirements specified in parameters
      * @param demandType type of Demand
      * @param demandContent requirement of Demand
      * @return true if Demand was found and completed
@@ -229,20 +230,30 @@ public class Achievement implements Serializable
             if(this.type.equals("INF"))
             {
                 isEqual |= (getIDNumber(this.id) < getIDNumber(other.id) &&
-                        getIDName(this.id).equals(getIDName(other.id)));
+                        getIDChars(this.id).equals(getIDChars(other.id)));
             }
 
         }
         return isEqual;
     }
 
+    /**
+     * Extracts the number part of the ID
+     * @param ID ID to be extracted from
+     * @return the number found in ID
+     */
     private int getIDNumber(String ID)
     {
         String[] splitted = ID.split("(?=[^a-zA-Z])", 2);
         return Integer.parseInt(splitted[1]);
     }
 
-    private String getIDName(String ID)
+    /**
+     * Extracts the text part of the ID
+     * @param ID ID to be extracted from
+     * @return the chars found in ID
+     */
+    private String getIDChars(String ID)
     {
         String[] splitted = ID.split("(?=[^a-zA-Z])", 2);
         return splitted[0];

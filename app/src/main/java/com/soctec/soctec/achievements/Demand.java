@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Observable;
 
 /**
- * Demand used by Achievements to determine if it is earned or not
+ * Demands are used by Achievements to determine if it is completed or not
  * @author Carl-Henrik Hult, Joakim Schmidt
  * @version 2.3
  */

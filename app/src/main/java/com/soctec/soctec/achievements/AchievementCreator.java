@@ -7,7 +7,8 @@ import com.soctec.soctec.utils.FileHandler;
 import java.util.ArrayList;
 import java.util.Observable;
 /**
- * An AchievementCreator creates Achievement objects on request.
+ * An AchievementCreator creates Achievement objects on request, either from a resource,
+ * or via public methods.
  * @author Joakim Schmidt
  * @version 2.2
  */
@@ -29,17 +30,22 @@ public class AchievementCreator extends Observable
     {
         switch(type)
         {
-            case "P_SCAN": return Demand.PERSON_SCAN;
-            case "B_RIDE": return Demand.BUS_RIDE;
-            case "API": return Demand.API;
+            case "P_SCAN":  return Demand.PERSON_SCAN;
+            case "B_RIDE":  return Demand.BUS_RIDE;
+            case "API":     return Demand.API;
             case "TT_TALK": return Demand.TOTAL_TIME_TALKED;
             case "LT_TALK": return Demand.LONGEST_TALK_STREAK;
             case "CT_TALK": return Demand.CURRENT_TALK_STREAK;
 
-            default: return Integer.parseInt(type);
+            default:        return Integer.parseInt(type);
         }
     }
 
+    /**
+     * Creates an Achievement, complete with Demands, based on definition in parameter
+     * @param def defines the Achievement
+     * @return the new Achievement
+     */
     public Achievement createAchievement(String[] def)
     {
         // Arguments are: Name, FlavorText, Points, Image-name, ID, Type-name
@@ -83,8 +89,8 @@ public class AchievementCreator extends Observable
     }
 
     /**
-     * Attempts to create multiple Achievements from file.
-     * New Achievement objects are sent out via Observable.notifyAll()
+     * Attempts to create multiple Achievements from resource.
+     * Created Achievements are sent to AchievementUnlocker via Observable.notifyAll()
      * @see Observable
      */
     public void createFromFile()
@@ -103,8 +109,9 @@ public class AchievementCreator extends Observable
 
 
     /**
-     * Use to manually create Achievements for testing purposes
-     * @param line string with comma-separated description of Achievement
+     * Used to manually create Achievements for testing purposes
+     * @param line string with comma-separated definition of Achievement
+     * @example Name, FlavorText, Points, ImageName, S1, SIN, P_SCAN:1
      */
     public void createTestAch(String line)
     {

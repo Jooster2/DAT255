@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * Created by Jeppe on 2015-09-22.
+ * Used to order and display any number of {@link Achievement}s in two ListViews, one for
+ * locked Achievements, and one for completed Achievements.
+ * @author Jesper Kjellqvist, Carl-Henrik Hult
+ * @version 1.3
  */
 
 public class AchievementsFragment extends Fragment
