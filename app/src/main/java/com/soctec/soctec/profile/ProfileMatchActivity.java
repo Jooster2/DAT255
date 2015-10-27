@@ -12,7 +12,10 @@ import android.widget.ListView;
 import com.soctec.soctec.R;
 
 /**
- * Created by Carl-Henrik Hult on 2015-09-25.
+ * Matches Strings in two different ArrayLists of ArrayLists of Strings
+ * and displays the result
+ * @author Carl-Henrik Hult
+ * @version 1.0
  */
 public class ProfileMatchActivity extends Activity
 {
@@ -169,7 +172,7 @@ public class ProfileMatchActivity extends Activity
 
     private String getRandomWord()
     {
-        switch(new Random().nextInt(11))
+        switch(new Random().nextInt(10))
         {
             case 0:
                 return "bussar";
@@ -200,7 +203,7 @@ public class ProfileMatchActivity extends Activity
      * Used only for testing
      * @param thisDevice Profile from this device
      * @param otherDevice Profile from other device
-     * @return Th list of matching items
+     * @return The list of matching items
      */
     public ArrayList <String> match2 (ArrayList <ArrayList <String>> thisDevice, ArrayList <ArrayList<String>> otherDevice)
     {

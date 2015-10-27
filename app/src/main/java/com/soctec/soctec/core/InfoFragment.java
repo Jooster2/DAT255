@@ -9,7 +9,9 @@ import com.soctec.soctec.utils.FileHandler;
 import java.io.File;
 
 /**
- * Created by Jeppe on 2015-10-12.
+ * Displays information about the app in a DialogFragment
+ * @author Jesper Kjellqvist
+ * @version 1.0
  */
 
 public class InfoFragment extends DialogFragment

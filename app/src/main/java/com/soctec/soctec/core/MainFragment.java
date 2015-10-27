@@ -18,7 +18,7 @@ import com.soctec.soctec.achievements.Stats;
 import com.soctec.soctec.network.NetworkHandler;
 
 /**
- *
+ * MainFragment shows the QR-code and handles the rating system
  * @author Robin Punell
  * @version 2.0
  */

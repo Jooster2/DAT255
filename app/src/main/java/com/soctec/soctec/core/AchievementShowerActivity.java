@@ -11,6 +11,11 @@ import com.soctec.soctec.R;
 import com.soctec.soctec.achievements.Achievement;
 import com.soctec.soctec.utils.FileHandler;
 
+/**
+ * Shows a graphical representation of an Achievement
+ * @author Robin Punell
+ * @version 1.1
+ */
 public class AchievementShowerActivity extends Activity
 {
 

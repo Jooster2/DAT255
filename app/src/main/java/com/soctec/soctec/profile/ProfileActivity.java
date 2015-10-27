@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * A ProfileActivity is an Activity that shows and allows edits to the profile data
+ * Activity for easy configuration of your profile through TextFields
  * @author Joakim Schmidt
  * @version 1.0
  */

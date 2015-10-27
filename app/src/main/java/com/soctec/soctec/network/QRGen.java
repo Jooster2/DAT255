@@ -8,6 +8,11 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+/**
+ * Generates QR-code images from a String input (usually an IP-address)
+ * @author Robin Punell
+ * @version 1.0
+ */
 public class QRGen
 {
     private static final int QR_SIZE = 150;

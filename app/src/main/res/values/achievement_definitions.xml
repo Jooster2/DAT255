@@ -8,9 +8,9 @@
 
 
         <!--Infinite Achievements-->
-        <item>Wow! fortsätt kämpa!, Du har skannat # av # personer, 25, gold_trophy, SI0, INF, P_SCAN:0:2^c</item>
+        <item>Wow! fortsätt kämpa!, Du har skannat # av # personer, 25, gold_trophy, SI2, INF, P_SCAN:0:2^c</item>
         <item>MaratonSnackaren!, Du har pratat totalt # av # minuter, 25, gold_trophy, TI0, INF, TT_TALK:1800:c*a+a</item>
-        <item>Nytt rekord!, Du har slagit ditt tidsrekord, 5, gold_trophy, LI0, INF, LT_TALK:20:a</item>
+        <item>Nytt rekord!, Du har slagit ditt tidsrekord, 5, gold_trophy, LI0, INF, LT_TALK:300:a</item>
 
         <!--Collection Achievements-->
         <item>Miljövän!, Du har åkt med samtliga elbussar, 50, gold_bus, C1, COL, B_RIDE:E_BUS1/E_BUS2/E_BUS3</item>

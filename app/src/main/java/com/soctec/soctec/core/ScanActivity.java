@@ -11,7 +11,9 @@ import android.view.View;
 import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
 /**
- * Created by MSI on 2015-09-21.
+ * Scans QR-codes and returns the result via the Intent
+ * @author Carl-Henrik Hult
+ * @version 1.0
  */
 public class ScanActivity extends Activity implements ZBarScannerView.ResultHandler
 {

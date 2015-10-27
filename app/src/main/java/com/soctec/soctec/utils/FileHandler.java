@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 /**
- * FileHandler handles all reading and writing of files.
+ * FileHandler handles all reading and writing of files including Resources
  * @singleton true
  * @author Joakim Schmidt
  * @version 1.1

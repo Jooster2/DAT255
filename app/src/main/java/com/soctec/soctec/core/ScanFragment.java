@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 
 import com.soctec.soctec.R;
 /**
- * Created by Carl-Henrik Hult on 2015-10-08.
+ * Filler for ViewPager
+ * @author Carl-Henrik Hult
+ * @version 1.0
  */
 public class ScanFragment extends android.support.v4.app.Fragment
 {

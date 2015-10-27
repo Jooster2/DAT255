@@ -13,7 +13,9 @@ import com.soctec.soctec.R;
 
 import java.util.ArrayList;
 /**
- * Created by Jooster on 2015-09-29.
+ * Used to display two TextViews in one element of a ListView
+ * @author Joakim Schmidt
+ * @version 1.0
  */
 public class ProfileMatchAdapter extends ArrayAdapter
 {

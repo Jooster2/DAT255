@@ -23,7 +23,7 @@ import java.nio.ByteOrder;
 /**
  * This class listens for broadcasts concerning wifi networks. Calls for generation of new QR-codes
  * when necessary. Can check if device is connected to Electricity.
- * @author David
+ * @author David Johnsson
  * @version 2015-09-29
  */
 public class ConnectionChecker extends BroadcastReceiver

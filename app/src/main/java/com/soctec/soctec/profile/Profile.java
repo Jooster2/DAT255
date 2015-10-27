@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by jooster on 9/29/15.
  * Static class for all profile-related data
+ * @author Joakim Schmidt, David Johnsson
+ * @version 2.0
  */
 public class Profile
 {

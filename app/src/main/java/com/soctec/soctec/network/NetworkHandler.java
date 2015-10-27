@@ -16,7 +16,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
- * @author David
+ * Handles all network-related tasks. Can handle both server connections and peer connections.
+ * Can return data to MainActivity via runOnUiThread()
+ * @author David Johnsson
  * @version 5.2
  */
 public class NetworkHandler
