@@ -26,11 +26,8 @@ You can also clone the git repository
 and build from the root of the project
     $ ./gradlew assembleRelease
 Locate the .apk file and sign it according to official documents
-https://developer.android.com/tools/publishing/app-signing.html
+    https://developer.android.com/tools/publishing/app-signing.html
 Then transfer it to your Android phone and run it from your file manager.
-
-##Licence
-See Licence file in root of project
 
 ##Videos about Dignum
 Concept: https://www.youtube.com/watch?v=JIl1F1ibVhk
@@ -43,3 +40,5 @@ Prototype: https://www.youtube.com/watch?v=sirf6wPMYJA
  - Robin Punell
  - Joakim Schmidt
 
+##Licence
+See Licence file in root of project
