@@ -22,15 +22,15 @@ Dignum is an android app to help people interact with each other on the bus.
 The easiest way to install is to download the .apk file from the project root to your phone and run it from your file manager.
 
 You can also clone the git repository  
-    $ git clone https://github.com/Jooster2/DAT255.git
+        $ git clone https://github.com/Jooster2/DAT255.git
 and build from the root of the project  
-    \n$ ./gradlew assembleRelease
+        $ ./gradlew assembleRelease
 Locate the .apk file and sign it according to official documents  
-    https://developer.android.com/tools/publishing/app-signing.html
+        https://developer.android.com/tools/publishing/app-signing.html
 Then transfer it to your Android phone and run it from your file manager.
 
 ##Videos about Dignum
-Concept: https://www.youtube.com/watch?v=JIl1F1ibVhk  \n
+Concept: https://www.youtube.com/watch?v=JIl1F1ibVhk  
 Prototype: https://www.youtube.com/watch?v=sirf6wPMYJA
 
 ##Team
