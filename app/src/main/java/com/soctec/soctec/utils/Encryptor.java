@@ -13,6 +13,15 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+/**
+ * Generates encrypted and base64 encoded strings from string-input.
+ *
+ * Uses org.apache.commons.codec.binary.Base64 library which is under Apache License version 2.0
+ * See license in License.txt in the project root.
+ *
+ * @author Robin Punell
+ * @version 1.0
+ */
 public class Encryptor
 {
     private String keyString = "SocTec-SocTec-SocTec";
@@ -41,7 +50,11 @@ public class Encryptor
             e.printStackTrace();
         }
     }
-
+    /**
+     * Encrypts and Base64 encodes a string
+     * @param str The string to encrypt
+     * @return A encrypted and Base64 encoded string
+     */
     public String encrypt(String str)
     {
         byte[] enc = new byte[0];
