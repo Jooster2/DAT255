@@ -46,5 +46,5 @@ Prototype: https://www.youtube.com/watch?v=sirf6wPMYJA
  - Robin Punell
  - Joakim Schmidt
 
-##Licence
-See Licence file in root of project
+##License
+See `License` file in root of project
