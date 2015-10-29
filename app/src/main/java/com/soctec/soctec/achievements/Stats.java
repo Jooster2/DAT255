@@ -179,7 +179,7 @@ public class Stats implements Serializable
 
     /**
      * Sets the positive rating to rating
-     * @param rating The new rating
+     * @param rating the new rating
      */
     public void setRatingPos(int rating)
     {
@@ -188,7 +188,7 @@ public class Stats implements Serializable
 
     /**
      * Sets the negative rating to rating
-     * @param rating The new rating
+     * @param rating the new rating
      */
     public void setRatingNeg(int rating)
     {
