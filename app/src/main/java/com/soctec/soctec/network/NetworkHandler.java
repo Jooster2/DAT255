@@ -16,8 +16,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
- * Handles all network-related tasks. Can handle both server connections and peer connections.
- * Can return data to MainActivity via runOnUiThread()
+ * Handles all network-related tasks. Can handle both server and peer connections.
+ * Returns data to MainActivity via runOnUiThread()
  * @author David Johnsson
  * @version 5.2
  */
@@ -32,10 +32,10 @@ public class NetworkHandler
     private static NetworkHandler instance = null;
 
     /**
-     * Returns the only instance
+     * Returns the only instance. (Singleton pattern)
      * @return the instance
      */
-    public static NetworkHandler getInstance()
+    public static synchronized NetworkHandler getInstance()
     {
         if(instance == null)
             return instance = new NetworkHandler();
@@ -43,20 +43,23 @@ public class NetworkHandler
             return instance;
     }
 
+    /**
+     * Set the activity that the results from network operations should be returned to.
+     * @param activity The activity to return to
+     */
     public void setMyActivity(MainActivity activity)
     {
         myActivity = activity;
     }
 
     /**
-     * Starts thread that connects to peer and transfers data
-     * @param scannedAddress The address to connect to
+     * Start thread that connects to peer and transfers data
+     * @param scannedAddress The IP address to connect to
      */
     public void sendScanInfoToPeer(String scannedAddress)
     {
         if(ConnectionChecker.isConnected(myActivity.getApplicationContext()))
         {
-            //Start networking thread
             ActiveThread thread = new ActiveThread(scannedAddress);
             thread.start();
         }
@@ -105,8 +108,8 @@ public class NetworkHandler
     }
 
     /**
-     * This method returns the users profile & ID
-     * @return The user's profile & ID
+     * This method returns the users profile & ID, put together as a list
+     * @return The last element is the users ID, the rest is his profile
      */
     @SuppressWarnings("unchecked")
     private ArrayList<ArrayList<String>> getDataToSend()
@@ -119,14 +122,14 @@ public class NetworkHandler
     }
 
     /**
-     * This thread can connect to a peer, transfers data, and sends it to MainActivity
+     * This thread can connect to a peer, exchange data, and send it to MainActivity
      */
     private class ActiveThread extends Thread
     {
         String peerIp;
 
         /**
-         * Constructor
+         * Constructor. Initializes thread
          * @param ip The ip address to connect to
          */
         public ActiveThread(String ip)
@@ -134,6 +137,9 @@ public class NetworkHandler
             peerIp = ip;
         }
 
+        /**
+         * This runnable is the core of the thread. Preforms the actual network operations.
+         */
         @Override
         @SuppressWarnings("unchecked")
         public void run()
@@ -179,12 +185,15 @@ public class NetworkHandler
     }
 
     /**
-     * This thread listens for a connection, transfers data, and sends it to MainActivity
+     * This thread listens for a connection, exchanges data, and sends it to MainActivity
      */
     private class PassiveThread extends Thread
     {
         ServerSocket serverSocket = null;
 
+        /**
+         * This runnable is the core of the thread. Preforms the actual network operations.
+         */
         @Override
         @SuppressWarnings("unchecked")
         public void run()
@@ -238,7 +247,7 @@ public class NetworkHandler
         }
 
         /**
-         * Stops the thread from listening for connections
+         * Interrupts the thread and stops it from listening for connections
          */
         public void stopThread()
         {
@@ -260,6 +269,9 @@ public class NetworkHandler
         }
     }
 
+    /**
+     * This thread can connect to the server and a) push data to it, or b) fetch data from it.
+     */
     private class ServerThread extends Thread
     {
         private final boolean PUSH_TYPE = true;
@@ -269,9 +281,9 @@ public class NetworkHandler
         private boolean rating;
 
         /**
-         * Thread that pushes rating to server
+         * Initializes thread that pushes rating to server
          * @param ID The ID of the user that was just given a new rating
-         * @param positiveRating true, if the user was given a posivite rating, o/w false
+         * @param positiveRating true, if the user was given a positive rating, o/w false
          */
         public ServerThread(String ID, boolean positiveRating)
         {
@@ -281,7 +293,7 @@ public class NetworkHandler
         }
 
         /**
-         * Thread that fetches rating from server
+         * Initializes thread that fetches rating from server
          * @param myID The ID of this device's user
          */
         public ServerThread(String myID)
@@ -290,6 +302,9 @@ public class NetworkHandler
             userID = myID;
         }
 
+        /**
+         * This runnable is the core of the thread. Preforms the actual network operations.
+         */
         @Override
         public void run()
         {

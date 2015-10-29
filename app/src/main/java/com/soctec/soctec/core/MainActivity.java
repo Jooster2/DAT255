@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     private static int REQUEST_CODE = 0;
 
+    /**
+     * Initializes everything. View, user code, file handler, profile, achievements,
+     * network handler, action bar and help pop-up
+     * @param savedInstanceState Saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -109,64 +114,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
 
     /**
-     * Initiate the BroadcastReceiver and register it.
+     * Called when activity starts
      */
-    public void startReceiver()
-    {
-        IntentFilter intentFilter =
-                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        registerReceiver(
-                connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
-        Log.i("Main", "Receiver started!");
-
-    }
-
-    /**
-     * Tells ScanActivity to start scanning
-     * @param v currently unused
-     */
-    public void scanNow (View v)
-    {
-        startActivityForResult(
-                new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
-        updateAchievementFragment();
-    }
-
-    /**
-     * Initiates refresh of AchievementFragment by retrieving the fragment from
-     * mSectionsPagerAdapter and calling the method
-     */
-    protected void updateAchievementFragment()
-    {
-        AchievementsFragment aF = (AchievementsFragment)mSectionsPagerAdapter.getFragment(2);
-        if (unlocker.getUnlockableAchievements()!= null)
-        {
-            aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
-            aF.setPoints(stats.getPoints());
-        }
-    }
-
-    public Stats getStats()
-    {
-        return stats;
-    }
-
-    /**
-     * Called when an activity started with "startActivityForResult()" has finished.
-     * @param requestCode Indicates which request this method call is a response to
-     * @param resultCode The result of the request
-     * @param data The data from the finished activity.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
-        {
-            String scannedCode = data.getExtras().getString("result");
-            NetworkHandler.getInstance().sendScanInfoToPeer(scannedCode);
-        }
-    }
     @Override
     protected void onStart()
     {
@@ -236,6 +185,73 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             mViewPager.setCurrentItem(1);
     }
 
+    /**
+     * Initiate the BroadcastReceiver and register it.
+     */
+    public void startReceiver()
+    {
+        IntentFilter intentFilter =
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(
+                connectionChecker = new ConnectionChecker(MainActivity.this), intentFilter);
+        Log.i("Main", "Receiver started!");
+
+    }
+
+    /**
+     * Tells ScanActivity to start scanning
+     * @param v currently unused
+     */
+    public void scanNow (View v)
+    {
+        startActivityForResult(
+                new Intent(getApplicationContext(), ScanActivity.class), REQUEST_CODE);
+        updateAchievementFragment();
+    }
+
+    /**
+     * Initiates refresh of AchievementFragment by retrieving the fragment from
+     * mSectionsPagerAdapter and calling the method
+     */
+    protected void updateAchievementFragment()
+    {
+        AchievementsFragment aF = (AchievementsFragment)mSectionsPagerAdapter.getFragment(2);
+        if (unlocker.getUnlockableAchievements()!= null)
+        {
+            aF.refreshAchievements(unlocker.getUnlockableAchievements(), stats.getAchievements());
+            aF.setPoints(stats.getPoints());
+        }
+    }
+
+    /**
+     * Returns stats
+     * @return stats
+     */
+    public Stats getStats()
+    {
+        return stats;
+    }
+
+    /**
+     * Called when an activity started with "startActivityForResult()" has finished.
+     * @param requestCode Indicates which request this method call is a response to
+     * @param resultCode The result of the request
+     * @param data The data from the finished activity.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(resultCode == RESULT_OK && requestCode == REQUEST_CODE)
+        {
+            String scannedCode = data.getExtras().getString("result");
+            NetworkHandler.getInstance().sendScanInfoToPeer(scannedCode);
+        }
+    }
+
+    /**
+     * Updates the rating bar on main fragment
+     */
     public void updateRatingBar()
     {
         ((MainFragment)mSectionsPagerAdapter.getFragment(1)).updateRatingBar();
@@ -267,10 +283,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         //Activate rating thumbs
         if(unlocker.wasLegalScan())
             ((MainFragment)mSectionsPagerAdapter.getFragment(1)).enableRatingButtons();
-
-
     }
 
+    /**
+     * Checks if new achievements have been unlocked and updates achievement fragment
+     */
     public void checkAchievementChanges()
     {
         LinkedList<Achievement> newAchievements = stats.getLastCompleted();
@@ -354,13 +371,26 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         return accMail;
     }
 
+    /**
+     * Callback interface for responding to changing state of the selected page
+     */
     public class PageChangeListener implements ViewPager.OnPageChangeListener
     {
+        /**
+         * Called when current page is scrolled
+         * @param position Position of the page
+         * @param positionOffset Offset from the position
+         * @param positionOffsetPixels Pixels from the position
+         */
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
         {
         }
 
+        /**
+         * Called when page is selected
+         * @param position Position of the page
+         */
         @Override
         public void onPageSelected(int position)
         {
@@ -373,6 +403,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         }
 
+        /**
+         * Called when scroll state is changed
+         * @param state State of the scroll
+         */
         @Override
         public void onPageScrollStateChanged(int state)
         {
@@ -502,6 +536,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         private HashMap<Integer, WeakReference<Fragment>> fragmentReferences;
 
+        /**
+         * Initializes the adapter
+         * @param fm The fragment manager
+         */
         public SectionsPagerAdapter(FragmentManager fm)
         {
             super(fm);
@@ -528,13 +566,16 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             return fragment;
         }
 
+        /**
+         * Gets the fragment
+         * @param id Id of the fragment
+         * @return The fragment
+         */
         public Fragment getFragment(int id)
         {
             WeakReference<Fragment> reference = fragmentReferences.get(id);
             return reference == null ? null : reference.get();
         }
-
-
 
         @Override
         public int getCount()
@@ -558,6 +599,11 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             return null;
         }
 
+        /**
+         * Returns the icon of th tab
+         * @param position Position of the tab
+         * @return The icon
+         */
         public int getIcon(int position)
         {
             Locale l = Locale.getDefault();

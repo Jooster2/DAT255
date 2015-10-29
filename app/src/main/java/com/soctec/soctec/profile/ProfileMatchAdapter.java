@@ -21,14 +21,21 @@ public class ProfileMatchAdapter extends ArrayAdapter
 {
     /**
      * Constructor that sets the context and what every list item in the list view should contain.
-     * @param context
+     * @param context       Context of calling class
      * @param matchResult   A list of all the matches that should be put in the list.
      */
     public ProfileMatchAdapter(Context context, ArrayList<String> matchResult)
     {
         super(context, R.layout.row_profilematch, matchResult);
-
     }
+
+    /**
+     * Gets a specific view
+     * @param position The position of the view
+     * @param convertView The old view to reuse
+     * @param parent The partent of the view
+     * @return The view
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater myInflater = LayoutInflater.from(getContext());

@@ -12,18 +12,17 @@ import android.widget.ListView;
 import com.soctec.soctec.R;
 
 /**
- * Matches Strings in two different ArrayLists of ArrayLists of Strings
- * and displays the result
+ * Displays the matching contents from two different ArrayLists of ArrayLists of Strings
  * @author Carl-Henrik Hult
- * @version 1.0
+ * @version 1.5
  */
 public class ProfileMatchActivity extends Activity
 {
     ListView myListView;
 
     /**
-     * Sets the layout for the profile match.
-     * @param savedInstanceState
+     * Initializes the layout for the profile match.
+     * @param savedInstanceState The saved instance state
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -37,14 +36,11 @@ public class ProfileMatchActivity extends Activity
         match((ArrayList <ArrayList <String>>)getIntent().getExtras().get("list1"),
               (ArrayList <ArrayList <String>>)getIntent().getExtras().get("list2"));
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
+
+    /**
+     * Finishes the activity
+     * @param v A view
+     */
     public void onFinishedClick(View v)
     {
         this.finish();
@@ -52,7 +48,7 @@ public class ProfileMatchActivity extends Activity
 
     /**
      * Matches two profiles, and shows the things those profiles have in common.
-     * The two different profiles are the two lists that is included as parameters.
+     * The two different profiles are the two lists that are included as parameters.
 
      * @param thisDevice    the profile of the own device.
      * @param otherDevice   the profile of the scanned device.
@@ -170,6 +166,10 @@ public class ProfileMatchActivity extends Activity
         myListView.setAdapter(matchAdapter);
     }
 
+    /**
+     * Picks a random word from a list of words.
+     * @return A word
+     */
     private String getRandomWord()
     {
         switch(new Random().nextInt(10))
@@ -200,7 +200,7 @@ public class ProfileMatchActivity extends Activity
     }
 
     /**
-     * Used only for testing
+     * Used only for testing. Does the same as the method 'match' above.
      * @param thisDevice Profile from this device
      * @param otherDevice Profile from other device
      * @return The list of matching items

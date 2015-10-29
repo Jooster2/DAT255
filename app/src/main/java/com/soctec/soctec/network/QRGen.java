@@ -18,6 +18,9 @@ public class QRGen
     private static final int QR_SIZE = 150;
     private QRCodeWriter writer;
 
+    /**
+     * Initialize object
+     */
     public QRGen()
     {
         writer = new QRCodeWriter();
@@ -26,7 +29,7 @@ public class QRGen
     /**
      * Writes the given Matrix on a new Bitmap object.
      * @param matrix the matrix to write.
-     * @return the new {@link Bitmap}-object.
+     * @return The new {@link Bitmap}-object.
      */
     private static Bitmap toBitmap(BitMatrix matrix)
     {
