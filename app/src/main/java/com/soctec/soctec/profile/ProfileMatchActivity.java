@@ -101,7 +101,10 @@ public class ProfileMatchActivity extends Activity
             }
             indexOtherDevice++;
         }
-
+        /*
+         * Down below every list (music,movie, sportsresult etc etc.. ) is checked for
+         * eventual matches. If a list contains an Item, that item is added to showList.
+         */
         ArrayList <String> showList = new ArrayList<>();
         StringBuilder temp = new StringBuilder();
 

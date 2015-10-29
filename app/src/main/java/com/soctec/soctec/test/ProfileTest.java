@@ -1,21 +1,21 @@
 package com.soctec.soctec.test;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.test.AndroidTestCase;
-import android.widget.EditText;
-
-import com.soctec.soctec.R;
 import com.soctec.soctec.profile.Profile;
 import com.soctec.soctec.profile.ProfileMatchActivity;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 /**
- * Created by Carl-Henrik Hult on 2015-10-09.
+ Basic test cases for the APIHeader class
+ * @author Carl-Henrik
+ * @version 1.0
  */
 public class ProfileTest extends AndroidTestCase
 {
+    /**
+     * Tests the matching algorithm.
+     * @throws Exception
+     */
     public void testProfileMatch ()throws Exception{
         ProfileMatchActivity profileMatchActivity = new ProfileMatchActivity();
         String myTextFields[] = new String[Profile.NR_OF_CATEGORIES];
