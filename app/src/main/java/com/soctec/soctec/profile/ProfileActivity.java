@@ -14,14 +14,18 @@ import java.util.Arrays;
 
 /**
  * Activity for easy configuration of your profile through TextFields
- * @author Joakim Schmidt
- * @version 1.0
+ * @author Joakim Schmidt, DAvid Johnsson
+ * @version 2.0
  */
 public class ProfileActivity extends Activity
 {
     private ArrayList<String> profileItems;
     private EditText[] textFields = new EditText[Profile.NR_OF_CATEGORIES];
 
+    /**
+     * Initializes views
+     * @param savedInstanceState Saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -96,5 +100,9 @@ public class ProfileActivity extends Activity
         }
     }
 
+    /**
+     * Closes the view
+     * @param view A view
+     */
     public void onFinishedClick(View view){ finish(); }
 }

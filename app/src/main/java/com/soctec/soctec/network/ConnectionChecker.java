@@ -21,7 +21,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteOrder;
 
 /**
- * This class listens for broadcasts concerning wifi networks. Calls for generation of new QR-codes
+ * This class listens for broadcasts about wifi networks. Calls for generation of new QR-codes
  * when necessary. Can check if device is connected to Electricity.
  * @author David Johnsson
  * @version 2015-09-29
@@ -48,6 +48,10 @@ public class ConnectionChecker extends BroadcastReceiver
             "04:f0:21:10:09:5b"
     };
 
+    /**
+     * Initialize object
+     * @param activity The activity to send new QR to.
+     */
     public ConnectionChecker(MainActivity activity)
     {
         myActivity = activity;
@@ -57,8 +61,8 @@ public class ConnectionChecker extends BroadcastReceiver
      * This method is called by the Android operating system whenever a change in
      * the network connection has occurred. Checks if connected to electricity wifi and updates the
      * QR image accordingly.
-     * @param context
-     * @param intent
+     * @param context Context in which receiver is running
+     * @param intent The intent being received
      */
     @Override
     public void onReceive(Context context, Intent intent)

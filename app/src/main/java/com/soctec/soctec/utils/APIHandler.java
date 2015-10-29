@@ -32,29 +32,18 @@ public class APIHandler
 {
     private String key = "";
     private ArrayList<ArrayList<String>> lastReadList;
-
-    /**
-     * Magic thread-safety
-     */
-    private static class Loader
-    {
-        static APIHandler INSTANCE = new APIHandler();
-    }
+    private static APIHandler instance = null;
 
     /**
      * Returns the instance of APIHandler
      * @return the instance of APIHandler
      */
-    public static APIHandler getInstance()
+    public static synchronized APIHandler getInstance()
     {
-        return Loader.INSTANCE;
-    }
-
-    /**
-     * Constructs an API Handler
-     */
-    private APIHandler()
-    {
+        if(instance == null)
+            return instance = new APIHandler();
+        else
+            return instance;
     }
 
     /**

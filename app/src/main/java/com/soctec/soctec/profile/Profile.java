@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Static class for all profile-related data
+ * Class with static access to all profile-related data
  * @author Joakim Schmidt, David Johnsson
  * @version 2.0
  */

@@ -19,37 +19,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 /**
  * FileHandler handles all reading and writing of files including Resources
- * @singleton true
- * @author Joakim Schmidt
- * @version 1.1
+ * @author Joakim Schmidt, David Johnsson
+ * @version 1.4
  */
 public class FileHandler
 {
-    /**
-     * Magic thread-safety
-     */
-    private static class Loader
-    {
-        static FileHandler INSTANCE = new FileHandler();
-    }
+   private static FileHandler instance;
+    private Context context;
+    private static File path;
 
     /**
      * Returns the instance of FileHandler
      * @return the instance of FileHandler
      */
-    public static FileHandler getInstance()
+    public static synchronized FileHandler getInstance()
     {
-        return Loader.INSTANCE;
-    }
-
-    private Context context;
-    private static File path;
-
-    /**
-     * Constructs an empty FileHandler
-     */
-    private FileHandler()
-    {
+        if(instance == null)
+            return instance = new FileHandler();
+        else
+            return instance;
     }
 
     /**
@@ -108,11 +96,16 @@ public class FileHandler
 
         return fromFile;
     }
+
+    /**
+     * Reads a string from a resource
+     * @param resID ID of the resource to read from
+     * @return String found in resource
+     */
     public String readString(int resID)
     {
         Resources res = context.getResources();
-        String item = res.getString(resID);
-        return item;
+        return res.getString(resID);
     }
 
     /**

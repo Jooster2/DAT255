@@ -13,7 +13,6 @@ import java.io.File;
  * @author Jesper Kjellqvist
  * @version 1.0
  */
-
 public class InfoFragment extends DialogFragment
 {
     /**

@@ -13,7 +13,6 @@ import com.soctec.soctec.utils.FileHandler;
  * @author Jesper Kjellqvist
  * @version 1.0
  */
-
 public class HelpFragment extends DialogFragment
 {
     String toDisplay = "";
