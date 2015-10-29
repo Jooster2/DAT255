@@ -12,6 +12,14 @@ import me.dm7.barcodescanner.zbar.Result;
 import me.dm7.barcodescanner.zbar.ZBarScannerView;
 /**
  * Scans QR-codes and returns the result via the Intent
+ *
+ * Uses the following libraries which is under Apache License version 2.0:
+ *
+ *  me.dm7.barcodescanner.zbar.Result;
+ *  me.dm7.barcodescanner.zbar.ZBarScannerView;
+ *
+ * See license in License.txt in the project root.
+ *
  * @author Carl-Henrik Hult
  * @version 1.0
  */

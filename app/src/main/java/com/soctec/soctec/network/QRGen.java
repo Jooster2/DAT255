@@ -10,6 +10,16 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 /**
  * Generates QR-code images from a String input (usually an IP-address)
+ *
+ * Uses the following libraries which is under Apache License version 2.0:
+ *
+ *  com.google.zxing.BarcodeFormat
+ *  com.google.zxing.WriterException
+ *  com.google.zxing.common.BitMatrix
+ *  com.google.zxing.qrcode.QRCodeWriter
+ *
+ * See license in License.txt in the project root.
+ *
  * @author Robin Punell
  * @version 1.0
  */
