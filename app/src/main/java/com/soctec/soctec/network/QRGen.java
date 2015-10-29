@@ -40,7 +40,7 @@ public class QRGen
     /**
      * Writes the given Matrix on a new Bitmap object.
      * @param matrix the matrix to write.
-     * @return The new {@link Bitmap}-object.
+     * @return The new Bitmap-object.
      */
     private static Bitmap toBitmap(BitMatrix matrix)
     {

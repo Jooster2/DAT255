@@ -108,7 +108,7 @@ public class NetworkHandler
     }
 
     /**
-     * This method returns the users profile & ID, put together as a list
+     * This method returns the users profile and ID, put together as a list
      * @return The last element is the users ID, the rest is his profile
      */
     @SuppressWarnings("unchecked")
