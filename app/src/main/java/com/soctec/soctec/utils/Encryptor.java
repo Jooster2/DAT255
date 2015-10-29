@@ -57,8 +57,8 @@ public class Encryptor
     }
     /**
      * Encrypts and Base64 encodes a string
-     * @param str The string to encrypt
-     * @return A encrypted and Base64 encoded string
+     * @param str the string to encrypt
+     * @return a encrypted and Base64 encoded string
      */
     public String encrypt(String str)
     {

@@ -115,7 +115,7 @@ public class AchievementShowerActivity extends Activity
      * Calculates the rank of the current achievement and returns it in form of an int.
      * The rank is based on the points of the current achievement.
      * Gold=3 Silver=2 Bronze=1 standard=0
-     * @return The calculated rank value.
+     * @return the calculated rank value.
      */
     public int getAchievementRank()
     {
