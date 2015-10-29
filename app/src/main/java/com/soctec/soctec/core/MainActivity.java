@@ -147,6 +147,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         }
     }
 
+    /**
+     * Returns the stats-object
+     * @return returns the stats-object
+     */
     public Stats getStats()
     {
         return stats;

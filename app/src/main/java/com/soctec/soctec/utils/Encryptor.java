@@ -31,6 +31,11 @@ public class Encryptor
     private SecretKeyFactory keyFactory;
     private  SecretKey key;
 
+    /**
+     * Constructs the encryptor.
+     * Creates the needed keys and cipher for encryption.
+     *
+     */
     public Encryptor()
     {
 

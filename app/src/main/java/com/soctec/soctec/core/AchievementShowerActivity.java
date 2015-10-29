@@ -26,6 +26,11 @@ public class AchievementShowerActivity extends Activity
     private int silver = 30;
     private int bronze = 10;
 
+    /**
+     * Sets up the graphic components needed based on the active achievement.
+     *
+     * @param savedInstanceState a bundle containing the achievement to be shown.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

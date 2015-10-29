@@ -28,6 +28,10 @@ public class QRGen
     private static final int QR_SIZE = 150;
     private QRCodeWriter writer;
 
+    /**
+     * Constructs a QR-generator
+     * Creates a QRCodeWriter
+     */
     public QRGen()
     {
         writer = new QRCodeWriter();
@@ -55,8 +59,8 @@ public class QRGen
 
     /**
      * Generates a qr-code from a ip address
-     * @param ip The ip-address to encode
-     * @return A QR image
+     * @param ip the ip-address to encode
+     * @return a QR image
      */
     public Bitmap getQR(String ip)
     {
