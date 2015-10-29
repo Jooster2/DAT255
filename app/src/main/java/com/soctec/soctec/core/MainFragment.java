@@ -1,6 +1,5 @@
 package com.soctec.soctec.core;
 
-
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +18,7 @@ import com.soctec.soctec.network.NetworkHandler;
 
 /**
  * MainFragment shows the QR-code and handles the rating system
- * @author Robin Punell
+ * @author Robin Punell, Jesper Kjellqvist, Carl-Henrik Hult
  * @version 2.0
  */
 

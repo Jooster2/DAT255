@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import com.soctec.soctec.utils.FileHandler;
-import java.io.File;
 
 /**
  * Displays information about the app in a DialogFragment
