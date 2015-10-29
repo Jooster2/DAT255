@@ -29,7 +29,8 @@ public class QRGen
     private QRCodeWriter writer;
 
     /**
-     * Initialize object
+     * Constructs a QR-generator
+     * Creates a QRCodeWriter
      */
     public QRGen()
     {
@@ -58,8 +59,8 @@ public class QRGen
 
     /**
      * Generates a qr-code from a ip address
-     * @param ip The ip-address to encode
-     * @return A QR image
+     * @param ip the ip-address to encode
+     * @return a QR image
      */
     public Bitmap getQR(String ip)
     {
