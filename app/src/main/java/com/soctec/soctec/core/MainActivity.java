@@ -44,7 +44,7 @@ import com.soctec.soctec.utils.FileHandler;
 
 /**
  * MainActivity is a tabbed activity, and sets up most of the other objects for the App
- * @author Jesper, Joakim, David, Carl-Henrik, Robin
+ * @author Jesper Kjellqvist, Joakim Schmidt, David Johnsson, Carl-Henrik Hult, Robin Punell
  * @version 1.3
  */
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     /**
      * Initializes everything. View, user code, file handler, profile, achievements,
      * network handler, action bar and help pop-up
-     * @param savedInstanceState Saved instance state
+     * @param savedInstanceState saved instance state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         setContentView(R.layout.activity_main);
 
         String account = getPlayAcc();
+        //For testing purposes on virtual phones
         if(account == null)
-            account = "walla";
-        //TODO crash and burn (handle this some way...)
+            account = "testing";
 
         //Initialize the FileHandler
         FileHandler.getInstance().setContext(this);
@@ -150,6 +150,17 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
 
     /**
+     * Stops NetworkHandler and unregisters connectionChecker as receiver
+     */
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        NetworkHandler.getInstance().stopThread();
+        unregisterReceiver(connectionChecker);
+    }
+
+    /**
      * Saves stats and unlocker-data to respective savefiles
      */
     @Override
@@ -159,17 +170,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         unlocker.saveUnlockable();
         FileHandler.getInstance().writeObject("stats.sav", stats);
         super.onStop();
-    }
-
-    /**
-     * Stops NetworkHandler and unregisters connectionChecker as receiver
-     */
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        NetworkHandler.getInstance().stopThread();
-        unregisterReceiver(connectionChecker);
     }
 
     /**
@@ -225,8 +225,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
 
     /**
-     * Returns stats
-     * @return stats
+     * Returns stats object
+     * @return stats object
      */
     public Stats getStats()
     {
@@ -235,9 +235,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     /**
      * Called when an activity started with "startActivityForResult()" has finished.
-     * @param requestCode Indicates which request this method call is a response to
-     * @param resultCode The result of the request
-     * @param data The data from the finished activity.
+     * @param requestCode indicates which request this method call is a response to
+     * @param resultCode the result of the request
+     * @param data the data from the finished activity.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -259,8 +259,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     /**
      * Called by NetworkHandler when data has been received from a peer.
-     * @param idFromPeer The unique ID of the peer
-     * @param profileFromPeer The peer's profile data
+     * @param idFromPeer the unique ID of the peer
+     * @param profileFromPeer the peer's profile data
      */
     public void receiveDataFromPeer(String idFromPeer, ArrayList<ArrayList<String>> profileFromPeer)
     {
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
     /**
      * Update the QR image
-     * @param QR
+     * @param QR the QR Bitmap to set
      */
     public void updateQR(Bitmap QR)
     {
@@ -378,9 +378,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     {
         /**
          * Called when current page is scrolled
-         * @param position Position of the page
-         * @param positionOffset Offset from the position
-         * @param positionOffsetPixels Pixels from the position
+         * @param position position of the page
+         * @param positionOffset offset from the position
+         * @param positionOffsetPixels pixels from the position
          */
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         /**
          * Called when page is selected
-         * @param position Position of the page
+         * @param position position of the page
          */
         @Override
         public void onPageSelected(int position)
@@ -405,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         /**
          * Called when scroll state is changed
-         * @param state State of the scroll
+         * @param state state of the scroll
          */
         @Override
         public void onPageScrollStateChanged(int state)
@@ -546,6 +546,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             fragmentReferences = new HashMap<>();
         }
 
+        /**
+         * Creates new Fragments for the ViewPager, and puts a reference to it in
+         * the fragmentReferences Hashmap
+         * @param position the position of the fragment
+         * @return a new Fragment
+         */
         @Override
         public Fragment getItem(int position)
         {
@@ -568,8 +574,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         /**
          * Gets the fragment
-         * @param id Id of the fragment
-         * @return The fragment
+         * @param id ID of the fragment
+         * @return the fragment
          */
         public Fragment getFragment(int id)
         {
@@ -601,8 +607,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         /**
          * Returns the icon of th tab
-         * @param position Position of the tab
-         * @return The icon
+         * @param position position of the tab
+         * @return the icon
          */
         public int getIcon(int position)
         {

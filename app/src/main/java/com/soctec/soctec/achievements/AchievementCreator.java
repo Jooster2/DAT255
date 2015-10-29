@@ -111,7 +111,6 @@ public class AchievementCreator extends Observable
     /**
      * Used to manually create Achievements for testing purposes
      * @param line string with comma-separated definition of Achievement
-     * @example Name, FlavorText, Points, ImageName, S1, SIN, P_SCAN:1
      */
     public void createTestAch(String line)
     {

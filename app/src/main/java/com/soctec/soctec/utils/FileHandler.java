@@ -24,7 +24,7 @@ import java.util.Arrays;
  */
 public class FileHandler
 {
-   private static FileHandler instance;
+    private static FileHandler instance;
     private Context context;
     private static File path;
 
@@ -163,8 +163,8 @@ public class FileHandler
 
     /**
      * Serializes a object into a file
-     * @param fileName The filename
-     * @param obj The object
+     * @param fileName the filename to write to
+     * @param obj the object to write
      */
     public void writeObject(String fileName, Serializable obj)
     {
@@ -186,8 +186,8 @@ public class FileHandler
 
     /**
      * This method reads and returns a serializable object from file
-     * @param fileName The filename
-     * @return The object
+     * @param fileName the filename to read from
+     * @return the object read
      */
     public Object readObject(String fileName)
     {

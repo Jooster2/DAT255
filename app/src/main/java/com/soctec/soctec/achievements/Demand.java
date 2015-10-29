@@ -66,6 +66,11 @@ public class Demand extends Observable implements Runnable, Serializable
         Log.i("calcdemand", this.requirement);
     }
 
+    /**
+     * Returns minute version of the requirement, used by {@link com.soctec.soctec.core.AchievementShowerActivity}
+     * and {@link com.soctec.soctec.core.AchievementsAdapter} to display requirements correctly.
+     * @return the requirement in minutes
+     */
     public String getMinuteRequirement()
     {
         return String.valueOf(Integer.parseInt(requirement)/60);
@@ -130,7 +135,7 @@ public class Demand extends Observable implements Runnable, Serializable
     }
 
     /**
-     * Causes the run method to stop on it's next cycle
+     * Causes the run method to stop on its next cycle
      */
     public void shutdown()
     {

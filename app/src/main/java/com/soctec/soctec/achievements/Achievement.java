@@ -26,10 +26,10 @@ public class Achievement implements Serializable
 
 
     /**
-     * @param name The name of the achievement
-     * @param points Amount of points that the achievement is worth
-     * @param imageName The filename of the image that goes with the achievement
-     * @param id An internal ID, must be unique
+     * @param name the name of the achievement
+     * @param points amount of points that the achievement is worth
+     * @param imageName the filename of the image that goes with the achievement
+     * @param id an internal ID, must be unique
      * @param type the type of the achievement (SIN/INF/COL/API)
      */
     public Achievement(String name, String flavorText, int points, String imageName, String id, String type)
@@ -51,7 +51,6 @@ public class Achievement implements Serializable
      * @param extraPrimary extra data for constructing demand (equations, sensors etc)
      * @param extraSecondary extra data for constructing demand (mostly Vin Number)
      * @param detail numerical extra, mostly used API type demands
-     * @see {@link Demand} for different types
      */
     public void createDemand(int type, String requirement, String extraPrimary,
                              String extraSecondary, int detail)

@@ -264,7 +264,7 @@ public class AchievementUnlocker implements Observer
      * Receives data from classes that it observes, if that data is class {@link Achievement}
      * the method adds data to {@link AchievementUnlocker unlockableAchievements} -list.
      * @param observable is either AchievementCreator or Demand
-     * @param data  Is data received from classes that {@link AchievementUnlocker} observes.
+     * @param data data received from classes that {@link AchievementUnlocker} observes.
      */
     @Override
     public void update(Observable observable, Object data)

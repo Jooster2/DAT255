@@ -30,7 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class APIHandler
 {
-    private String key = "";
+    private String key = "Basic Z3JwMjQ6UVg0Tk5WZkJ3Zg==";
     private ArrayList<ArrayList<String>> lastReadList;
     private static APIHandler instance = null;
 
@@ -57,7 +57,7 @@ public class APIHandler
 
     /**
      * Reads the API if there is no local data present, then returns a single String according
-     * to parameters
+     * to parameters, Saves this as a kind of buffer for further uses.
      * @param lookingFor resource wanted
      * @param vinNumber VIN-number to read from
      * @param sensor sensor to read
@@ -87,6 +87,9 @@ public class APIHandler
         return valueFound;
     }
 
+    /**
+     * Clears the read buffer
+     */
     public void clearLastRead()
     {
         lastReadList = null;

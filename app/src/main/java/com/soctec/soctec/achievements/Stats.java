@@ -30,7 +30,7 @@ public class Stats implements Serializable
     private boolean canNotRate = true;
 
     /**
-     * Constructs an empty Stats object
+     * Constructs a Stats object
      */
     public Stats()
     {
@@ -44,16 +44,28 @@ public class Stats implements Serializable
         //TODO read db
     }
 
+    /**
+     * Returns true if user has rated the last meeting
+     * @return true if user has rated the last meeting
+     */
     public boolean hasRated()
     {
         return canNotRate;
     }
 
+    /**
+     * Sets whether the user has rated to parameter
+     * @param rate set to true if user has rated
+     */
     public void setCanNotRate(boolean rate)
     {
         canNotRate = rate;
     }
 
+    /**
+     * Returns the total time talked
+     * @return the total time talked
+     */
     public int getTimeTalked()
     {
         return timeTalked;
@@ -201,6 +213,10 @@ public class Stats implements Serializable
         return longestTalkStreak;
     }
 
+    /**
+     * Returns the time since the users last scan
+     * @return the time since the users last scan
+     */
     public int getCurrentTalkStreak()
     {
         return currentTalkStreak;
@@ -228,6 +244,11 @@ public class Stats implements Serializable
 
     }
 
+    /**
+     * Returns a list of the last completed Achievements (since last call to this method)
+     * and clears the list
+     * @return list of the last completed Achievements
+     */
     public LinkedList<Achievement> getLastCompleted()
     {
         LinkedList<Achievement> temp = new LinkedList<>();
@@ -236,6 +257,9 @@ public class Stats implements Serializable
         return temp;
     }
 
+    /**
+     * Cleans the list of recent scans
+     */
     public void removeOldScans()
     {
         int resetTime = 7200000;
@@ -252,6 +276,12 @@ public class Stats implements Serializable
                 break;
         }
     }
+
+    /**
+     * Checks whether user has recently been scanned
+     * @param lastScanned usercode
+     * @return true if scanned recently
+     */
     public boolean isScannedRecently(String lastScanned)
     {
         for(UserPair pair : listRecentScans)
@@ -262,30 +292,51 @@ public class Stats implements Serializable
         return false;
     }
 
+    /**
+     * Adds a user to the list of recently scanned
+     * @param lastScannedTime the time of the scan
+     * @param lastScanned usercode
+     */
     public void addRecentScan(long lastScannedTime, String lastScanned)
     {
         if (!isScannedRecently(lastScanned))
             listRecentScans.addLast(new UserPair(lastScannedTime, lastScanned));
     }
 
-
-
+    /**
+     * A UserPair is used by the recently scanned list in Stats, to pair a usercode and a scantime
+     * together
+     */
     public class UserPair implements Serializable
     {
         private static final long serialVersionUID = 7L;
         private long scanTime;
         private String scannedUser;
+
+        /**
+         * Constructs a new UserPair with time and usercode as parameters
+         * @param scanTime
+         * @param scannedUser
+         */
         public UserPair(long scanTime, String scannedUser)
         {
             this.scanTime = scanTime;
             this.scannedUser = scannedUser;
         }
 
+        /**
+         * Returns the time of this pair
+         * @return the time of this pair
+         */
         public long getScanTime()
         {
             return scanTime;
         }
 
+        /**
+         * Returns the usercode of this pair
+         * @return the usercode of this pair
+         */
         public String getScannedUser()
         {
             return scannedUser;
