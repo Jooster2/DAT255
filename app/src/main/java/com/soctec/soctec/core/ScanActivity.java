@@ -27,12 +27,16 @@ public class ScanActivity extends Activity implements ZBarScannerView.ResultHand
 {
     private ZBarScannerView mScannerView;
 
+    /**
+     * Crates the scan activity and sets a content view with suited listeners.
+     * @param state
+     */
     @Override
     public void onCreate(Bundle state)
     {
         super.onCreate(state);
-        mScannerView = new ZBarScannerView(this);    // Programmatically initialize the scanner view
-        setContentView(mScannerView);                // Set the scanner view as the content view
+        mScannerView = new ZBarScannerView(this);
+        setContentView(mScannerView);
         mScannerView.setOnTouchListener(new OnSwipeTouchListener(this){
             @Override
             public void onSwipeLeft()
@@ -50,8 +54,8 @@ public class ScanActivity extends Activity implements ZBarScannerView.ResultHand
     public void onResume()
     {
         super.onResume();
-        mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
-        mScannerView.startCamera();          // Start camera on resume
+        mScannerView.setResultHandler(this);
+        mScannerView.startCamera();
     }
 
     /**
@@ -61,7 +65,7 @@ public class ScanActivity extends Activity implements ZBarScannerView.ResultHand
     public void onPause()
     {
         super.onPause();
-        mScannerView.stopCamera();           // Stop camera on pause
+        mScannerView.stopCamera();
     }
 
     /**
@@ -73,7 +77,6 @@ public class ScanActivity extends Activity implements ZBarScannerView.ResultHand
     {
         System.out.println(rawResult.getContents());
 
-        //Send scanned code back
         Intent returnIntent = new Intent();
         returnIntent.putExtra("result", rawResult.getContents());
         setResult(RESULT_OK, returnIntent);
@@ -92,17 +95,32 @@ public class ScanActivity extends Activity implements ZBarScannerView.ResultHand
             gestureDetector = new GestureDetector(context, new GestureListener());
         }
 
+        /**
+         * Handles swipes left.
+         */
         public void onSwipeLeft() {
 
         }
 
+        /**
+         Handles swipes right.
+         */
         public void onSwipeRight() {
         }
 
+        /**
+         * Checks wether touch event was a swipe and what kind.
+         * @param v The view the event occured in.
+         * @param event The event to process
+         * @return true if event is swipe
+         */
         public boolean onTouch(View v, MotionEvent event) {
             return gestureDetector.onTouchEvent(event);
         }
 
+        /**
+         * A listener class that makes calculations for touch events. Detects different gestures.
+         */
         private final class GestureListener extends GestureDetector.SimpleOnGestureListener
         {
 

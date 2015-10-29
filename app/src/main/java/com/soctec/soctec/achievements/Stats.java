@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 /**
  * Stats contains information about game progress
- * @author Joakim Schmidt
+ * @author Joakim Schmidt, Carl-Henrik Hult
  * @version 1.3
  */
 public class Stats implements Serializable

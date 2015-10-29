@@ -2,7 +2,6 @@ package com.soctec.soctec.test;
 
 import android.test.AndroidTestCase;
 
-import com.soctec.soctec.achievements.AchievementCreator;
 import com.soctec.soctec.achievements.AchievementUnlocker;
 import com.soctec.soctec.core.MainActivity;
 import com.soctec.soctec.achievements.Stats;

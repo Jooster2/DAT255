@@ -16,7 +16,7 @@ import java.util.LinkedList;
 /**
  * Adapter for displaying several properties from an
  * {@link com.soctec.soctec.achievements.Achievement} in a single ListView slot
- * @author Jesper Kjellqvist
+ * @author Jesper Kjellqvist, Carl-Henrik Hult
  * @version 1.1
  */
 
